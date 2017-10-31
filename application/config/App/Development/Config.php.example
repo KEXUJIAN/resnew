@@ -1,0 +1,78 @@
+<?php
+namespace Res\Config\Development;
+use \Res\Config\BaseConfig;
+/**
+* Development Config
+*/
+class Config extends BaseConfig
+{
+    /**
+     * --------------------------------------------------------------------------
+     * Database configuration
+     * --------------------------------------------------------------------------
+     *
+     * @used by \Res\Util\DataBase
+     * @var array
+     */
+    protected $db = [
+        'dsn'  => 'dsn',
+        'db'   => 'resmanager',
+        'user' => 'user name',
+        'pass' => 'user password',
+    ];
+
+    /**
+    * --------------------------------------------------------------------------
+    * Email configuration
+    * --------------------------------------------------------------------------
+    * @used by \Res\Util\Email
+    * @var array
+    *
+    * protocol  邮件发送协议
+    * smtp_host SMTP 服务器地址
+    * smtp_user SMTP 用户名
+    * smtp_pass SMTP 密码
+    * charset   字符集
+    * crlf      换行符
+    * newline   换行符
+    *
+    */
+    protected $mail = [
+        'protocol'  => '',
+        'smtp_host' => '',
+        'smtp_user' => '',
+        'smtp_pass' => '',
+        'charset'   => 'utf-8',
+        'crlf'      => "\r\n",
+        'newline'   => '',
+        'from'      => '',
+        'from_name' => '',
+    ];
+
+    /**
+     * --------------------------------------------------------------------------
+     * permission configuration
+     * --------------------------------------------------------------------------
+     *
+     * @used by \Res\Util\Limit
+     * @var array
+     *
+     * role
+     *      the symbols you've decided to represent permission, as a json array
+     *
+     * rule
+     *      'request=[permission]' 空格会被替换为空字符串，一定要有等号
+     *      request: regular expression string like 'controller/function'
+     */
+
+    protected $permission = [
+        'role' => [
+            string,
+            int,
+            etc,
+        ],
+        'rule' => [
+            'some url = [role]'
+        ],
+    ];
+}
