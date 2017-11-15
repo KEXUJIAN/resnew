@@ -21,17 +21,10 @@ $hook['pre_system'] = function () {
     $loader = Res\Service::getLoader();
     $loader->initialize(new \Res\Config\Autoload());
     $loader->register();
+    // database
+    Res\Service::getPDO();
 };
 
 $hook['pre_controller'] = function () {
-    // load our app specific configuration
-    $app_config = '\Res\Config\\' . ucfirst(ENVIRONMENT). '\Config';
-    $app_config = new $app_config();
-    $ci_config =& load_class('Config', 'core');
-    $config = $app_config->getCfg();
-    foreach ($config as $key => $value) {
-        $ci_config->set_item($key, $value);
-    }
-
     // laod our app specific bootstrap module
 };
