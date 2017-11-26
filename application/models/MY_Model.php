@@ -1,16 +1,18 @@
 <?php
 namespace Res\Model;
 
+use \Exception;
+
 class MY_Model
 {
-    protected static $columns = [];
+    protected $columns = [];
 
     public function __get(string $key)
     {
         if (property_exists($this, $key)) {
             return $this->$key;
         } else {
-            throw new Exception("Undefined Property");
+            throw new Exception('Undefined Property: ' . self::class . "->{$key}");
         }
     }
 
@@ -26,13 +28,13 @@ class MY_Model
         }
         //TODO some check
         if (!$this->valueCheck($key, $val)) {
-            throw new Exception("");
+            throw new Exception("The type of given value is not suitable");
         }
         $this->$key = $val;
         return true;
     }
 
-    public function get($key)
+    public function getCI($key)
     {
         if (!function_exists('get_instance')) {
             throw new Exception('Not in CI web environment');
@@ -42,6 +44,11 @@ class MY_Model
 
     protected function valueCheck(string $key, $val) : bool
     {
-        ;
+        $define = $this->columns[$key] ?? '';
+        if ('' === $define) {
+            return true;
+        }
+        $method = "is_{$define}";
+        return $method($val);
     }
 }
