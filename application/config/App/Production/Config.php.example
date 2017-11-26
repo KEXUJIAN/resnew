@@ -1,6 +1,8 @@
 <?php
 namespace Res\Config\Development;
+
 use \Res\Config\BaseConfig;
+
 /**
 * Development Config
 */
