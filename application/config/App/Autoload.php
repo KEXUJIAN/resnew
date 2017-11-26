@@ -17,6 +17,7 @@ class Autoload
         $this->psr4 = [
             'Res\Config' => [realpath(APPPATH . 'config/App')],
             'Res\Hook'   => [realpath(APPPATH . 'hooks')],
+            'Res\Model'  => [realpath(APPPATH . 'models')],
             'Res\Util'   => [realpath(APPPATH . 'libraries')],
             'Res'        => [APPPATH],
         ];

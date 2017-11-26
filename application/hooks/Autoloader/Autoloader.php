@@ -21,7 +21,7 @@ class Autoloader
     public function register()
     {
         if (empty($this->psr4)) {
-            throw new \Exception('The psr-4 mapping array can not be empty');
+            throw new Exception('The psr-4 mapping array can not be empty');
         }
         spl_autoload_register([$this, 'loadClass'], true, true);
     }
