@@ -43,4 +43,14 @@ class MyPDO
     {
         return $this->pdo->prepare($sql);
     }
+
+    public function exec(string $sql)
+    {
+        return $this->pdo->exec($sql);
+    }
+
+    public function query(string $sql)
+    {
+        return $this->pdo->query($sql);
+    }
 }

@@ -21,6 +21,9 @@ class Service
 
     public static function getPDO()
     {
+        if (isset(self::$instances[\Res\Util\MyPDO::class])) {
+            return self::$instances[\Res\Util\MyPDO::class];
+        }
         $config = self::getResCfg()->getItem('db');
         $pdo = self::singleton(\Res\Util\MyPDO::class);
         $db = $config['db'] ?? '';

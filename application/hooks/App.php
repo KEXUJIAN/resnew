@@ -11,13 +11,13 @@ class App
         require_once realpath(APPPATH . 'hooks/Autoloader/Autoloader.php');
         require_once realpath(APPPATH . 'config/App/Autoload.php');
         require_once realpath(APPPATH . 'hooks/Service.php');
-        class_alias('\Res\Hook\Service', '\Res\Service');
+        class_alias('\Res\Hook\Service', '\AppService');
 
         // initialize our psr-4 style autoloader
-        $loader = \Res\Service::getLoader();
+        $loader = AppService::getLoader();
         $loader->initialize(new \Res\Config\Autoload());
         $loader->register();
         // database
-        Res\Service::getPDO();
+        AppService::getPDO();
     }
 }

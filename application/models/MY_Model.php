@@ -2,10 +2,31 @@
 namespace Res\Model;
 
 use \Exception;
+use \AppService;
 
 class MY_Model
 {
-    protected $columns = [];
+    const COLUMNS = [];
+    const TABLE = '';
+    const STATUS_LIST = [];
+
+    public static function get($id, bool $for_update = false) : array
+    {
+        $table = static::TABLE;
+        $sql = "SELECT * FROM {$table} WHERE id = :id ";
+        if ($for_update) {
+            $sql .= 'FOR UPDATE';
+        }
+        $pdo = AppService::getPDO();
+        $sth = $pdo->prepare($sql);
+        $sth->execute([':id' => $id]);
+        $ret = $sth->fetch();
+        $sth->closeCursor();
+        if (!$ret) {
+            return [];
+        }
+        return $ret;
+    }
 
     public function __get(string $key)
     {
@@ -16,39 +37,11 @@ class MY_Model
         }
     }
 
-    public function __set(string $key, $val)
-    {
-        if ('columns' === $key) {
-            return false;
-        }
-
-        if (!array_key_exists($key, $this->columns)) {
-            $this->$key = $val;
-            return true;
-        }
-        //TODO some check
-        if (!$this->valueCheck($key, $val)) {
-            throw new Exception("The type of given value is not suitable");
-        }
-        $this->$key = $val;
-        return true;
-    }
-
     public function getCI($key)
     {
         if (!function_exists('get_instance')) {
             throw new Exception('Not in CI web environment');
         }
         return get_instance()->$key;
-    }
-
-    protected function valueCheck(string $key, $val) : bool
-    {
-        $define = $this->columns[$key] ?? '';
-        if ('' === $define) {
-            return true;
-        }
-        $method = "is_{$define}";
-        return $method($val);
     }
 }
