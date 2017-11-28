@@ -9,6 +9,8 @@ class MY_Model
     const COLUMNS = [];
     const TABLE = '';
     const STATUS_LIST = [];
+    const DELETED_YES = 1;
+    const DELETED_NO  = 0;
 
     public static function get($id, bool $for_update = false) : array
     {
@@ -26,6 +28,24 @@ class MY_Model
             return [];
         }
         return $ret;
+    }
+
+    public static function hidden(array $ids)
+    {
+        $pdo = AppService::getPDO();
+        $table = static::TABLE;
+        $deleted_yes = static::DELETED_YES;
+        $deleted_no  = static::DELETED_NO;
+        $sth = $pdo->prepare("UPDATE {$table} SET deleted = {$deleted_yes} WHERE id = :id AND deleted = {$deleted_no}");
+        $row_count = 0;
+        foreach ($ids as $id) {
+            if (!is_scalar($id)) {
+                throw new Exception("Invalid id");
+            }
+            $sth->execute([':id' => $id]);
+            $row_count += $sth->rowCount();
+        }
+        return $row_count;
     }
 
     public function __get(string $key)
