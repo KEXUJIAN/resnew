@@ -6,6 +6,7 @@ defined('APPPATH') || define('APPPATH', realpath(dirname(__DIR__)) . DIRECTORY_S
 */
 class App
 {
+    public static $user = null;
     public static function boot()
     {
         require_once realpath(APPPATH . 'hooks/Autoloader/Autoloader.php');
