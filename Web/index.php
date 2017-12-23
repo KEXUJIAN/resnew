@@ -89,6 +89,7 @@ switch (ENVIRONMENT)
 		echo 'The application environment is not set correctly.';
 		exit(1); // EXIT_ERROR
 }
+define('ROOT_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR);
 
 /*
  *---------------------------------------------------------------
