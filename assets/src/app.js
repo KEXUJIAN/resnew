@@ -1,6 +1,10 @@
-import $ from 'jquery';
+const $ = require('jquery');
 async function foo () {
-    let bar = await $.post();
-    console.log(bar);
+    try {
+        let bar = await $.post();
+        console.log(bar);
+    } catch (err) {
+        console.log(err);
+    }
 }
 foo();
