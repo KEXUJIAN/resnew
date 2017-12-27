@@ -2,14 +2,15 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title><?php echo $title ?? '' ?></title>
+    <title><?php echo $title ?? 'Warehouse' ?></title>
     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="https://cdn.bootcss.com/jquery-toast-plugin/1.3.2/jquery.toast.min.css" rel="stylesheet">
     <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://cdn.bootcss.com/jquery-toast-plugin/1.3.2/jquery.toast.min.js"></script>
-    <script src="/asset/app.f3678996a21c4464153d.js"></script>
+    <script src="https://cdn.bootcss.com/bootbox.js/4.4.0/bootbox.min.js"></script>
+    <script src="/asset/app.2b9cf861dcedfb2d3f28.js"></script>
     <style type="text/css">
         body {
             position: absolute;
@@ -29,8 +30,8 @@
         }
     </style>
 </head>
-<body>
-    <?php if ($user = APP::$user ?? true): ?>
+<body <?php if ($pageId ?? ''): echo 'id="' . $pageId . '"'; endif; ?>>
+    <?php if ($user = APP::getUser() ?? false): ?>
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <ul class="nav navbar-nav navbar-left">
@@ -54,7 +55,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li id="name" data-value="javascript:;">
-                            <a class="dropdown-item" href="javascript:;">欢迎! <strong>哈哈</strong></a>
+                            <a class="dropdown-item" href="javascript:;">欢迎! <strong><?php $user->username(); ?></strong></a>
                         </li>
                         <li class="divider"></li>
                         <li>

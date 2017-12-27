@@ -9,10 +9,10 @@
                 <li>
                     <a href="javasricpt:;">KE, XUJIAN <i class="fa fa-copyright"></i> 2017, License: MIT </a>
                 </li>
-                <li>
+                <li style="display: none;">
                     <a href="http://codeigniter.org.cn/" target="_blank">Powered by <i class="fa fa-fire"></i> CodeIgniter</a>
                 </li>
-                <li>
+                <li style="display: none;">
                     <a href="http://fontawesome.io" target="_blank">Font Awesome <i class="fa fa-font-awesome"></i> by Dave Gandy</a>
                 </li>
             </ul>

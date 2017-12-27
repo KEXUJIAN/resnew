@@ -19,3 +19,7 @@ $hook['pre_system'] = function () {
 $hook['pre_controller'] = function () {
     // laod our app specific bootstrap module
 };
+
+$hook['post_controller_constructor'] = function () {
+    App::runBeforeMethod();
+};

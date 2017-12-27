@@ -35,7 +35,7 @@ module.exports = {
         new Cleaner(['assets/dest/*.js'], {
             root: __dirname,
         }),
-        new webpack.optimize.UglifyJsPlugin(),
+        /*new webpack.optimize.UglifyJsPlugin(),*/
         new HTMLGen({
             filename: 'index.html',
         })
