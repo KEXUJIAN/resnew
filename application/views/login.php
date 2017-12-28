@@ -43,6 +43,20 @@ App::view('templates/header', ['title' => 'Login']);
     resRunInit();
 
     form
+    .data('beforeSubmit', function (that) {
+        var inputs = that.find('input[name]');
+        var _continue = true;
+        for (var i = 0; i < inputs.length; ++i) {
+            if ('' === $.trim($(inputs[i]).val())) {
+                _continue = false;
+                break;
+            }
+        }
+        if (!_continue) {
+            showError('用户名 / 密码不能为空');
+            return false;
+        }
+    })
     .data('formData', function (data) {
         var username = data.username;
         var password = data.password;
