@@ -45,4 +45,32 @@ class Service
         self::$instances[$class] = new $class();
         return self::$instances[$class];
     }
+
+    public static function generateModel($model)
+    {
+        $fields = $model::COLUMNS;
+        $objectFields = [];
+        $functions = [];
+        $tab = str_repeat(' ', 4);
+        foreach ($fields as $column) {
+            $objectFields[] = "protected \${$column} = null;";
+            $objectFields[] = "protected \${$column}IsChanged = false;";
+            $function = [];
+            $function[] = "public function {$column}" . '($value = MY_Model::VAL_NOT_SET)';
+            $function[] = "{";
+            $function[] = $tab . 'if ($value === MY_Model::VAL_NOT_SET) {';
+            $function[] = str_repeat($tab, 2) . 'return $this->' . $column . ';';
+            $function[] = $tab . '}';
+            $function[] = $tab . '$ret = $this->' . $column . ';';
+            $function[] = $tab . 'if ($ret !== $value) {';
+            $function[] = str_repeat($tab, 2) . '$this->' . $column . ' = $value;';
+            $function[] = str_repeat($tab, 2) . '$this->' . $column . 'IsChanged = true;';
+            $function[] = $tab . '}';
+            $function[] = $tab . 'return $this->' . $column . ';';
+            $function[] = "}";
+            $functions[] = implode("\n", $function);
+        }
+        echo implode("\n", $objectFields), "\n\n";
+        echo implode("\n\n", $functions);
+    }
 }

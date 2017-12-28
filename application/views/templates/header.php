@@ -10,7 +10,8 @@
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://cdn.bootcss.com/jquery-toast-plugin/1.3.2/jquery.toast.min.js"></script>
     <script src="https://cdn.bootcss.com/bootbox.js/4.4.0/bootbox.min.js"></script>
-    <script src="/asset/app.2b9cf861dcedfb2d3f28.js"></script>
+    <script src="https://cdn.bootcss.com/js-sha1/0.6.0/sha1.min.js"></script>
+    <script src="/asset/app.b3023b04fd1e6b2c6236.js"></script>
     <style type="text/css">
         body {
             position: absolute;
@@ -36,7 +37,7 @@
         <div class="container">
             <ul class="nav navbar-nav navbar-left">
                 <li class="dropdown">
-                    <a href="javascript:;" class="dropdown-toggle navbar-text" data-toggle="dropdown">
+                    <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
                         资源
                         <i class="fa fa-caret-down"></i>
                     </a>
@@ -55,7 +56,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li id="name" data-value="javascript:;">
-                            <a class="dropdown-item" href="javascript:;">欢迎! <strong><?php $user->username(); ?></strong></a>
+                            <a class="dropdown-item" href="javascript:;">欢迎! <strong><?=$user->username(); ?></strong></a>
                         </li>
                         <li class="divider"></li>
                         <li>
@@ -73,7 +74,7 @@
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a id="logout" href="javascript:;">
+                            <a id="logout" href="/user/logout">
                                 <i class="fa fa-power-off text-danger"></i> 退出
                             </a>
                         </li>

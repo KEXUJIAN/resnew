@@ -1,6 +1,8 @@
 <?php
 
 defined('APPPATH') || define('APPPATH', realpath(dirname(__DIR__)) . DIRECTORY_SEPARATOR);
+defined('ROOT_PATH') || define('ROOT_PATH', dirname(APPPATH) . DIRECTORY_SEPARATOR);
+defined('ENVIRONMENT') || define('ENVIRONMENT', 'development');
 /**
 * Bootstrap
 */

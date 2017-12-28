@@ -4,7 +4,7 @@ App::view('templates/header', ['title' => 'Login']);
 <style type="text/css">
     .login-panel {
         width: 50%;
-        padding-top: 15px;
+        padding-top: 30px;
         border-radius: 5px;
         background-color: #f8f8f8;
         border-color: #e7e7e7;
@@ -24,8 +24,8 @@ App::view('templates/header', ['title' => 'Login']);
             <div class="col-md-3 col-md-offset-8"><button class="btn btn-primary pull-right submit">登录</button></div>
         </div>
         <div class="form-group">
-            <div class="col-md-9 col-md-offset-2" role="alert-container">
-                <div class="alert alert-danger">
+            <div class="col-md-9 col-md-offset-2">
+                <div class="alert alert-danger" style="display: none;">
                     <a class="close">
                         &times;
                     </a>
@@ -35,16 +35,27 @@ App::view('templates/header', ['title' => 'Login']);
         </div>
     </form>
 </div>
-<script type="text/javascript">
+<script>
 (function () {
-    let alertContainer = $('[role="alert-container"]');
-    let alertElm = alertContainer.children('.alert');
-    let form = $('form');
-    form.data('formData', (data) => {
-        console.log(data);
-    });
+    var alertElm = $('.alert');
+    var form = $('form');
+
     resRunInit();
-    alertElm.on('click', '.close', function(event) {
+
+    form
+    .data('formData', function (data) {
+        var username = data.username;
+        var password = data.password;
+        data.password = sha1(username + password);
+    })
+    .data('submitDoneSucc', function (ret) {
+        window.location.href = ret.message;
+    })
+    .data('submitDoneFail', function (ret) {
+        showError(ret.message);
+    });
+
+    alertElm.on('click', '.close', function (event) {
         event.preventDefault();
         alertElm.animate({
             opacity: 0
@@ -53,6 +64,13 @@ App::view('templates/header', ['title' => 'Login']);
             alertElm.hide();
         });
     });
+    function showError(msg) {
+        alertElm.find('span').text(msg);
+        alertElm.css('opacity', 0);
+        alertElm.show();
+        alertElm.animate({opacity: 1});
+    }
+
 })();
 </script>
 <?php
