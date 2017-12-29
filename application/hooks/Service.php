@@ -51,8 +51,10 @@ class Service
         $fields = $model::COLUMNS;
         $objectFields = [];
         $functions = [];
+        $database = [];
         $tab = str_repeat(' ', 4);
         foreach ($fields as $column) {
+            $database[] = strtolower($column);
             $objectFields[] = "protected \${$column} = null;";
             $objectFields[] = "protected \${$column}IsChanged = false;";
             $function = [];
@@ -71,6 +73,7 @@ class Service
             $functions[] = implode("\n", $function);
         }
         echo implode("\n", $objectFields), "\n\n";
-        echo implode("\n\n", $functions);
+        echo implode("\n\n", $functions), "\n\n";
+        echo implode("\n", $database);
     }
 }

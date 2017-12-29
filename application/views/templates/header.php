@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title><?php echo $title ?? 'Warehouse' ?></title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="https://cdn.bootcss.com/jquery-toast-plugin/1.3.2/jquery.toast.min.css" rel="stylesheet">

@@ -1,34 +1,32 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: KE
+ * Date: 2017/12/29
+ * Time: 21:15
+ */
+
 namespace Res\Model;
 
-/**
-* Phone
-*/
-class Phone extends MY_Model
+class SimCard extends MY_Model
 {
-    const TABLE = 'phones';
-    const COLUMNS = ['id', 'userId', 'type', 'os', 'resolution', 'ram', 'carrier', 'screenSize', 'label', 'imei', 'status', 'statusDescription', 'timeAdded', 'timeModified', 'deleted',];
+    const TABLE = 'simcards';
+    const COLUMNS = ['id', 'userId', 'phoneNumber', 'label', 'carrier', 'place', 'imsi', 'status', 'statusDescription', 'timeAdded', 'timeModified', 'deleted',];
 
     protected $id = null;
     protected $idIsChanged = false;
     protected $userId = null;
     protected $userIdIsChanged = false;
-    protected $type = null;
-    protected $typeIsChanged = false;
-    protected $os = null;
-    protected $osIsChanged = false;
-    protected $resolution = null;
-    protected $resolutionIsChanged = false;
-    protected $ram = null;
-    protected $ramIsChanged = false;
-    protected $carrier = null;
-    protected $carrierIsChanged = false;
-    protected $screenSize = null;
-    protected $screenSizeIsChanged = false;
+    protected $phoneNumber = null;
+    protected $phoneNumberIsChanged = false;
     protected $label = null;
     protected $labelIsChanged = false;
-    protected $imei = null;
-    protected $imeiIsChanged = false;
+    protected $carrier = null;
+    protected $carrierIsChanged = false;
+    protected $place = null;
+    protected $placeIsChanged = false;
+    protected $imsi = null;
+    protected $imsiIsChanged = false;
     protected $status = null;
     protected $statusIsChanged = false;
     protected $statusDescription = null;
@@ -97,82 +95,17 @@ class Phone extends MY_Model
         return $this->userId;
     }
 
-    public function type($value = MY_Model::VAL_NOT_SET)
+    public function phoneNumber($value = MY_Model::VAL_NOT_SET)
     {
         if ($value === MY_Model::VAL_NOT_SET) {
-            return $this->type;
+            return $this->phoneNumber;
         }
-        $ret = $this->type;
+        $ret = $this->phoneNumber;
         if ($ret !== $value) {
-            $this->type = $value;
-            $this->typeIsChanged = true;
+            $this->phoneNumber = $value;
+            $this->phoneNumberIsChanged = true;
         }
-        return $this->type;
-    }
-
-    public function os($value = MY_Model::VAL_NOT_SET)
-    {
-        if ($value === MY_Model::VAL_NOT_SET) {
-            return $this->os;
-        }
-        $ret = $this->os;
-        if ($ret !== $value) {
-            $this->os = $value;
-            $this->osIsChanged = true;
-        }
-        return $this->os;
-    }
-
-    public function resolution($value = MY_Model::VAL_NOT_SET)
-    {
-        if ($value === MY_Model::VAL_NOT_SET) {
-            return $this->resolution;
-        }
-        $ret = $this->resolution;
-        if ($ret !== $value) {
-            $this->resolution = $value;
-            $this->resolutionIsChanged = true;
-        }
-        return $this->resolution;
-    }
-
-    public function ram($value = MY_Model::VAL_NOT_SET)
-    {
-        if ($value === MY_Model::VAL_NOT_SET) {
-            return $this->ram;
-        }
-        $ret = $this->ram;
-        if ($ret !== $value) {
-            $this->ram = $value;
-            $this->ramIsChanged = true;
-        }
-        return $this->ram;
-    }
-
-    public function carrier($value = MY_Model::VAL_NOT_SET)
-    {
-        if ($value === MY_Model::VAL_NOT_SET) {
-            return $this->carrier;
-        }
-        $ret = $this->carrier;
-        if ($ret !== $value) {
-            $this->carrier = $value;
-            $this->carrierIsChanged = true;
-        }
-        return $this->carrier;
-    }
-
-    public function screenSize($value = MY_Model::VAL_NOT_SET)
-    {
-        if ($value === MY_Model::VAL_NOT_SET) {
-            return $this->screenSize;
-        }
-        $ret = $this->screenSize;
-        if ($ret !== $value) {
-            $this->screenSize = $value;
-            $this->screenSizeIsChanged = true;
-        }
-        return $this->screenSize;
+        return $this->phoneNumber;
     }
 
     public function label($value = MY_Model::VAL_NOT_SET)
@@ -188,17 +121,43 @@ class Phone extends MY_Model
         return $this->label;
     }
 
-    public function imei($value = MY_Model::VAL_NOT_SET)
+    public function carrier($value = MY_Model::VAL_NOT_SET)
     {
         if ($value === MY_Model::VAL_NOT_SET) {
-            return $this->imei;
+            return $this->carrier;
         }
-        $ret = $this->imei;
+        $ret = $this->carrier;
         if ($ret !== $value) {
-            $this->imei = $value;
-            $this->imeiIsChanged = true;
+            $this->carrier = $value;
+            $this->carrierIsChanged = true;
         }
-        return $this->imei;
+        return $this->carrier;
+    }
+
+    public function place($value = MY_Model::VAL_NOT_SET)
+    {
+        if ($value === MY_Model::VAL_NOT_SET) {
+            return $this->place;
+        }
+        $ret = $this->place;
+        if ($ret !== $value) {
+            $this->place = $value;
+            $this->placeIsChanged = true;
+        }
+        return $this->place;
+    }
+
+    public function imsi($value = MY_Model::VAL_NOT_SET)
+    {
+        if ($value === MY_Model::VAL_NOT_SET) {
+            return $this->imsi;
+        }
+        $ret = $this->imsi;
+        if ($ret !== $value) {
+            $this->imsi = $value;
+            $this->imsiIsChanged = true;
+        }
+        return $this->imsi;
     }
 
     public function status($value = MY_Model::VAL_NOT_SET)
