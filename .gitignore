@@ -20,6 +20,8 @@ assets/dest/*.html
 
 **/vendor/
 **/node_modules/
+tmp/
+*.xls*
 
 # IDE Files
 #-------------------------
