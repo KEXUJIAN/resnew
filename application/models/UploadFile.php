@@ -3,29 +3,29 @@
  * Created by PhpStorm.
  * User: KE
  * Date: 2017/12/29
- * Time: 21:59
+ * Time: 23:28
  */
 
 namespace Res\Model;
 
 
-class Request extends MY_Model
+class UploadFile
 {
-    const TABLE = 'requests';
-    const COLUMNS = ['id', 'fromUserId', 'toUserId', 'assetId', 'assetType','type', 'status', 'timeAdded', 'timeModified', 'deleted',];
+    const TABLE = 'uploadfiles';
+    const COLUMNS = ['id', 'uploadByUser', 'type', 'originName', 'fileName', 'data', 'status', 'timeAdded', 'timeModified', 'deleted',];
 
     protected $id = null;
     protected $idIsChanged = false;
-    protected $fromUserId = null;
-    protected $fromUserIdIsChanged = false;
-    protected $toUserId = null;
-    protected $toUserIdIsChanged = false;
-    protected $assetId = null;
-    protected $assetIdIsChanged = false;
-    protected $assetType = null;
-    protected $assetTypeIsChanged = false;
+    protected $uploadByUser = null;
+    protected $uploadByUserIsChanged = false;
     protected $type = null;
     protected $typeIsChanged = false;
+    protected $originName = null;
+    protected $originNameIsChanged = false;
+    protected $fileName = null;
+    protected $fileNameIsChanged = false;
+    protected $data = null;
+    protected $dataIsChanged = false;
     protected $status = null;
     protected $statusIsChanged = false;
     protected $timeAdded = null;
@@ -34,13 +34,6 @@ class Request extends MY_Model
     protected $timeModifiedIsChanged = false;
     protected $deleted = null;
     protected $deletedIsChanged = false;
-
-    const ASSET_TYPE_PHONE = 0;
-    const ASSET_TYPE_SIM_CARD = 1;
-    const LABEL_ASSET_TYPE = [
-        0 => 'phone',
-        1 => 'simcard',
-    ];
 
     const DELETED_YES = 1;
     const DELETED_NO = 0;
@@ -73,56 +66,17 @@ class Request extends MY_Model
         return $this->id;
     }
 
-    public function fromUserId($value = MY_Model::VAL_NOT_SET)
+    public function uploadByUser($value = MY_Model::VAL_NOT_SET)
     {
         if ($value === MY_Model::VAL_NOT_SET) {
-            return $this->fromUserId;
+            return $this->uploadByUser;
         }
-        $ret = $this->fromUserId;
+        $ret = $this->uploadByUser;
         if ($ret !== $value) {
-            $this->fromUserId = $value;
-            $this->fromUserIdIsChanged = true;
+            $this->uploadByUser = $value;
+            $this->uploadByUserIsChanged = true;
         }
-        return $this->fromUserId;
-    }
-
-    public function toUserId($value = MY_Model::VAL_NOT_SET)
-    {
-        if ($value === MY_Model::VAL_NOT_SET) {
-            return $this->toUserId;
-        }
-        $ret = $this->toUserId;
-        if ($ret !== $value) {
-            $this->toUserId = $value;
-            $this->toUserIdIsChanged = true;
-        }
-        return $this->toUserId;
-    }
-
-    public function assetId($value = MY_Model::VAL_NOT_SET)
-    {
-        if ($value === MY_Model::VAL_NOT_SET) {
-            return $this->assetId;
-        }
-        $ret = $this->assetId;
-        if ($ret !== $value) {
-            $this->assetId = $value;
-            $this->assetIdIsChanged = true;
-        }
-        return $this->assetId;
-    }
-
-    public function assetType($value = MY_Model::VAL_NOT_SET)
-    {
-        if ($value === MY_Model::VAL_NOT_SET) {
-            return $this->assetType;
-        }
-        $ret = $this->assetType;
-        if ($ret !== $value) {
-            $this->assetType = $value;
-            $this->assetTypeIsChanged = true;
-        }
-        return $this->assetType;
+        return $this->uploadByUser;
     }
 
     public function type($value = MY_Model::VAL_NOT_SET)
@@ -136,6 +90,45 @@ class Request extends MY_Model
             $this->typeIsChanged = true;
         }
         return $this->type;
+    }
+
+    public function originName($value = MY_Model::VAL_NOT_SET)
+    {
+        if ($value === MY_Model::VAL_NOT_SET) {
+            return $this->originName;
+        }
+        $ret = $this->originName;
+        if ($ret !== $value) {
+            $this->originName = $value;
+            $this->originNameIsChanged = true;
+        }
+        return $this->originName;
+    }
+
+    public function fileName($value = MY_Model::VAL_NOT_SET)
+    {
+        if ($value === MY_Model::VAL_NOT_SET) {
+            return $this->fileName;
+        }
+        $ret = $this->fileName;
+        if ($ret !== $value) {
+            $this->fileName = $value;
+            $this->fileNameIsChanged = true;
+        }
+        return $this->fileName;
+    }
+
+    public function data($value = MY_Model::VAL_NOT_SET)
+    {
+        if ($value === MY_Model::VAL_NOT_SET) {
+            return $this->data;
+        }
+        $ret = $this->data;
+        if ($ret !== $value) {
+            $this->data = $value;
+            $this->dataIsChanged = true;
+        }
+        return $this->data;
     }
 
     public function status($value = MY_Model::VAL_NOT_SET)

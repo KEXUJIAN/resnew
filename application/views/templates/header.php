@@ -12,6 +12,10 @@
     <script src="https://cdn.bootcss.com/jquery-toast-plugin/1.3.2/jquery.toast.min.js"></script>
     <script src="https://cdn.bootcss.com/bootbox.js/4.4.0/bootbox.min.js"></script>
     <script src="https://cdn.bootcss.com/js-sha1/0.6.0/sha1.min.js"></script>
+    <script src="https://cdn.bootcss.com/datatables/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.bootcss.com/blueimp-file-upload/9.19.2/js/vendor/jquery.ui.widget.min.js"></script>
+    <script src="https://cdn.bootcss.com/blueimp-file-upload/9.19.2/js/jquery.iframe-transport.min.js"></script>
+    <script src="https://cdn.bootcss.com/blueimp-file-upload/9.19.2/js/jquery.fileupload.min.js"></script>
     <script src="/asset/app.b3023b04fd1e6b2c6236.js"></script>
     <style type="text/css">
         body {
