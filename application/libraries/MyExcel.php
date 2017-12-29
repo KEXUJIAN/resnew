@@ -21,15 +21,15 @@ class MyExcel
         if (!is_dir($tmp)) {
             mkdir($tmp, 0777);
         }
-        $cacheMethod = PHPExcel_CachedObjectStorageFactory::cache_to_discISAM;
+        $cacheMethod = \PHPExcel_CachedObjectStorageFactory::cache_to_discISAM;
         $cacheSettings = ['dir' => $tmp];
-        PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
+        \PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
     }
 
     public function load(string $path, array &$headPatterns)
     {
-        $type = PHPExcel_IOFactory::identify($path);
-        $reader = PHPExcel_IOFactory::createReader($type);
+        $type = \PHPExcel_IOFactory::identify($path);
+        $reader = \PHPExcel_IOFactory::createReader($type);
         $reader->setReadDataOnly(true);
         $excel = $reader->load($path);
 
@@ -48,7 +48,7 @@ class MyExcel
         }
         $headRow = 0;
         for ($i = 1; $i <= $maxRow; ++$i) {
-            $maxCol = PHPExcel_Cell::columnIndexFromString($sheet->getHighestColumn());
+            $maxCol = \PHPExcel_Cell::columnIndexFromString($sheet->getHighestColumn());
             $isHead = false;
             for ($j = 0; $j < $maxCol; ++$j) {
                 $val = (string) $sheet->getCellByColumnAndRow($j, $i)->getValue();
@@ -83,9 +83,9 @@ class MyExcel
         }
 
         $head = [];
-        $maxCol = PHPExcel_Cell::columnIndexFromString($sheet->getHighestColumn($headRow));
-        for ($i = 0; $i < $maxCol; ++$i) {
-            $val = (string) $sheet->getCellByColumnAndRow($j, $i)->getValue();
+        $maxCol = \PHPExcel_Cell::columnIndexFromString($sheet->getHighestColumn($headRow));
+        for ($col = 0; $col < $maxCol; ++$col) {
+            $val = (string) $sheet->getCellByColumnAndRow($col, $headRow)->getValue();
             if (!$val) {
                 continue;
             }
@@ -95,7 +95,7 @@ class MyExcel
                     if (!preg_match($pattern, $val)) {
                         continue;
                     }
-                    $head[$name] = $i;
+                    $head[$name] = $col;
                     $find = true;
                     break;
                 }
@@ -116,6 +116,38 @@ class MyExcel
             unset($sheet, $excel);
             return $result;
         }
+        $diff = array_diff_key($headPatterns, $head);
+        if ($diff) {
+            foreach ($diff as $name => $val) {
+                $head[$name] = -1;
+            }
+        }
+
+        $content = [];
+        for ($i = $headRow + 1; $i <= $maxRow; ++$i) {
+            $row = [];
+            foreach ($head as $name => $col) {
+                if ($col === -1) {
+                    $row[$name] = [
+                        'val' => '',
+                        'col' => -1,
+                        'row' => -1,
+                    ];
+                    continue;
+                }
+                $colValue = (string) $sheet->getCellByColumnAndRow($col, $i)->getValue();
+                $row[$name] = [
+                    'value' => $colValue,
+                    'col' => $col,
+                    'row' => $i,
+                ];
+            }
+            $content[] = $row;
+        }
+        $result['content'] = $content;
+        $sheet->disconnectCells();
+        $excel->disconnectWorksheets();
+        unset($sheet, $excel);
         return $result;
     }
 }

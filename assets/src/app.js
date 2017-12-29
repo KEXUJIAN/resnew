@@ -53,22 +53,21 @@ const initObj = {
                     let doneSucc = that.data('submitDoneSucc');
                     let doneFail = that.data('submitDoneFail');
                     if ($.isFunction(done)) {
-                        done(result);
-                    } else if ($.isFunction(doneSucc) && result.result) {
-                        delete result.result;
-                        doneSucc(result);
-                    } else if ($.isFunction(doneFail) && !result.result) {
-                        delete result.result;
-                        doneFail(result);
+                        done(ret);
+                    } else if ($.isFunction(doneSucc) && ret.result) {
+                        delete ret.result;
+                        doneSucc(ret);
+                    } else if ($.isFunction(doneFail) && !ret.result) {
+                        delete ret.result;
+                        doneFail(ret);
                     }
                 } catch (err) {
                     result = false;
-                    console.warn(err);
                     let fail = that.data('submitFail');
                     if ($.isFunction(fail)) {
                         result = fail(err);
                     } else {
-                        bootbox.alert('发生错误');
+                        bootbox.alert('发生错误, 检查您的网络设置或联系管理员');
                     }
                 } finally {
                     submitTrigger.prop('disabled', false);
@@ -82,7 +81,7 @@ const initObj = {
                 }
                 // let target =
             });
-            that.on('click', '.submit', function(e) {
+            that.on('click', '.submit', function (e) {
                 e.preventDefault();
                 that.trigger('ajaxSubmit.resmanager', [$(this)]);
             });
