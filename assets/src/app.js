@@ -87,6 +87,100 @@ const initObj = {
             });
         });
     },
+    dataTable: function (scope) {
+        if ($.fn.DataTable === undefined) {
+            return;
+        }
+        /**
+         * @link https://datatables.net/plug-ins/i18n/Chinese
+         * @author Chi Cheng
+         * @type object
+         */
+        const lang = {
+            "sProcessing":   "处理中...",
+            "sLengthMenu":   "显示 _MENU_ 项结果",
+            "sZeroRecords":  "没有匹配结果",
+            "sInfo":         "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+            "sInfoEmpty":    "显示第 0 至 0 项结果，共 0 项",
+            "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+            "sInfoPostFix":  "",
+            "sSearch":       "搜索:",
+            "sUrl":          "",
+            "sEmptyTable":     "表中数据为空",
+            "sLoadingRecords": "载入中...",
+            "sInfoThousands":  ",",
+            "oPaginate": {
+                "sFirst":    "首页",
+                "sPrevious": "上页",
+                "sNext":     "下页",
+                "sLast":     "末页"
+            },
+            "oAria": {
+                "sSortAscending":  ": 以升序排列此列",
+                "sSortDescending": ": 以降序排列此列"
+            }
+        };
+
+        $('.dataTable.ajax-table', scope).each(function () {
+            let that = $(this);
+            const display = `
+                <"row"<"col-sm-6"l><"col-sm-6"p>>
+                <"row"<"col-sm-12"tr>>
+                <"row"<"col-sm-6"i><"col-sm-6"p>>
+            `;
+            let heads = that.find('th');
+            let colDefs = [];
+            let order = [];
+            heads.each(function (index) {
+                let _head = $(this);
+                let colName = _head.data('colName');
+                let orderable = true;
+                if (false === _head.data('orderable')) {
+                    orderable = false;
+                }
+                let colDef = {
+                    targets: index,
+                    data: colName,
+                    name: colName,
+                    orderable: orderable,
+                };
+                if (!order.length && orderable) {
+                    order.push([index, 'asc']);
+                }
+                colDefs.push(colDef);
+            });
+            let options = {
+                language: lang,
+                dom: display,
+                order: order,
+                columnDefs: colDefs,
+                serverSide: true,
+                processing: true,
+                ajax: {
+                    url: that.data('url'),
+                    dataType: 'json',
+                    type: 'POST',
+                    beforeSend: function () {
+                        let prevXHR = that.DataTable().settings()[0].jqXHR;
+                        if (prevXHR) {
+                            prevXHR.abort();
+                        }
+                    },
+                    dataSrc: function (ret) {
+                        if (!ret.result) {
+                            return [];
+                        }
+                        return ret.data;
+                    }
+                },
+            };
+            let altOptions = that.data('option');
+            that.DataTable($.extend({}, options, altOptions));
+        });
+        $('.dataTable.basic', scope).each(function () {
+           ;
+        });
+    }
 };
 let Initialize = function (scope) {
     if (!scope) {
