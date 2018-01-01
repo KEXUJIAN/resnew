@@ -123,6 +123,7 @@ const initObj = {
 
         $('.dataTable.ajax-table', scope).each(function () {
             let that = $(this);
+            let filter = that.siblings('.data-table-action-wrapper');
             const display = `
                 <"row"<"col-sm-6"l><"col-sm-6"p>>
                 <"row"<"col-sm-12"tr>>
@@ -135,6 +136,7 @@ const initObj = {
                 let _head = $(this);
                 let colName = _head.data('colName');
                 let orderable = true;
+                let colWidth = _head.data('colWidth');
                 if (false === _head.data('orderable')) {
                     orderable = false;
                 }
@@ -143,6 +145,7 @@ const initObj = {
                     data: colName,
                     name: colName,
                     orderable: orderable,
+                    width: colWidth,
                 };
                 if (!order.length && orderable) {
                     order.push([index, 'asc']);
@@ -165,6 +168,9 @@ const initObj = {
                         if (prevXHR) {
                             prevXHR.abort();
                         }
+                    },
+                    data: function (request) {
+                        return $.extend({}, request, that.data('request'));
                     },
                     dataSrc: function (ret) {
                         if (!ret.result) {
@@ -192,6 +198,11 @@ let Initialize = function (scope) {
         }
         initObj[key](scope);
     }
-}
+};
+
+const appRes = {
+
+};
 
 window.resRunInit = Initialize;
+window.resmanager = appRes;

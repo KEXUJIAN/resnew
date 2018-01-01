@@ -67,13 +67,24 @@ App::view('templates/header');
                     <strong>拖拽文件 / 点击上传</strong>
                     <input type="file" name="files" class="upload-file">
                 </div>
-                <div class="progress fade" style="margin: 10px 0">
+                <div class="progress fade" style="margin: 10px 0; display: none">
                     <div class="progress-bar"></div>
                 </div>
+                <hr>
                 <div class="tab-content">
-                    <div id="user-panel" data-url="/welcome/upload" class="tab-pane fade in active">1</div>
-                    <div id="phone-panel" data-url="/welcome/upload" class="tab-pane fade">2</div>
-                    <div id="simcard-panel" data-url="/welcome/upload" class="tab-pane fade">3</div>
+                    <div id="user-panel" data-url="/welcome/upload" class="tab-pane fade in active">
+                        <?php
+                        App::view('templates/datatable-user', [
+                            'url' => '/admin/data/user',
+                        ]);
+                        ?>
+                    </div>
+                    <div id="phone-panel" data-url="/welcome/upload" class="tab-pane fade">
+
+                    </div>
+                    <div id="simcard-panel" data-url="/welcome/upload" class="tab-pane fade">
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -137,6 +148,7 @@ App::view('templates/header');
                 })
                 .fileupload('send', {files: file});
         });
+    resRunInit();
     function uploadStart() {
         uploadElm.prop('disabled', true);
         uploadArea.css('cursor', 'not-allowed').find('.upload-file').hide();

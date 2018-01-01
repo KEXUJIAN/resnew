@@ -19,7 +19,7 @@ class Service
         return self::singleton($app_config);
     }
 
-    public static function getPDO()
+    public static function getPDO() : \Res\Util\MyPDO
     {
         if (isset(self::$instances[\Res\Util\MyPDO::class])) {
             return self::$instances[\Res\Util\MyPDO::class];

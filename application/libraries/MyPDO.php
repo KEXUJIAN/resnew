@@ -8,6 +8,9 @@ use \PDO;
 */
 class MyPDO
 {
+    /**
+     * @var PDO
+     */
     private $pdo;
 
     public function connect(string $dsn, string $user, string $pass)

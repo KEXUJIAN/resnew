@@ -18,7 +18,7 @@
     <script src="https://cdn.bootcss.com/blueimp-file-upload/9.19.2/js/vendor/jquery.ui.widget.min.js"></script>
     <script src="https://cdn.bootcss.com/blueimp-file-upload/9.19.2/js/jquery.iframe-transport.min.js"></script>
     <script src="https://cdn.bootcss.com/blueimp-file-upload/9.19.2/js/jquery.fileupload.min.js"></script>
-    <script src="/asset/app.783ca0bbc13a8907dbe5.js"></script>
+    <script src="/asset/app.878dedad32881274330c.js"></script>
     <style type="text/css">
         body {
             position: absolute;

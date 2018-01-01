@@ -8,6 +8,9 @@ defined('ENVIRONMENT') || define('ENVIRONMENT', 'development');
 */
 class App
 {
+    /**
+     * @var null | CI_Controller
+     */
     private static $CI = null;
     /**
      * user object

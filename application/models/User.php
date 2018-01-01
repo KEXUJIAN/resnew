@@ -33,8 +33,8 @@ class User extends MY_Model
     const ROLE_MANAGER = 0;
     const ROLE_EMPLOYEE = 1;
     const LABEL_ROLE = [
-        0 => 'Manager',
-        1 => 'Employee',
+        0 => '管理员',
+        1 => '普通员工',
     ];
     const DELETED_YES = 1;
     const DELETED_NO = 0;
@@ -54,6 +54,19 @@ class User extends MY_Model
         $this->roleIsChanged = true;
         $this->deleted = self::DELETED_NO;
         $this->deletedIsChanged = true;
+    }
+
+    public function id($value = MY_Model::VAL_NOT_SET)
+    {
+        if ($value === MY_Model::VAL_NOT_SET) {
+            return $this->id;
+        }
+        $ret = $this->id;
+        if ($ret !== $value) {
+            $this->id = $value;
+            $this->idIsChanged = true;
+        }
+        return $this->id;
     }
 
     public function name($value = MY_Model::VAL_NOT_SET)

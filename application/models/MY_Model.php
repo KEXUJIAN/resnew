@@ -96,13 +96,13 @@ class MY_Model
         return $influence ? true : false;
     }
 
-    public static function clearCahce(string $table = '', $id = '') : bool
+    public static function clearCache(string $table = '', $id = '') : bool
     {
         if (!self::$cache) {
             return false;
         }
         if (!$table) {
-            unset(self::$cache);
+            self::$cache = [];
             return true;
         }
         if ($id === '' && isset(self::$cache[$table])) {
@@ -155,7 +155,7 @@ class MY_Model
         return $ret[0];
     }
 
-    public static function getList(array $conf = [], array $orderBy = [], $limit = '') : array
+    public static function getList(array $conf = [], array $orderBy = [], $limit = '', $offset = '') : array
     {
         $result = [];
         $table = static::TABLE;
@@ -177,14 +177,16 @@ class MY_Model
         if ($orderBy) {
             $tmp = [];
             foreach ($orderBy as $key => $value) {
-                $tmp[] = $key . ' ' . strtoupper($value);
+                $tmp[] = strtolower($key) . ' ' . strtoupper($value);
             }
             $tmp = implode(',', $tmp);
             $orderByStr = "ORDER BY {$tmp}";
         }
 
         $limitStr = '';
-        if (is_numeric($limit)) {
+        if (is_numeric($limit) && is_numeric($offset)) {
+            $limitStr = "LIMIT {$limit} OFFSET {$offset}";
+        } elseif (is_numeric($limit)) {
             $limitStr = "LIMIT {$limit}";
         }
 
@@ -199,6 +201,31 @@ class MY_Model
             $o->clone($row);
             $result[] = $o;
         }
+        return $result;
+    }
+
+    public static function getCount(array $conf = []) : int
+    {
+        $result = 0;
+        $table = static::TABLE;
+        $whereStr = '';
+        $whereValues = [];
+        if ($conf) {
+            $where = self::buildWhere($conf);
+            $whereStr = 'WHERE ' . $where['string'];
+            $whereValues = $where['array'];
+        }
+
+        $sql = "SELECT count(1) AS _count FROM {$table} {$whereStr}";
+        $pdo = AppService::getPDO();
+        $sth = $pdo->prepare($sql);
+        $sth->execute($whereValues);
+        $ret = $sth->fetch();
+        $sth->closeCursor();
+        if (!$ret) {
+            return $result;
+        }
+        $result = intval($ret['_count']);
         return $result;
     }
 
