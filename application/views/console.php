@@ -80,10 +80,18 @@ App::view('templates/header');
                         ?>
                     </div>
                     <div id="phone-panel" data-url="/welcome/upload" class="tab-pane fade">
-
+                        <?php
+                        App::view('templates/datatable-phone', [
+                            'url' => '/admin/data/phone',
+                        ]);
+                        ?>
                     </div>
                     <div id="simcard-panel" data-url="/welcome/upload" class="tab-pane fade">
-
+                        <?php
+                        App::view('templates/datatable-simcard', [
+                            'url' => '/admin/data/simcard',
+                        ]);
+                        ?>
                     </div>
                 </div>
             </div>
@@ -96,20 +104,31 @@ App::view('templates/header');
     var uploadArea = $('#upload-area');
     var uploadElm = uploadArea.find('.upload-file');
     var progressElm = $('.progress');
-    $('.sidebar').on('click', 'a[data-toggle="tab"]', function (e) {
-        var that = $(this);
-        if (that.closest('li').is('.active')) {
-            return;
-        }
-        if (uploadElm.prop('disabled')) {
-            e.stopImmediatePropagation();
-            e.preventDefault();
-            alert('等待上传完成');
-            return;
-        }
-        var panelId = that.attr('href');
-        currentPanel = $(panelId);
-    });
+    var initList = {};
+    initList[currentPanel.attr('id')] = true;
+    $('.sidebar')
+        .on('click', 'a[data-toggle="tab"]', function (e) {
+            var that = $(this);
+            if (that.closest('li').is('.active')) {
+                return;
+            }
+            if (uploadElm.prop('disabled')) {
+                e.stopImmediatePropagation();
+                e.preventDefault();
+                alert('等待上传完成');
+                return;
+            }
+            var panelId = that.attr('href');
+            currentPanel = $(panelId);
+        })
+        .on('shown.bs.tab', 'a[data-toggle="tab"]', function () {
+            var panelId = currentPanel.attr('id');
+            if (initList.hasOwnProperty(panelId)) {
+                return;
+            }
+            initList[panelId] = true;
+            resRunInit(currentPanel);
+        });
     uploadElm
         .fileupload({
             url: '/welcome/upload',
@@ -148,7 +167,7 @@ App::view('templates/header');
                 })
                 .fileupload('send', {files: file});
         });
-    resRunInit();
+    resRunInit(currentPanel);
     function uploadStart() {
         uploadElm.prop('disabled', true);
         uploadArea.css('cursor', 'not-allowed').find('.upload-file').hide();

@@ -8,16 +8,17 @@ App::view('templates/header', ['title' => 'Login']);
         border-radius: 5px;
         background-color: #f8f8f8;
         border-color: #e7e7e7;
+        margin-top: 5%;
     }
 </style>
 <div class="container login-panel">
     <form class="form-horizontal ajax-form" action="/user/doLogin">
         <div class="form-group">
-            <label for="username" class="control-label col-md-3">用户名: </label>
-            <div class="col-md-8"><input type="text" name="username" class="form-control" placeholder="用户名"></div>
+            <label class="control-label col-md-3">用户名: </label>
+            <div class="col-md-8"><input type="text" name="username" class="form-control" placeholder="用户名" autofocus></div>
         </div>
         <div class="form-group">
-            <label for="password" class="control-label col-md-3">用户密码: </label>
+            <label class="control-label col-md-3">用户密码: </label>
             <div class="col-md-8"><input type="password" name="password" class="form-control" placeholder="密码"></div>
         </div>
         <div class="form-group">

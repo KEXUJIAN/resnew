@@ -1,4 +1,26 @@
 const $ = require('jquery');
+
+const appRes = {
+    getFormData: (form) => {
+        let formData = form.serializeArray();
+        let dataObj = {};
+        formData.forEach(function (data) {
+            let key = data.name;
+            let value = data.value;
+            if (!dataObj.hasOwnProperty(key)) {
+                dataObj[key] = value;
+                return;
+            }
+            if (!$.isArray(dataObj[key])) {
+                dataObj[key] = [dataObj[key], value];
+                return;
+            }
+            dataObj[key].push(value);
+        });
+        return dataObj;
+    },
+};
+
 const initObj = {
     ajaxForm: function (scope) {
         $('.ajax-form', scope).each(function () {
@@ -25,22 +47,7 @@ const initObj = {
                 }
                 submitTrigger.prop('disabled', true);
                 let url = that.attr('action') || '';
-                let formData = that.serializeArray();
-                let dataObj = {};
-                formData.forEach(function (data) {
-                    let key = data.name;
-                    let value = data.value;
-                    if (!dataObj.hasOwnProperty(key)) {
-                        dataObj[key] = value;
-                        return;
-                    }
-                    if (!$.isArray(dataObj[key])) {
-                        let tmp = [dataObj[key], value];
-                        dataObj[key] = tmp;
-                        return;
-                    }
-                    dataObj[key].push(value);
-                });
+                let dataObj = appRes.getFormData(that);
                 let fd = that.data('formData');
                 if ($.isFunction(fd)) {
                     fd(dataObj);
@@ -123,7 +130,37 @@ const initObj = {
 
         $('.dataTable.ajax-table', scope).each(function () {
             let that = $(this);
-            let filter = that.siblings('.data-table-action-wrapper');
+            let idElm = that.find('th[data-col-name="id"]');
+            if (idElm.length) {
+                idElm.on('click', '.checkbox', function (e) {
+                    e.stopImmediatePropagation();
+                });
+            }
+            let actionPanel = that.siblings('.data-table-action-wrapper');
+            if (actionPanel.length) {
+                actionPanel.on('click', '[data-toggle="collapse"]', function () {
+                    let btnCollapse = $(this);
+                    if (actionPanel.find(btnCollapse.data('target')).is('.in')) {
+                        btnCollapse.find('i').removeClass('fa-caret-up').addClass('fa-caret-down');
+                    } else {
+                        btnCollapse.find('i').removeClass('fa-caret-down').addClass('fa-caret-up');
+                    }
+                });
+                let filterForm = actionPanel.find('form');
+                filterForm
+                    .on('submit', function (e) {
+                        e.preventDefault();
+                    })
+                    .on('click', '.submit', function (e) {
+                        e.preventDefault();
+                        let formData = appRes.getFormData(filterForm);
+                        that.data('request', formData);
+                        that.DataTable().ajax.reload();
+                    })
+                    .on('click', '[type="reset"]', function () {
+                        that.data('request', null);
+                    });
+            }
             const display = `
                 <"row"<"col-sm-6"l><"col-sm-6"p>>
                 <"row"<"col-sm-12"tr>>
@@ -198,10 +235,6 @@ let Initialize = function (scope) {
         }
         initObj[key](scope);
     }
-};
-
-const appRes = {
-
 };
 
 window.resRunInit = Initialize;

@@ -11,8 +11,8 @@ use \AppService;
 class MY_Model
 {
     const COLUMNS = [];
-    // @ 用于表示 like
-    const OPERATOR = ['=', '>', '<', '<>', '!=', '>=', '<=', '@'];
+    // @ 用于表示 like, () 用于表示 in
+    const OPERATOR = ['=', '>', '<', '<>', '!=', '>=', '<=', '@', '()'];
     const TABLE = '';
     const VAL_NOT_SET = 'value_not_set';
     protected static $cache = [];
@@ -270,6 +270,13 @@ class MY_Model
             $operator = $match[2] ?? '=';
             if (!array_key_exists($operator, $validOperator)) {
                 throw new Exception("Invalid where statement operator: {$operator}");
+            }
+            if ('()' === $operator) {
+                if (is_array($value)) {
+                    $value = implode(',', $value);
+                }
+                $whereStr[] = strtolower($column) . " in ({$value})";
+                continue;
             }
             $whereVal[":{$column}"] = $value;
             if ('@' === $operator) {
