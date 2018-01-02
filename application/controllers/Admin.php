@@ -9,6 +9,7 @@
 use \Res\Model\Phone;
 use \Res\Model\SimCard;
 use \Res\Model\User;
+use Res\Util\Upload;
 
 class Admin extends CI_Controller
 {
@@ -30,6 +31,37 @@ class Admin extends CI_Controller
             case 'simcard':
                 $response += $this->dataSimCards();
                 break;
+            default:
+                $response += [
+                    'result' => false,
+                ];
+        }
+        echo json_encode($response);
+    }
+
+    public function upload($name)
+    {
+        $response = [];
+        $files = $_FILES['files'] ?? [];
+        if (!$files) {
+            $response['result'] = 'false';
+            echo json_encode($response);
+            return;
+        }
+        switch ($name) {
+            case 'user':
+                $response += $this->uploadUsers($files);
+                break;
+            case 'phone':
+                $response += $this->uploadPhones($files);
+                break;
+            case 'simcard':
+                $response += $this->uploadSimCards($files);
+                break;
+            default:
+                $response += [
+                    'result' => false,
+                ];
         }
         echo json_encode($response);
     }
@@ -283,6 +315,33 @@ class Admin extends CI_Controller
         }
         $response['data'] = $data;
         $response['recordsTotal'] = $response['recordsFiltered'] = $count;
+        return $response;
+    }
+
+    private function uploadUsers(array &$files) : array
+    {
+        $response = [
+            'result' => true,
+        ];
+
+        return $response;
+    }
+
+    private function uploadPhones(array &$files) : array
+    {
+        $response = [
+            'result' => true,
+        ];
+
+        return $response;
+    }
+
+    private function uploadSimCards(array &$files) : array
+    {
+        $response = [
+            'result' => true,
+        ];
+
         return $response;
     }
 }

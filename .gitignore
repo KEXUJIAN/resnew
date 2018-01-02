@@ -1,5 +1,7 @@
 .DS_Store
 
+Upload/
+
 application/config/App/**/*
 !application/config/App/*
 !application/config/App/**/*.php.example
