@@ -5,17 +5,22 @@
  * Date: 2018/1/2
  * Time: 20:01
  */
+
+use Res\Model\User;
+
 ?>
 
 <div class="data-table-action-wrapper col-md-12">
     <div class="pull-left" style="width: 100%;">
         <div class="pull-right" style="margin-bottom: 10px">
+            <?php if (App::getUser()->role() === User::ROLE_MANAGER): ?>
             <button class="btn btn-danger">
                 <i class="fa fa-trash"></i> 删除测试机
             </button>
             <button class="btn btn-primary">
                 <i class="fa fa-plus"></i> 添加测试机
             </button>
+            <?php endif; ?>
             <button class="btn btn-default" data-toggle="collapse" data-target="#phone-filter">
                 <i class="fa fa-caret-down"></i>搜索框
             </button>

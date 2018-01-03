@@ -25,6 +25,10 @@ const initObj = {
     ajaxForm: function (scope) {
         $('.ajax-form', scope).each(function () {
             let that = $(this);
+            if (true === that.data('isInit')) {
+                return;
+            }
+            that.data('isInit', true);
             that.on('submit', (e) => {
                 e.preventDefault();
             });
@@ -130,6 +134,10 @@ const initObj = {
 
         $('.dataTable.ajax-table', scope).each(function () {
             let that = $(this);
+            if (true === that.data('isInit')) {
+                return;
+            }
+            that.data('isInit', true);
             let idElm = that.find('th[data-col-name="id"]');
             if (idElm.length) {
                 idElm.on('click', '.checkbox', function (e) {
@@ -223,11 +231,70 @@ const initObj = {
         $('.dataTable.basic', scope).each(function () {
            ;
         });
+    },
+    ajaxModal: function (scope) {
+        $('.modal.ajax-modal', scope).each(function () {
+            let that = $(this);
+            if (true === that.data('isInit')) {
+                return;
+            }
+            that.data('isInit', true);
+            that
+                .on('show.bs.modal', async function (e) {
+                    let _trigger = e.relatedTarget;
+                    let _content = that.find('.modal-content');
+                    if (!_trigger) {
+                        e.preventDefault();
+                        return;
+                    }
+                    _trigger = $(_trigger);
+                    let url = _trigger.data('url');
+                    console.log(url);
+                    if (!url) {
+                        e.preventDefault();
+                        return;
+                    }
+                    try {
+                        let ret = await $.get(url);
+                        _content.html(ret);
+                        setTimeout(function () {
+                            resRunInit(_content);
+                        }, 0);
+                    } catch (err) {
+                        let _html = err.responseText;
+                        _content.html(`
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title" id="myModalLabel">发生错误</h4>
+                            </div>
+                            <div class="modal-body">
+                                ${_html}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            </div>
+                        `);
+                    }
+
+                })
+                .on('hide.bs.modal', function (e) {
+                    ;
+                })
+                .on('hidden.bs.modal', function () {
+                    that.find('.modal-content').empty();
+                    that.removeData();
+                    that.data('isInit', true);
+                });
+        })
     }
 };
-let Initialize = function (scope) {
-    if (!scope) {
+let Initialize = function (scope, name) {
+    if (!(scope instanceof $)) {
         scope = $('body');
+    }
+    if (name && initObj.hasOwnProperty(name)) {
+        initObj[name](scope);
+        return;
     }
     for (let key in initObj) {
         if (!initObj.hasOwnProperty(key)) {

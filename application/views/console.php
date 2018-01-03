@@ -96,6 +96,12 @@ App::view('templates/header');
                 </div>
             </div>
         </div>
+        <div id="ajax-modal" class="modal ajax-modal fade" data-backdrop="static" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <script>
@@ -168,6 +174,7 @@ App::view('templates/header');
                 .fileupload('send', {files: file});
         });
     resRunInit(currentPanel);
+    resRunInit(null, 'ajaxModal');
     function uploadStart() {
         uploadElm.prop('disabled', true);
         uploadArea.css('cursor', 'not-allowed').find('.upload-file').hide();
