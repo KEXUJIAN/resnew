@@ -19,6 +19,22 @@ class Admin extends CI_Controller
         App::view('console');
     }
 
+    public function new($name)
+    {
+        switch ($name) {
+            case 'user':
+                App::view('admin/user-new');
+                break;
+            case 'phone':
+                App::view('admin/phone-new');
+                break;
+            case 'simcard':
+                App::view('admin/simcard-new');
+                break;
+            default:
+        }
+    }
+
     public function data($name)
     {
         $response = [];
@@ -31,6 +47,27 @@ class Admin extends CI_Controller
                 break;
             case 'simcard':
                 $response += $this->dataSimCards();
+                break;
+            default:
+                $response += [
+                    'result' => false,
+                ];
+        }
+        echo json_encode($response);
+    }
+
+    public function save($name)
+    {
+        $response = [];
+        switch ($name) {
+            case 'user':
+                $response += $this->saveUser();
+                break;
+            case 'phone':
+                $response += $this->savePhone();
+                break;
+            case 'simcard':
+                $response += $this->saveSimCard();
                 break;
             default:
                 $response += [
@@ -327,14 +364,85 @@ class Admin extends CI_Controller
         return $response;
     }
 
-    private function uploadUsers(array &$files) : array
+    private function saveUser()
+    {
+        $response = [
+            'result' => true,
+            'message' => '',
+        ];
+        $required = [
+            'name' => 'str',
+            'username' => 'str',
+            'password' => 'str',
+            'email' => 'str',
+        ];
+        $missing = '';
+        foreach ($required as $name => $type) {
+            $val = $_POST[$name] ?? '';
+            if ('array' === $type && (!is_array($val) || !count($val))) {
+                $missing = $name;
+                break;
+            }
+            if ('' === trim($val)) {
+                $missing = $name;
+                break;
+            }
+        }
+        if ($missing) {
+            $response['result'] = false;
+            $response['message'] = "缺少字段: {$missing}";
+            return $response;
+        }
+        $username = $_POST['username'];
+        $o = User::getOne([
+            'deleted' => User::DELETED_NO,
+            'username' => $username,
+        ]);
+        if ($o) {
+            $response['result'] = false;
+            $response['message'] = '用户名已存在';
+            return $response;
+        }
+        $o = new User();
+        $o->username($username);
+        $o->name($_POST['name']);
+        $salt = md5($o->role() . $o->timeAdded());
+        $o->passwordSalt($salt);
+        $o->password(sha1($_POST['password'] . $salt));
+        $o->email($_POST['email']);
+        $saved = $o->save();
+        $response['message'] = $saved ? '保存成功' : '未保存';
+        return $response;
+    }
 
+    private function savePhone()
+    {
+        $response = [
+            'result' => true,
+            'message' => '',
+        ];
+        return $response;
+    }
+
+    private function saveSimCard()
+    {
+        $response = [
+            'result' => true,
+            'message' => '',
+        ];
+        return $response;
+    }
+
+    private function uploadUsers(array &$files) : array
     {
         $response = [
             'result' => true,
         ];
         $excel = new MyExcel();
         $head = [
+            'name' => '#姓名#u',
+            'username' => '#用户名#u',
+            'email' => '#邮箱#u',
         ];
         $excelResult = $excel->load($files['tmp_name'], $head);
         $response = array_merge($response, $excelResult);
@@ -343,24 +451,30 @@ class Admin extends CI_Controller
         }
 
         foreach ($excelResult['content'] as &$row) {
-            if ($row['label']['value']) {
-                $phone = Phone::getOne([
-                    'label' => $row['label']['value'],
-                    'deleted' => Phone::DELETED_NO,
+            if ($row['username']['value']) {
+                $user = User::getOne([
+                    'username' => $row['username']['value'],
+                    'deleted' => User::DELETED_NO,
                 ]);
-                if ($phone) {
-                    unset($phone);
+                if ($user) {
+                    unset($user);
                     continue;
                 }
+            } else {
+                continue;
             }
-            $o = new Phone();
+            $o = new User();
             foreach ($row as $name => &$def) {
                 $value = $def['value'];
-                if ('' === $value && 'status' !== $name) {
+                if ('' === $value) {
                     continue;
                 }
+                $o->$name($value);
             }
             unset($def);
+            $salt = md5($o->role() . $o->timeAdded());
+            $o->passwordSalt($salt);
+            $o->password(sha1(sha1($o->username() . '123456') . $salt));
             $o->save();
         }
         unset($row);

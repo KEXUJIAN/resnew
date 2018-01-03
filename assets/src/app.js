@@ -64,19 +64,19 @@ const initObj = {
                     let doneSucc = that.data('submitDoneSucc');
                     let doneFail = that.data('submitDoneFail');
                     if ($.isFunction(done)) {
-                        done(ret);
+                        done(ret, that);
                     } else if ($.isFunction(doneSucc) && ret.result) {
                         delete ret.result;
-                        doneSucc(ret);
+                        doneSucc(ret, that);
                     } else if ($.isFunction(doneFail) && !ret.result) {
                         delete ret.result;
-                        doneFail(ret);
+                        doneFail(ret, that);
                     }
                 } catch (err) {
                     result = false;
                     let fail = that.data('submitFail');
                     if ($.isFunction(fail)) {
-                        result = fail(err);
+                        result = fail(err, that);
                     } else {
                         bootbox.alert('发生错误, 检查您的网络设置或联系管理员');
                     }
@@ -249,7 +249,6 @@ const initObj = {
                     }
                     _trigger = $(_trigger);
                     let url = _trigger.data('url');
-                    console.log(url);
                     if (!url) {
                         e.preventDefault();
                         return;
@@ -281,6 +280,10 @@ const initObj = {
                     ;
                 })
                 .on('hidden.bs.modal', function () {
+                    let ah = that.data('afterHidden');
+                    if ($.isFunction(ah)) {
+                        ah(that);
+                    }
                     that.find('.modal-content').empty();
                     that.removeData();
                     that.data('isInit', true);
