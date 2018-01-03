@@ -146,6 +146,11 @@ class MY_Model
         return $o;
     }
 
+    /**
+     * @param array $conf
+     * @param array $orderBy
+     * @return static|null
+     */
     public static function getOne(array $conf = [], array $orderBy = [])
     {
         $ret = static::getList($conf, $orderBy, 1);

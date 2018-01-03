@@ -53,6 +53,16 @@ class Phone extends MY_Model
         4 => 'Other',
     ];
 
+    const CARRIER_CHINA_TELECOM = 0;
+    const CARRIER_CHINA_MOBILE = 1;
+    const CARRIER_CHINA_UNICOM = 2;
+
+    const LABEL_CARRIER = [
+        0 => '电信',
+        1 => '移动',
+        2 => '联通',
+    ];
+
     const DELETED_YES = 1;
     const DELETED_NO = 0;
     const LABEL_DELETED = [

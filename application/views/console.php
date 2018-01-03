@@ -72,21 +72,21 @@ App::view('templates/header');
                 </div>
                 <hr>
                 <div class="tab-content">
-                    <div id="user-panel" data-url="/welcome/upload" class="tab-pane fade in active">
+                    <div id="user-panel" data-url="/admin/upload/user" class="tab-pane fade in active">
                         <?php
                         App::view('templates/datatable-user', [
                             'url' => '/admin/data/user',
                         ]);
                         ?>
                     </div>
-                    <div id="phone-panel" data-url="/welcome/upload" class="tab-pane fade">
+                    <div id="phone-panel" data-url="/admin/upload/phone" class="tab-pane fade">
                         <?php
                         App::view('templates/datatable-phone', [
                             'url' => '/admin/data/phone',
                         ]);
                         ?>
                     </div>
-                    <div id="simcard-panel" data-url="/welcome/upload" class="tab-pane fade">
+                    <div id="simcard-panel" data-url="/admin/upload/simcard" class="tab-pane fade">
                         <?php
                         App::view('templates/datatable-simcard', [
                             'url' => '/admin/data/simcard',
@@ -180,11 +180,12 @@ App::view('templates/header');
             progressElm.removeClass('in');
             uploadElm.prop('disabled', false);
             uploadArea.css('cursor', 'pointer').find('.upload-file').show();
-        }, 1000);
+        }, 800);
         setTimeout(function () {
             progressElm.hide();
             progressBar.css('width', 0);
-        }, 1200);
+            currentPanel.find('table.ajax-table').DataTable().ajax.reload();
+        }, 1000);
     }
 })();
 </script>

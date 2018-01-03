@@ -9,6 +9,8 @@
 namespace Res\Util;
 
 
+use Res\Model\UploadFile;
+
 class Upload
 {
     const ERR_CODE_UPLOAD_FAIL = 1;
@@ -44,9 +46,15 @@ class Upload
         return $error;
     }
 
-    public function saveFile(array &$file)
+    public function saveFile(array &$file, int $type)
     {
-
+        $now = date('YmdHis');
+        $ext = pathinfo($file['name'])['extension'];
+        $oriName = substr($file['name'], 0, strrpos($file['name'], '.'));
+        $prefix = UploadFile::LABEL_TYPE[$type];
+        $fileName = $this->uploadPath . DIRECTORY_SEPARATOR . "{$prefix}_{$now}_({$oriName}).{$ext}";
+        move_uploaded_file($file['tmp_name'], $fileName);
+        return $fileName;
     }
 
     public static function resolve(array &$files)

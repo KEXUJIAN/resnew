@@ -15,6 +15,8 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+INSERT INTO `users` (`id`,`name`,`username`,`password`,`passwordsalt`,`email`,`role`,`timeAdded`,`timeModified`,`deleted`) VALUES (1,'柯许剑','admin','0b364a10565e2edd9c2d19dbeca5cf1d737d7739','c7e1e3ec57211eda98a5a26b816315dc','1043736801@qq.com',0,'2017-12-28 20:53:42','2017-12-28 20:53:42',0);
+
 CREATE TABLE `phones` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userid` int(11) DEFAULT NULL,
@@ -22,7 +24,7 @@ CREATE TABLE `phones` (
   `os` varchar(128) DEFAULT NULL,
   `resolution` varchar(32) DEFAULT NULL,
   `ram` int(11) DEFAULT NULL,
-  `carrier` varchar(32) DEFAULT NULL,
+  `carrier` varchar(32) DEFAULT NULL COMMENT '手机支持的运营商\n格式：0,1,2\n0 - 电信, 1 - 移动, 2 - 联通',
   `screensize` varchar(32) DEFAULT NULL,
   `label` varchar(32) DEFAULT NULL,
   `imei` varchar(128) DEFAULT NULL,

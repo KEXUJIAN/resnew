@@ -83,7 +83,7 @@
         </div>
     </div>
 </div>
-<table class="table dataTable ajax-table table-striped table-bordered no-footer hover" data-url="<?=$url ?? ''?>">
+<table class="table dataTable ajax-table table-striped table-bordered no-footer table-hover" data-url="<?=$url ?? ''?>">
     <thead>
     <tr>
         <th data-col-name="id" data-col-width="50px">

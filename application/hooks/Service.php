@@ -13,6 +13,11 @@ class Service
         return self::singleton(\Res\Hook\Autoloader\Autoloader::class);
     }
 
+    public static function getUploader() : \Res\Util\Upload
+    {
+        return self::singleton(\Res\Util\Upload::class);
+    }
+
     public static function getResCfg()
     {
         $app_config = '\Res\Config\\' . ucfirst(ENVIRONMENT). '\Config';

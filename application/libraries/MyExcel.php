@@ -37,7 +37,6 @@ class MyExcel
         $maxRow = $sheet->getHighestRow();
         $result = [
             'result' => true,
-            'content' => [],
             'message' => self::ERROR[self::ERROR_CODE_SUCCESS],
             'code' => self::ERROR_CODE_SUCCESS,
         ];
@@ -107,7 +106,7 @@ class MyExcel
                 break;
             }
         }
-        if (!$head) {
+        if (count($head) !== count($headPatterns)) {
             $result['result'] = false;
             $result['message'] = self::ERROR[self::ERROR_CODE_BAD_FORMAT];
             $result['code'] = self::ERROR_CODE_BAD_FORMAT;
@@ -135,12 +134,22 @@ class MyExcel
                     ];
                     continue;
                 }
-                $colValue = (string) $sheet->getCellByColumnAndRow($col, $i)->getValue();
+                $colValue = trim((string) $sheet->getCellByColumnAndRow($col, $i)->getValue());
                 $row[$name] = [
                     'value' => $colValue,
                     'col' => $col,
                     'row' => $i,
                 ];
+            }
+            $allEmpty = true;
+            foreach ($row as $def) {
+                if ('' !== $def['value']) {
+                    $allEmpty = false;
+                    break;
+                }
+            }
+            if ($allEmpty) {
+                continue;
             }
             $content[] = $row;
         }

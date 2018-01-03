@@ -9,7 +9,8 @@
 use \Res\Model\Phone;
 use \Res\Model\SimCard;
 use \Res\Model\User;
-use Res\Util\Upload;
+use \Res\Model\UploadFile;
+use \Res\Util\MyExcel;
 
 class Admin extends CI_Controller
 {
@@ -45,6 +46,14 @@ class Admin extends CI_Controller
         $files = $_FILES['files'] ?? [];
         if (!$files) {
             $response['result'] = 'false';
+            echo json_encode($response);
+            return;
+        }
+        $uploader = AppService::getUploader();
+        $error = $uploader->check($files);
+        if ($error) {
+            $response['result'] = false;
+            $response += $error;
             echo json_encode($response);
             return;
         }
@@ -125,7 +134,7 @@ class Admin extends CI_Controller
             foreach ($columns as $column) {
                 $value = '';
                 if ('id' === $column) {
-                    $value .= '<span class="checkbox"><label><input value="' . $user->$column() . '" type="checkbox"> ' . ($index + $offset). '</label></span>';
+                    $value .= '<span class="checkbox"><label><input value="' . $user->$column() . '" type="checkbox"> ' . ($index++ + $offset). '</label></span>';
                 } elseif ('#action' === $column) {
                     $value .= '<button class="btn btn-info" style="padding-bottom: 0;padding-top: 0;"><i class="fa fa-edit"></i> 编辑</button>';
                 } elseif (array_key_exists($column, $fields)) {
@@ -218,7 +227,7 @@ class Admin extends CI_Controller
             foreach ($columns as $column) {
                 $value = '';
                 if ('id' === $column) {
-                    $value .= '<span class="checkbox"><label><input value="' . $phone->$column() . '" type="checkbox"> ' . ($index + $offset). '</label></span>';
+                    $value .= '<span class="checkbox"><label><input value="' . $phone->$column() . '" type="checkbox"> ' . ($index++ + $offset). '</label></span>';
                 } elseif ('#action' === $column) {
                     $value .= '<button class="btn btn-info" style="padding-bottom: 0;padding-top: 0;"><i class="fa fa-edit"></i> 编辑</button>';
                 } elseif (array_key_exists($column, $fields)) {
@@ -299,7 +308,7 @@ class Admin extends CI_Controller
             foreach ($columns as $column) {
                 $value = '';
                 if ('id' === $column) {
-                    $value .= '<span class="checkbox"><label><input value="' . $simCard->$column() . '" type="checkbox"> ' . ($index + $offset). '</label></span>';
+                    $value .= '<span class="checkbox"><label><input value="' . $simCard->$column() . '" type="checkbox"> ' . ($index++ + $offset). '</label></span>';
                 } elseif ('#action' === $column) {
                     $value .= '<button class="btn btn-info" style="padding-bottom: 0;padding-top: 0;"><i class="fa fa-edit"></i> 编辑</button>';
                 } elseif (array_key_exists($column, $fields)) {
@@ -319,11 +328,50 @@ class Admin extends CI_Controller
     }
 
     private function uploadUsers(array &$files) : array
+
     {
         $response = [
             'result' => true,
         ];
+        $excel = new MyExcel();
+        $head = [
+        ];
+        $excelResult = $excel->load($files['tmp_name'], $head);
+        $response = array_merge($response, $excelResult);
+        if (!$excelResult['result']) {
+            return $response;
+        }
 
+        foreach ($excelResult['content'] as &$row) {
+            if ($row['label']['value']) {
+                $phone = Phone::getOne([
+                    'label' => $row['label']['value'],
+                    'deleted' => Phone::DELETED_NO,
+                ]);
+                if ($phone) {
+                    unset($phone);
+                    continue;
+                }
+            }
+            $o = new Phone();
+            foreach ($row as $name => &$def) {
+                $value = $def['value'];
+                if ('' === $value && 'status' !== $name) {
+                    continue;
+                }
+            }
+            unset($def);
+            $o->save();
+        }
+        unset($row);
+        $uploader = AppService::getUploader();
+        $fileName = $uploader->saveFile($files, UploadFile::TYPE_USER_EXCEL);
+        $o = new UploadFile();
+        $o->type(UploadFile::TYPE_USER_EXCEL);
+        $o->originName($files['name']);
+        $o->fileName($fileName);
+        $o->uploadByUser(App::getUser()->id());
+        $o->save();
         return $response;
     }
 
@@ -332,7 +380,132 @@ class Admin extends CI_Controller
         $response = [
             'result' => true,
         ];
-
+        $excel = new MyExcel();
+        $head = [
+            'type' => ['#机型#u'],
+            'os' => ['#系统#u'],
+            'resolution' => ['#分辨率#u'],
+            'ram' => ['#ram#i'],
+            'carrier' => ['#运营商#u'],
+            'screenSize' => ['#屏幕尺寸#u'],
+            'label' => ['#编号#u'],
+            'imei' => ['#imei#i'],
+            'status' => ['#状态#u'],
+        ];
+        $excelResult = $excel->load($files['tmp_name'], $head);
+        $response = array_merge($response, $excelResult);
+        if (!$excelResult['result']) {
+            return $response;
+        }
+        $carrierList = array_flip(Phone::LABEL_CARRIER);
+        foreach ($excelResult['content'] as &$row) {
+            if ($row['label']['value']) {
+                $phone = Phone::getOne([
+                    'label' => $row['label']['value'],
+                    'deleted' => Phone::DELETED_NO,
+                ]);
+                if ($phone) {
+                    unset($phone);
+                    continue;
+                }
+            }
+            $o = new Phone();
+            foreach ($row as $name => &$def) {
+                $value = $def['value'];
+                if ('' === $value && 'status' !== $name) {
+                    continue;
+                }
+                switch ($name) {
+                    case 'resolution':
+                        if (!preg_match_all('#(\d+)#', $value, $match)) {
+                            break;
+                        }
+                        $match = $match[0];
+                        if (2 !== count($match)) {
+                            break;
+                        }
+                        $value = "{$match[0]} X {$match[1]}";
+                        $o->$name($value);
+                        break;
+                    case 'carrier':
+                        if (!preg_match_all("#电信|移动|联通#u", $value, $match)) {
+                            break;
+                        }
+                        $match = array_flip($match[0]);
+                        $carrierCodes = [];
+                        foreach ($carrierList as $label => $code) {
+                            if (!array_key_exists($label, $match)) {
+                                continue;
+                            }
+                            $carrierCodes[] = $code;
+                        }
+                        $carrierCodes = implode(',', $carrierCodes);
+                        $o->$name($carrierCodes);
+                        break;
+                    case 'imei':
+                        if (!preg_match_all('#\d{15}#m', $value, $match)) {
+                            break;
+                        }
+                        $value = implode(',', $match[0]);
+                        $o->$name($value);
+                        break;
+                    case 'status':
+                        if ('' === $value) {
+                            $o->$name(Phone::STATUS_OTHER);
+                            $o->statusDescription('没有注明');
+                            break;
+                        }
+                        if (false !== strpos($value, '组内')) {
+                            $o->$name(Phone::STATUS_IN_INVENTORY);
+                            break;
+                        }
+                        if (false !== strpos($value, '坏')) {
+                            $o->$name(Phone::STATUS_BROKEN);
+                            break;
+                        }
+                        $user = User::getOne([
+                            'deleted' => User::DELETED_NO,
+                            'name' => $value,
+                        ]);
+                        if ($user) {
+                            $o->$name(Phone::STATUS_RENT_OUT);
+                            $o->userId($user->id());
+                            $o->statusDescription($value);
+                            unset($user);
+                            break;
+                        }
+                        $o->$name(Phone::STATUS_OTHER);
+                        $o->statusDescription($value);
+                        break;
+                    case 'ram':
+                        if (preg_match('#^\d+$#', $value)) {
+                            $o->$name($value);
+                            break;
+                        }
+                        if (preg_match('#^(\d+)G$#i', $value, $match)) {
+                            $o->$name(intval($match[1]) * 1024);
+                            break;
+                        }
+                        break;
+                    case 'label':
+                        $o->$name(strtoupper($value));
+                        break;
+                    default:
+                        $o->$name($value);
+                }
+            }
+            unset($def);
+            $o->save();
+        }
+        unset($row);
+        $uploader = AppService::getUploader();
+        $fileName = $uploader->saveFile($files, UploadFile::TYPE_PHONE_EXCEL);
+        $o = new UploadFile();
+        $o->type(UploadFile::TYPE_PHONE_EXCEL);
+        $o->originName($files['name']);
+        $o->fileName($fileName);
+        $o->uploadByUser(App::getUser()->id());
+        $o->save();
         return $response;
     }
 
@@ -341,7 +514,107 @@ class Admin extends CI_Controller
         $response = [
             'result' => true,
         ];
-
+        $excel = new MyExcel();
+        $head = [
+            'phoneNumber' => ['#手机号#u'],
+            'label' => ['#标识#u'],
+            'carrier' => ['#运营商#u'],
+            'place' => ['#归属地#u'],
+            'imsi' => ['#imsi#i'],
+            'status' => ['#状态#u'],
+        ];
+        $excelResult = $excel->load($files['tmp_name'], $head);
+        $response = array_merge($response, $excelResult);
+        if (!$excelResult['result']) {
+            return $response;
+        }
+        $carrierList = array_flip(SimCard::LABEL_CARRIER);
+        foreach ($excelResult['content'] as &$row) {
+            if ($row['phoneNumber']['value']) {
+                $simCard = SimCard::getOne([
+                    'phoneNumber' => $row['phoneNumber']['value'],
+                    'deleted' => SimCard::DELETED_NO,
+                ]);
+                if ($simCard) {
+                    unset($simCard);
+                    continue;
+                }
+            }
+            $o = new SimCard();
+            foreach ($row as $name => &$def) {
+                $value = $def['value'];
+                if ('' === $value && 'status' !== $name) {
+                    continue;
+                }
+                switch ($name) {
+                    case 'phoneNumber':
+                        if (!preg_match('#\d+#', $value, $match)) {
+                            continue;
+                        }
+                        $o->$name($match[0]);
+                        break;
+                    case 'carrier':
+                        if (!preg_match_all("#电信|移动|联通|虚拟运营商#u", $value, $match)) {
+                            break;
+                        }
+                        $match = array_flip($match[0]);
+                        $carrierCodes = [];
+                        foreach ($carrierList as $label => $code) {
+                            if (!array_key_exists($label, $match)) {
+                                continue;
+                            }
+                            $carrierCodes[] = $code;
+                        }
+                        $carrierCodes = implode(',', $carrierCodes);
+                        $o->$name($carrierCodes);
+                        break;
+                    case 'status':
+                        if ('' === $value) {
+                            $o->$name(SimCard::STATUS_OTHER);
+                            $o->statusDescription('没有注明');
+                            break;
+                        }
+                        if (false !== strpos($value, '组内')) {
+                            $o->$name(SimCard::STATUS_IN_INVENTORY);
+                            break;
+                        }
+                        if (preg_match('#暂停|注销#u', $value)) {
+                            $o->$name(SimCard::STATUS_BROKEN);
+                            break;
+                        }
+                        $user = User::getOne([
+                            'deleted' => User::DELETED_NO,
+                            'name' => $value,
+                        ]);
+                        if ($user) {
+                            $o->$name(SimCard::STATUS_RENT_OUT);
+                            $o->userId($user->id());
+                            $o->statusDescription($value);
+                            unset($user);
+                            break;
+                        }
+                        $o->$name(SimCard::STATUS_OTHER);
+                        $o->statusDescription($value);
+                        break;
+                    case 'label':
+                        $o->$name(strtoupper($value));
+                        break;
+                    default:
+                        $o->$name($value);
+                }
+            }
+            unset($def);
+            $o->save();
+        }
+        unset($row);
+        $uploader = AppService::getUploader();
+        $fileName = $uploader->saveFile($files, UploadFile::TYPE_SIMCARD_EXCEL);
+        $o = new UploadFile();
+        $o->type(UploadFile::TYPE_SIMCARD_EXCEL);
+        $o->originName($files['name']);
+        $o->fileName($fileName);
+        $o->uploadByUser(App::getUser()->id());
+        $o->save();
         return $response;
     }
 }

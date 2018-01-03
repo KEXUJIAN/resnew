@@ -9,7 +9,7 @@
 namespace Res\Model;
 
 
-class UploadFile
+class UploadFile extends MY_Model
 {
     const TABLE = 'uploadfiles';
     const COLUMNS = ['id', 'uploadByUser', 'type', 'originName', 'fileName', 'data', 'status', 'timeAdded', 'timeModified', 'deleted',];
@@ -34,6 +34,15 @@ class UploadFile
     protected $timeModifiedIsChanged = false;
     protected $deleted = null;
     protected $deletedIsChanged = false;
+
+    const TYPE_USER_EXCEL = 0;
+    const TYPE_PHONE_EXCEL = 1;
+    const TYPE_SIMCARD_EXCEL = 2;
+    const LABEL_TYPE = [
+        0 => 'user',
+        1 => 'phone',
+        2 => 'simcard',
+    ];
 
     const DELETED_YES = 1;
     const DELETED_NO = 0;

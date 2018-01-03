@@ -51,6 +51,18 @@ class SimCard extends MY_Model
         4 => 'Other',
     ];
 
+    const CARRIER_CHINA_TELECOM = 0;
+    const CARRIER_CHINA_MOBILE = 1;
+    const CARRIER_CHINA_UNICOM = 2;
+    const CARRIER_THIRD_PARTY = 3;
+
+    const LABEL_CARRIER = [
+        0 => '电信',
+        1 => '移动',
+        2 => '联通',
+        3 => '虚拟运营商',
+    ];
+
     const DELETED_YES = 1;
     const DELETED_NO = 0;
     const LABEL_DELETED = [
