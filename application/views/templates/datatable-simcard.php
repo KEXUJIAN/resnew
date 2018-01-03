@@ -17,7 +17,7 @@ use Res\Model\User;
             <button class="btn btn-danger">
                 <i class="fa fa-trash"></i> 删除测试卡
             </button>
-            <button class="btn btn-primary">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#ajax-modal" data-url="/admin/new/simcard">
                 <i class="fa fa-plus"></i> 添加测试卡
             </button>
             <?php endif; ?>

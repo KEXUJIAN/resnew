@@ -421,6 +421,82 @@ class Admin extends CI_Controller
             'result' => true,
             'message' => '',
         ];
+        $required = [
+            'type' => 'str',
+            'os' => 'str',
+            'carrier' => 'array',
+            'status' => 'str',
+            'label' => 'str',
+        ];
+        $missing = '';
+        foreach ($required as $name => $type) {
+            $val = $_POST[$name] ?? '';
+            if ('array' === $type && (!is_array($val) || !count($val))) {
+                $missing = $name;
+                break;
+            }
+            if ('' === trim($val)) {
+                $missing = $name;
+                break;
+            }
+        }
+        if ($missing) {
+            $response['result'] = false;
+            $response['message'] = "缺少字段: {$missing}";
+            return $response;
+        }
+        $label = $_POST['label'];
+        $o = Phone::getOne([
+            'deleted' => User::DELETED_NO,
+            'label' => $label,
+        ]);
+        if ($o) {
+            $response['result'] = false;
+            $response['message'] = '同标识的测试机已经存在';
+            return $response;
+        }
+        $status = $_POST['status'];
+        if (!array_key_exists($status, Phone::LABEL_STATUS)) {
+            $response['result'] = false;
+            $response['message'] = '非法的状态值';
+            return $response;
+        }
+        $userId = $_POST['userId'] ?? null;
+        if ($status === Phone::STATUS_RENT_OUT && !$userId) {
+            $response['result'] = false;
+            $response['message'] = '已借出的测试机需要选择借出人';
+            return $response;
+        }
+        if ($status !== Phone::STATUS_RENT_OUT && $userId) {
+            $response['result'] = false;
+            $response['message'] = '未借出的测试机不需要选择借出人';
+            return $response;
+        }
+        $carrier = $_POST['carrier'];
+        $carrier = implode(',', $carrier);
+        $ram = $_POST['ram'] ?? null;
+        $screenSize = $_POST['screenSize'] ?? null;
+        $resolutionW = $_POST['resolutionW'] ?? '';
+        $resolutionH = $_POST['resolutionH'] ?? '';
+        $imei = implode(',', $_POST['imei'] ?? []);
+        $imei = $imei ?: null;
+        $type = $_POST['type'] ?? null;
+        $os = $_POST['os'];
+        $o = new Phone();
+        if ($resolutionH && $resolutionW) {
+            $o->resolution("{$resolutionW} X {$resolutionH}");
+        }
+        $o->type($type);
+        $o->label($label);
+        $o->os($os);
+        $o->screenSize($screenSize);
+        $o->status($status);
+        $o->ram($ram);
+        $o->carrier($carrier);
+        $o->imei($imei);
+        $o->userId($userId);
+        $saved = $o->save();
+        $response['message'] = $saved ? '保存成功' : '未保存';
         return $response;
     }
 
@@ -430,6 +506,72 @@ class Admin extends CI_Controller
             'result' => true,
             'message' => '',
         ];
+        $required = [
+            'phoneNumber' => 'str',
+            'label' => 'str',
+            'carrier' => 'array',
+            'status' => 'str',
+        ];
+        $missing = '';
+        foreach ($required as $name => $type) {
+            $val = $_POST[$name] ?? '';
+            if ('array' === $type && (!is_array($val) || !count($val))) {
+                $missing = $name;
+                break;
+            }
+            if ('' === trim($val)) {
+                $missing = $name;
+                break;
+            }
+        }
+        if ($missing) {
+            $response['result'] = false;
+            $response['message'] = "缺少字段: {$missing}";
+            return $response;
+        }
+        $phoneNumber = $_POST['phoneNumber'];
+        $o = SimCard::getOne([
+            'deleted' => User::DELETED_NO,
+            'phoneNumber' => $phoneNumber,
+        ]);
+        if ($o) {
+            $response['result'] = false;
+            $response['message'] = '同号码的测试卡已经存在';
+            return $response;
+        }
+        $status = $_POST['status'];
+        if (!array_key_exists($status, SimCard::LABEL_STATUS)) {
+            $response['result'] = false;
+            $response['message'] = '非法的状态值';
+            return $response;
+        }
+        $userId = $_POST['userId'] ?? null;
+        if ($status === SimCard::STATUS_RENT_OUT && !$userId) {
+            $response['result'] = false;
+            $response['message'] = '已借出的测试卡需要选择借出人';
+            return $response;
+        }
+        if ($status !== SimCard::STATUS_RENT_OUT && $userId) {
+            $response['result'] = false;
+            $response['message'] = '未借出的测试卡不需要选择借出人';
+            return $response;
+        }
+        $carrier = $_POST['carrier'];
+        $carrier = implode(',', $carrier);
+        $label = $_POST['label'];
+        $place = $_POST['place'] ?? null;
+        $imsi = $_POST['imsi'] ?? null;
+
+        $o = new SimCard();
+        $o->phoneNumber($phoneNumber);
+        $o->label($label);
+        $o->status($status);
+        $o->carrier($carrier);
+        $o->imsi($imsi);
+        $o->userId($userId);
+        $o->place($place);
+        $saved = $o->save();
+        $response['message'] = $saved ? '保存成功' : '未保存';
         return $response;
     }
 
@@ -440,9 +582,9 @@ class Admin extends CI_Controller
         ];
         $excel = new MyExcel();
         $head = [
-            'name' => '#姓名#u',
-            'username' => '#用户名#u',
-            'email' => '#邮箱#u',
+            'name' => ['#姓名#u'],
+            'username' => ['#用户名#u'],
+            'email' => ['#邮箱#u'],
         ];
         $excelResult = $excel->load($files['tmp_name'], $head);
         $response = array_merge($response, $excelResult);

@@ -286,7 +286,7 @@ const initObj = {
                     }
                     that.find('.modal-content').empty();
                     that.removeData();
-                    that.data('isInit', true);
+                    that.data('isInit', true).data('backdrop', 'static');
                 });
         })
     }

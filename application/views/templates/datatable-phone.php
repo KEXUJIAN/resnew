@@ -17,7 +17,7 @@ use Res\Model\User;
             <button class="btn btn-danger">
                 <i class="fa fa-trash"></i> 删除测试机
             </button>
-            <button class="btn btn-primary">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#ajax-modal" data-url="/admin/new/phone">
                 <i class="fa fa-plus"></i> 添加测试机
             </button>
             <?php endif; ?>

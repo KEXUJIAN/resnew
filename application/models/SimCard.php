@@ -39,16 +39,14 @@ class SimCard extends MY_Model
     protected $deletedIsChanged = false;
 
     const STATUS_IN_INVENTORY = 0;
-    const STATUS_REQUESTING = 1;
-    const STATUS_RENT_OUT = 2;
-    const STATUS_BROKEN = 3;
-    const STATUS_OTHER = 4;
+    const STATUS_RENT_OUT = 1;
+    const STATUS_BROKEN = 2;
+    const STATUS_OTHER = 3;
     const LABEL_STATUS = [
-        0 => 'Available',
-        1 => 'Applying',
-        2 => 'Renting',
-        3 => 'Broken',
-        4 => 'Other',
+        0 => '可借出',
+        1 => '已借出',
+        2 => '不可用',
+        3 => '其他',
     ];
 
     const CARRIER_CHINA_TELECOM = 0;
