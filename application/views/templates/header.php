@@ -18,7 +18,7 @@
     <script src="https://cdn.bootcss.com/blueimp-file-upload/9.19.2/js/vendor/jquery.ui.widget.min.js"></script>
     <script src="https://cdn.bootcss.com/blueimp-file-upload/9.19.2/js/jquery.iframe-transport.min.js"></script>
     <script src="https://cdn.bootcss.com/blueimp-file-upload/9.19.2/js/jquery.fileupload.min.js"></script>
-    <script src="/asset/app.878dedad32881274330c.js"></script>
+    <script src="/asset/app.9945318785b8ec75d28d.js"></script>
     <style type="text/css">
         body {
             position: absolute;
@@ -36,6 +36,27 @@
             right: 0;
             overflow: auto;
         }
+        .panel-assets {
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+        .ajax-table {
+            width: 100% !important;
+        }
+        .data-table-action-wrapper {
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .data-table-action-wrapper .collapse {
+            width: 100%;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+        .ajax-table .index-label {
+            width: 100%;
+            text-align: center;
+        }
     </style>
 </head>
 <body <?php if ($pageId ?? ''): echo 'id="' . $pageId . '"'; endif; ?>>
@@ -49,9 +70,9 @@
                         <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="javascript:;">测试机</a></li>
+                        <li><a class="dropdown-item" href="/assets/phone" target="_blank">测试机</a></li>
                         <li class="divider"></li>
-                        <li><a class="dropdown-item" href="javascript:;">测试卡</a></li>
+                        <li><a class="dropdown-item" href="/assets/simcard" target="_blank">测试卡</a></li>
                     </ul>
                 </li>
             </ul>

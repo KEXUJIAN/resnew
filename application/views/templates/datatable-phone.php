@@ -13,7 +13,7 @@ use Res\Model\User;
 <div class="data-table-action-wrapper col-md-12">
     <div class="pull-left" style="width: 100%;">
         <div class="pull-right" style="margin-bottom: 10px">
-            <?php if (App::getUser()->role() === User::ROLE_MANAGER): ?>
+            <?php if (App::getUser()->role() === User::ROLE_MANAGER && ($display ?? true)): ?>
             <button class="btn btn-danger">
                 <i class="fa fa-trash"></i> 删除测试机
             </button>
