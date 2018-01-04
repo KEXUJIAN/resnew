@@ -84,11 +84,16 @@ class MY_Model
         foreach ($columns as $index => $column) {
             $updateFields[] = strtolower($column) . " = :{$column}";
         }
+        if (!$updateFields) {
+            return false;
+        }
         $updateFields = implode(',', $updateFields);
         $sql = "UPDATE {$table} SET {$updateFields} WHERE id = :id";
         $sth = $pdo->prepare($sql);
         foreach ($columns as $column) {
             $sth->bindValue(":{$column}", $this->$column);
+            $isChanged = "{$column}IsChanged";
+            $this->$isChanged = false;
         }
         $sth->bindValue(':id', $this->id);
         $sth->execute();
@@ -160,6 +165,13 @@ class MY_Model
         return $ret[0];
     }
 
+    /**
+     * @param array $conf
+     * @param array $orderBy
+     * @param string $limit
+     * @param string $offset
+     * @return static[]
+     */
     public static function getList(array $conf = [], array $orderBy = [], $limit = '', $offset = '') : array
     {
         $result = [];

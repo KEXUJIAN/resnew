@@ -12,7 +12,7 @@ namespace Res\Model;
 class Request extends MY_Model
 {
     const TABLE = 'requests';
-    const COLUMNS = ['id', 'fromUserId', 'toUserId', 'assetId', 'assetType','type', 'status', 'timeAdded', 'timeModified', 'deleted',];
+    const COLUMNS = ['id', 'fromUserId', 'toUserId', 'assetId', 'assetType', 'type', 'status', 'timeAdded', 'timeModified', 'deleted',];
 
     protected $id = null;
     protected $idIsChanged = false;
@@ -34,6 +34,24 @@ class Request extends MY_Model
     protected $timeModifiedIsChanged = false;
     protected $deleted = null;
     protected $deletedIsChanged = false;
+
+    const TYPE_RENT_OUT = 0;
+    const TYPE_RETURN = 1;
+    const TYPE_TRANSFER = 2;
+    const LABEL_TYPE = [
+        0 => '借出',
+        1 => '归还',
+        2 => '转借',
+    ];
+
+    const STATUS_NEW = 0;
+    const STATUS_DONE = 1;
+    const STATUS_REJECT = 2;
+    const LABEL_STATUS = [
+        0 => 'new',
+        1 => 'done',
+        2 => 'reject',
+    ];
 
     const ASSET_TYPE_PHONE = 0;
     const ASSET_TYPE_SIM_CARD = 1;

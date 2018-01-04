@@ -8,6 +8,7 @@
 
 use Res\Model\Phone;
 use Res\Model\SimCard;
+use Res\Model\Request;
 
 class Assets extends CI_Controller
 {
@@ -112,9 +113,17 @@ class Assets extends CI_Controller
                 if ('id' === $column) {
                     $value .= '<label class="index-label" data-id="' . $phone->$column() . '">' . ($index++ + $offset). '</label>';
                 } elseif ('#action' === $column) {
-                    $value .= '<button class="btn btn-info" style="padding-bottom: 0;padding-top: 0;"><i class="fa fa-edit"></i> 编辑</button>';
+                    $value .= $this->phoneAction($phone);
                 } elseif (array_key_exists($column, $fields)) {
                     switch ($column) {
+                        case 'status':
+                            $value .= $this->phoneStatus($phone);
+                            break;
+                        case 'type':
+                        case 'os':
+                        case 'imei':
+                            $value .= '<span class="long-data">' . htmlspecialchars($phone->$column()) . '</span>';
+                            break;
                         default:
                             $value .= '<span>' . htmlspecialchars($phone->$column()) . '</span>';
                             break;
@@ -193,9 +202,15 @@ class Assets extends CI_Controller
                 if ('id' === $column) {
                     $value .= '<label class="index-label" data-id="' . $simCard->$column() . '">' . ($index++ + $offset). '</label>';
                 } elseif ('#action' === $column) {
-                    $value .= '<button class="btn btn-info" style="padding-bottom: 0;padding-top: 0;"><i class="fa fa-edit"></i> 编辑</button>';
+                    $value .= $this->simCardAction($simCard);
                 } elseif (array_key_exists($column, $fields)) {
                     switch ($column) {
+                        case 'status':
+                            $value .= $this->simCardStatus($simCard);
+                            break;
+                        case 'imsi':
+                            $value .= '<span class="long-data">' . htmlspecialchars($simCard->$column()) . '</span>';
+                            break;
                         default:
                             $value .= '<span>' . htmlspecialchars($simCard->$column()) . '</span>';
                             break;
@@ -210,15 +225,75 @@ class Assets extends CI_Controller
         return $response;
     }
 
-    private function phoneAction() : string
+    private function phoneAction(Phone $phone) : string
     {
-        $result = '';
+        $phoneId = $phone->id();
+        $result = '<button data-toggle="modal" data-target="#ajax-modal" data-url="/phone/info/' . $phoneId . '" class="btn btn-info btn-xs action-button">查看</button>';
+        switch ($phone->status()) {
+            case Phone::STATUS_IN_INVENTORY:
+                $result .= '<button data-role="rent-out" data-url="/phone/rent/' . $phoneId . '" class="btn btn-success btn-xs action-button">借出</button>';
+                break;
+            case Phone::STATUS_RENT_OUT:
+                if (App::getUser()->id() === $phone->userId()) {
+                    break;
+                }
+                $request = Request::getOne([
+                    'assetId' => $phoneId,
+                    'deleted' => Request::DELETED_NO,
+                    'assetType' => Request::ASSET_TYPE_PHONE,
+                    'type' => Request::TYPE_TRANSFER,
+                    'status' => Request::STATUS_NEW,
+                ]);
+                if ($request) {
+                    break;
+                }
+                $result .= '<button data-role="transfer" data-url="/phone/transferApply/' . $phoneId . '" class="btn btn-warning btn-xs action-button">申请转借</button>';
+                break;
+        }
         return $result;
     }
 
-    private function phoneSimCard() : string
+    private function phoneStatus(Phone $phone) : string
     {
         $result = '';
+        $status = Phone::LABEL_STATUS[$phone->status()];
+        $result .= '<span>' . htmlspecialchars($status) . '</span>';
+        return $result;
+    }
+
+    private function simCardAction(SimCard $simCard) : string
+    {
+        $simCardId = $simCard->id();
+        $result = '<button data-toggle="modal" data-target="#ajax-modal" data-url="/simCard/info/' . $simCardId . '" class="btn btn-info btn-xs action-button">查看</button>';
+        switch ($simCard->status()) {
+            case Phone::STATUS_IN_INVENTORY:
+                $result .= '<button data-role="rent-out" data-url="/simCard/rent/' . $simCardId . '" class="btn btn-success btn-xs action-button">借出</button>';
+                break;
+            case Phone::STATUS_RENT_OUT:
+                if (App::getUser()->id() === $simCard->userId()) {
+                    break;
+                }
+                $request = Request::getOne([
+                    'assetId' => $simCardId,
+                    'deleted' => Request::DELETED_NO,
+                    'assetType' => Request::ASSET_TYPE_SIM_CARD,
+                    'type' => Request::TYPE_TRANSFER,
+                    'status' => Request::STATUS_NEW,
+                ]);
+                if ($request) {
+                    break;
+                }
+                $result .= '<button data-role="transfer" data-url="/simCard/transferApply/' . $simCardId . '" class="btn btn-warning btn-xs action-button">申请转借</button>';
+                break;
+        }
+        return $result;
+    }
+
+    private function simCardStatus(SimCard $simCard) : string
+    {
+        $result = '';
+        $status = SimCard::LABEL_STATUS[$simCard->status()];
+        $result .= '<span>' . htmlspecialchars($status) . '</span>';
         return $result;
     }
 }

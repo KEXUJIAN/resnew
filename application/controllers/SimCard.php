@@ -2,30 +2,30 @@
 /**
  * Created by PhpStorm.
  * User: KE
- * Date: 2018/1/1
- * Time: 11:51
+ * Date: 2018/1/4
+ * Time: 20:09
  */
 
-use \Res\Model\Phone as PhoneModel;
+use Res\Model\SimCard as SimCardModal;
 use Res\Model\Request;
 use Res\Model\User;
 
-class Phone extends CI_Controller
+class SimCard extends CI_Controller
 {
     const ERROR_NO_ERROR = 0;
     const ERROR_NO_RECORD = 1;
     const ERROR_WRONG_STATUS = 2;
     const ERROR_MESSAGE = [
         0 => '请求成功',
-        1 => '请求的测试机记录不存在',
-        2 => '测试机状态错误',
+        1 => '请求的测试卡记录不存在',
+        2 => '测试卡状态错误',
     ];
 
     public function info($id)
     {
-        $phone = PhoneModel::get($id);
-        if (!$phone) {
-            show_error(self::ERROR_MESSAGE[self::ERROR_NO_RECORD], 500, '找不到测试机');
+        $simCard = SimCardModal::get($id);
+        if (!$simCard) {
+            show_error(self::ERROR_MESSAGE[self::ERROR_NO_RECORD], 500, '找不到测试卡');
         }
 //        App::view('');
     }
@@ -43,23 +43,22 @@ class Phone extends CI_Controller
                 'role' => User::ROLE_MANAGER,
             ]);
             $user = App::getUser();
-            $phone = PhoneModel::get($id, true);
-            if (!$phone || $phone->deleted() === PhoneModel::DELETED_YES) {
+            $simCard = SimCardModal::get($id, true);
+            if (!$simCard || $simCard->deleted() === SimCardModal::DELETED_YES) {
                 throw new Exception(self::ERROR_MESSAGE[self::ERROR_NO_RECORD], self::ERROR_NO_RECORD);
             }
-            if ($phone->status() !== PhoneModel::STATUS_IN_INVENTORY) {
+            if ($simCard->status() !== SimCardModal::STATUS_IN_INVENTORY) {
                 throw new Exception(self::ERROR_MESSAGE[self::ERROR_WRONG_STATUS] . ', 不能借出', self::ERROR_WRONG_STATUS);
             }
-            $phone->status(PhoneModel::STATUS_RENT_OUT);
-            $phone->userId($user->id());
-            $phone->statusDescription("{$user->name()} [{$user->username()}] 借走了该测试机");
-            $phone->save();
+            $simCard->status(SimCardModal::STATUS_RENT_OUT);
+            $simCard->userId($user->id());
+            $simCard->statusDescription("{$user->name()} [{$user->username()}] 借走了该测试卡");
+            $simCard->save();
             $request = new Request();
-            $request->type(Request::TYPE_RENT_OUT);
             $request->fromUserId($user->id());
             $request->toUserId($admin->id());
             $request->assetId($id);
-            $request->assetType(Request::ASSET_TYPE_PHONE);
+            $request->assetType(Request::ASSET_TYPE_SIM_CARD);
             $request->status(Request::STATUS_DONE);
             $request->save();
 
@@ -90,17 +89,17 @@ class Phone extends CI_Controller
                 'role' => User::ROLE_MANAGER,
             ]);
             $user = App::getUser();
-            $phone = PhoneModel::get($id, true);
-            if (!$phone || $phone->deleted() === PhoneModel::DELETED_YES) {
+            $simCard = SimCardModal::get($id, true);
+            if (!$simCard || $simCard->deleted() === SimCardModal::DELETED_YES) {
                 throw new Exception(self::ERROR_MESSAGE[self::ERROR_NO_RECORD], self::ERROR_NO_RECORD);
             }
-            if ($phone->status() !== PhoneModel::STATUS_RENT_OUT || $phone->userId() !== $user->id()) {
+            if ($simCard->status() !== SimCardModal::STATUS_RENT_OUT || $simCard->userId() !== $user->id()) {
                 throw new Exception(self::ERROR_MESSAGE[self::ERROR_WRONG_STATUS] . ', 无法归还', self::ERROR_WRONG_STATUS);
             }
             $request = Request::getOne([
                 'assetId' => $id,
                 'deleted' => Request::DELETED_NO,
-                'assetType' => Request::ASSET_TYPE_PHONE,
+                'assetType' => Request::ASSET_TYPE_SIM_CARD,
                 'type' => Request::TYPE_TRANSFER,
                 'status' => Request::STATUS_NEW,
             ]);
@@ -109,16 +108,16 @@ class Phone extends CI_Controller
                 $request->save();
                 unset($request);
             }
-            $phone->status(PhoneModel::STATUS_IN_INVENTORY);
-            $phone->statusDescription('');
-            $phone->userId(null);
-            $phone->save();
+            $simCard->status(SimCardModal::STATUS_IN_INVENTORY);
+            $simCard->statusDescription('');
+            $simCard->userId(null);
+            $simCard->save();
             $request = new Request();
             $request->type(Request::TYPE_RETURN);
             $request->fromUserId($user->id());
             $request->toUserId($admin->id());
             $request->assetId($id);
-            $request->assetType(Request::ASSET_TYPE_PHONE);
+            $request->assetType(Request::ASSET_TYPE_SIM_CARD);
             $request->status(Request::STATUS_DONE);
             $request->save();
 
@@ -145,20 +144,20 @@ class Phone extends CI_Controller
         $pdo->beginTransaction();
         try {
             $user = App::getUser();
-            $phone = PhoneModel::get($id, true);
-            if (!$phone || $phone->deleted() === PhoneModel::DELETED_YES) {
+            $simCard = SimCardModal::get($id, true);
+            if (!$simCard || $simCard->deleted() === SimCardModal::DELETED_YES) {
                 throw new Exception(self::ERROR_MESSAGE[self::ERROR_NO_RECORD], self::ERROR_NO_RECORD);
             }
-            if ($phone->status() !== PhoneModel::STATUS_RENT_OUT || !$phone->userId()) {
+            if ($simCard->status() !== SimCardModal::STATUS_RENT_OUT || !$simCard->userId()) {
                 throw new Exception(self::ERROR_MESSAGE[self::ERROR_WRONG_STATUS] . ', 无法发起转借请求', self::ERROR_WRONG_STATUS);
             }
-            if ($phone->userId() === $user->id()) {
+            if ($simCard->userId() === $user->id()) {
                 throw new Exception(self::ERROR_MESSAGE[self::ERROR_WRONG_STATUS] . ', 不能转借给自己', self::ERROR_WRONG_STATUS);
             }
             $request = Request::getOne([
                 'assetId' => $id,
                 'deleted' => Request::DELETED_NO,
-                'assetType' => Request::ASSET_TYPE_PHONE,
+                'assetType' => Request::ASSET_TYPE_SIM_CARD,
                 'type' => Request::TYPE_TRANSFER,
                 'status' => Request::STATUS_NEW,
             ]);
@@ -168,9 +167,9 @@ class Phone extends CI_Controller
             $request = new Request();
             $request->type(Request::TYPE_TRANSFER);
             $request->fromUserId($user->id());
-            $request->toUserId($phone->userId());
+            $request->toUserId($simCard->userId());
             $request->assetId($id);
-            $request->assetType(Request::ASSET_TYPE_PHONE);
+            $request->assetType(Request::ASSET_TYPE_SIM_CARD);
             $request->status(Request::STATUS_NEW);
             $request->save();
 

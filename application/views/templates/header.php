@@ -57,6 +57,16 @@
             width: 100%;
             text-align: center;
         }
+        .ajax-table .long-data {
+            display: inline-block;
+            max-width: 80px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        .action-button {
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body <?php if ($pageId ?? ''): echo 'id="' . $pageId . '"'; endif; ?>>

@@ -125,8 +125,8 @@ class CI_Exceptions {
 		}
 		else
 		{
-			$heading = '404 Page Not Found';
-			$message = 'The page you requested was not found.';
+			$heading = '404 找不到页面';
+			$message = '你所请求的页面不存在.';
 		}
 
 		// By default we log this, but allow a dev to skip it
