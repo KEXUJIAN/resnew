@@ -30,13 +30,23 @@ const appRes = {
                 return 1;
             }
         }
-        fields = form.find('.checkbox[data-required="true"] :checkbox:checked');
-        if (!fields.length) {
-            return 2;
+        fields = form.find('.checkbox[data-required="true"]');
+        if (fields.length) {
+            for (let i = 0; i < fields.length; ++i) {
+                let field = $(fields[i]).find(':checkbox:checked');
+                if (!field.length) {
+                    return 2;
+                }
+            }
         }
-        fields = form.find('.radio[data-required="true"] :radio:checked');
-        if (!fields.length) {
-            return 3;
+        fields = form.find('.radio[data-required="true"]');
+        if (fields.length) {
+            for (let i = 0; i < fields.length; ++i) {
+                let field = $(fields[i]).find(':radio:checked');
+                if (!field.length) {
+                    return 3;
+                }
+            }
         }
         return 0;
     }
