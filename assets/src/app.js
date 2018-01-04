@@ -19,6 +19,27 @@ const appRes = {
         });
         return dataObj;
     },
+    validForm: function (form) {
+        let fields = form.find(':text[data-required="true"], select[data-required="true"]');
+        for (let i = 0; i < fields.length; ++i) {
+            let field = $(fields[i]);
+            if (!field.is(':visible')) {
+                continue;
+            }
+            if (!$.trim(field.val())) {
+                return 1;
+            }
+        }
+        fields = form.find('.checkbox[data-required="true"] :checkbox:checked');
+        if (!fields.length) {
+            return 2;
+        }
+        fields = form.find('.radio[data-required="true"] :radio:checked');
+        if (!fields.length) {
+            return 3;
+        }
+        return 0;
+    }
 };
 
 const initObj = {
@@ -32,8 +53,24 @@ const initObj = {
             that.on('submit', (e) => {
                 e.preventDefault();
             });
+            that.find(':text[data-required="true"], select[data-required="true"], .checkbox[data-required="true"], .radio[data-required="true"]').each(function () {
+                let input = $(this);
+                let wrapper = input.closest('div[class^=col]');
+                if (!wrapper.length) {
+                    return;
+                }
+                let label = wrapper.prev();
+                if (!label.length || !label.is('.control-label')) {
+                    return;
+                }
+                label.addClass('required');
+            });
             // 监听我们自己的提交事件
             that.on('ajaxSubmit.resmanager', async function (e, submitTrigger) {
+                if (appRes.validForm(that)) {
+                    bootbox.alert('请填写所有必填项');
+                    return;
+                }
                 let bs = that.data('beforeSubmit');
                 if ($.isFunction(bs) && bs(that) === false) {
                     return;

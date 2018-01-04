@@ -21,11 +21,11 @@ use Res\Model\Phone;
                 <div class="form-group">
                     <label class="col-md-2 control-label">机型:</label>
                     <div class="col-md-4">
-                        <input type="text" name="type" class="form-control">
+                        <input type="text" name="type" class="form-control" data-required="true">
                     </div>
                     <label class="col-md-2 control-label">系统:</label>
                     <div class="col-md-4">
-                        <input type="text" name="os" class="form-control">
+                        <input type="text" name="os" class="form-control" data-required="true">
                     </div>
                 </div>
             </div>
@@ -53,14 +53,14 @@ use Res\Model\Phone;
                     </div>
                     <label class="col-md-2 control-label">标识:</label>
                     <div class="col-md-4">
-                        <input type="text" name="label" class="form-control">
+                        <input type="text" name="label" class="form-control" data-required="true">
                     </div>
                 </div>
             </div>
             <div class="col-md-12">
                 <div class="form-group">
                     <label class="col-md-2 control-label">运营商:</label>
-                    <div class="col-md-10 checkbox">
+                    <div class="col-md-10 checkbox" data-required="true">
                         <?php foreach (Phone::LABEL_CARRIER as $code => $label): ?>
                         <label><input type="checkbox" name="carrier[]" value="<?=$code?>"><?=$label?></label>
                         <?php endforeach; ?>
@@ -70,7 +70,7 @@ use Res\Model\Phone;
             <div class="col-md-12">
                 <div class="form-group">
                     <label class="col-md-2 control-label">状态:</label>
-                    <div class="col-md-10 radio">
+                    <div class="col-md-10 radio" data-required="true">
                         <?php foreach (Phone::LABEL_STATUS as $code => $label): ?>
                         <label><input type="radio" name="status" value="<?=$code?>"><?=$label?></label>
                         <?php endforeach; ?>
@@ -81,7 +81,7 @@ use Res\Model\Phone;
                 <div class="form-group">
                     <label class="col-md-2 control-label">借出人:</label>
                     <div class="col-md-4">
-                        <select name="userId" class="form-control"></select>
+                        <select name="userId" class="form-control" data-required="true"></select>
                     </div>
                 </div>
             </div>
@@ -103,49 +103,12 @@ use Res\Model\Phone;
 <script>
 (function () {
     $('#new-phone-form')
-        .data('beforeSubmit', function (form) {
-            var texts = form.find(':text');
-            var i = 0;
-            for (; i < texts.length; ++i) {
-                if ($.trim(texts[i].value)) {
-                    continue;
-                }
-                bootbox.alert('请填写所有字段');
-                return false;
-            }
-            var checkboxs = form.find(':checkbox');
-            var checked = false;
-            for (i = 0;i < checkboxs.length; ++i) {
-                if (!$(checkboxs[i]).prop('checked')) {
-                    continue;
-                }
-                checked = true;
-                break;
-            }
-            if (!checked) {
-                bootbox.alert('请至少选择一个多选字段');
-                return false;
-            }
-            var radios = form.find(':radio');
-            var selected = false;
-            for (i = 0;i < radios.length; ++i) {
-                if (!$(radios[i]).prop('checked')) {
-                    continue;
-                }
-                selected = true;
-                break;
-            }
-            if (!selected) {
-                bootbox.alert('请选择单选框');
-                return false;
-            }
-        })
         .data('submitDoneSucc', function (ret, form) {
             var _modal = form.closest('.ajax-modal');
             _modal
                 .data('afterHidden', function () {
                     bootbox.alert(ret.message);
-                    $('#user-panel').find('.ajax-table').DataTable().ajax.reload();
+                    $('#phone-panel').find('.ajax-table').DataTable().ajax.reload();
                 })
                 .find('button.btn-default').click();
         })

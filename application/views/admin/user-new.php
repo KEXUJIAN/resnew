@@ -19,11 +19,11 @@
                 <div class="form-group">
                     <label class="col-md-2 control-label">用户名:</label>
                     <div class="col-md-4">
-                        <input type="text" name="username" class="form-control">
+                        <input type="text" name="username" class="form-control" data-required="true">
                     </div>
                     <label class="col-md-2 control-label">姓名:</label>
                     <div class="col-md-4">
-                        <input type="text" name="name" class="form-control">
+                        <input type="text" name="name" class="form-control" data-required="true">
                     </div>
                 </div>
             </div>
@@ -31,11 +31,11 @@
                 <div class="form-group">
                     <label class="col-md-2 control-label">密码:</label>
                     <div class="col-md-4">
-                        <input type="text" name="password" class="form-control" value="123456">
+                        <input type="text" name="password" class="form-control" value="123456" data-required="true">
                     </div>
                     <label class="col-md-2 control-label">邮箱:</label>
                     <div class="col-md-4">
-                        <input type="text" name="email" class="form-control">
+                        <input type="text" name="email" class="form-control" data-required="true">
                     </div>
                 </div>
             </div>
@@ -49,16 +49,6 @@
 <script>
 (function () {
     $('#new-user-form')
-        .data('beforeSubmit', function (form) {
-            var inputs = form.find(':text');
-            for (var i = 0; i < inputs.length; ++i) {
-                if ($.trim(inputs[i].value)) {
-                    continue;
-                }
-                bootbox.alert('请填写所有字段');
-                return false;
-            }
-        })
         .data('formData', function (data) {
             var username = data.username;
             var password = data.password;

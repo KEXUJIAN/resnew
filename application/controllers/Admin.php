@@ -269,6 +269,11 @@ class Admin extends CI_Controller
                     $value .= '<button class="btn btn-info" style="padding-bottom: 0;padding-top: 0;"><i class="fa fa-edit"></i> 编辑</button>';
                 } elseif (array_key_exists($column, $fields)) {
                     switch ($column) {
+                        case 'type':
+                        case 'os':
+                        case 'imei':
+                            $value .= '<span class="long-data">' . htmlspecialchars($phone->$column()) . '</span>';
+                            break;
                         default:
                             $value .= '<span>' . htmlspecialchars($phone->$column()) . '</span>';
                             break;
@@ -350,6 +355,9 @@ class Admin extends CI_Controller
                     $value .= '<button class="btn btn-info" style="padding-bottom: 0;padding-top: 0;"><i class="fa fa-edit"></i> 编辑</button>';
                 } elseif (array_key_exists($column, $fields)) {
                     switch ($column) {
+                        case 'imsi':
+                            $value .= '<span class="long-data">' . htmlspecialchars($simCard->$column()) . '</span>';
+                            break;
                         default:
                             $value .= '<span>' . htmlspecialchars($simCard->$column()) . '</span>';
                             break;
@@ -379,7 +387,10 @@ class Admin extends CI_Controller
         $missing = '';
         foreach ($required as $name => $type) {
             $val = $_POST[$name] ?? '';
-            if ('array' === $type && (!is_array($val) || !count($val))) {
+            if ('array' === $type) {
+                if (is_array($val) && count($val)) {
+                    continue;
+                }
                 $missing = $name;
                 break;
             }
@@ -431,7 +442,10 @@ class Admin extends CI_Controller
         $missing = '';
         foreach ($required as $name => $type) {
             $val = $_POST[$name] ?? '';
-            if ('array' === $type && (!is_array($val) || !count($val))) {
+            if ('array' === $type) {
+                if (is_array($val) && count($val)) {
+                    continue;
+                }
                 $missing = $name;
                 break;
             }
@@ -474,11 +488,14 @@ class Admin extends CI_Controller
         }
         $carrier = $_POST['carrier'];
         $carrier = implode(',', $carrier);
-        $ram = $_POST['ram'] ?? null;
+        $ram = is_numeric($_POST['ram'] ?? null) ? $_POST['ram'] : null;
         $screenSize = $_POST['screenSize'] ?? null;
         $resolutionW = $_POST['resolutionW'] ?? '';
         $resolutionH = $_POST['resolutionH'] ?? '';
-        $imei = implode(',', $_POST['imei'] ?? []);
+        $imei = $_POST['imei'] ?? '';
+        if (preg_match_all('#\d{15}#', $imei, $match)) {
+            $imei = implode(',', $match[0]);
+        }
         $imei = $imei ?: null;
         $type = $_POST['type'] ?? null;
         $os = $_POST['os'];
@@ -515,7 +532,10 @@ class Admin extends CI_Controller
         $missing = '';
         foreach ($required as $name => $type) {
             $val = $_POST[$name] ?? '';
-            if ('array' === $type && (!is_array($val) || !count($val))) {
+            if ('array' === $type) {
+                if (is_array($val) && count($val)) {
+                    continue;
+                }
                 $missing = $name;
                 break;
             }

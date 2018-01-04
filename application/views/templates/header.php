@@ -18,7 +18,7 @@
     <script src="https://cdn.bootcss.com/blueimp-file-upload/9.19.2/js/vendor/jquery.ui.widget.min.js"></script>
     <script src="https://cdn.bootcss.com/blueimp-file-upload/9.19.2/js/jquery.iframe-transport.min.js"></script>
     <script src="https://cdn.bootcss.com/blueimp-file-upload/9.19.2/js/jquery.fileupload.min.js"></script>
-    <script src="/asset/app.9945318785b8ec75d28d.js"></script>
+    <script src="/asset/app.2dad9e0b9350455d786b.js"></script>
     <style type="text/css">
         body {
             position: absolute;
@@ -66,6 +66,10 @@
         .action-button {
             margin-right: 5px;
             margin-bottom: 5px;
+        }
+        .required::after {
+            content: '*';
+            color: red;
         }
     </style>
 </head>
