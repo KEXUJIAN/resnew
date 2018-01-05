@@ -210,12 +210,13 @@ class SimCard extends CI_Controller
                 $simCard->statusDescription("{$fromUser->name()} [{$fromUser->username()}] 借走了该测试卡");
                 $request->status(Request::STATUS_DONE);
                 $simCard->save();
+                $response['message'] = '已同意转借';
             } else {
                 $request->status(Request::STATUS_REJECT);
+                $response['message'] = '已拒绝转借';
             }
             $request->save();
             $pdo->commit();
-            $response['message'] = '已同意转借';
         } catch (Throwable $t) {
             $pdo->rollBack();
             $message = $t->getMessage();
