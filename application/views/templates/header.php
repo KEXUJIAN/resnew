@@ -1,4 +1,7 @@
 <?php
+
+use Res\Model\User;
+
 if (isset($title)):
     $title = is_array($title) ? $title : [$title];
     $title = '库存系统 | ' . implode(' | ', $title);
@@ -95,6 +98,14 @@ endif;
                         <li><a class="dropdown-item" href="/assets/simcard" target="_blank">测试卡</a></li>
                     </ul>
                 </li>
+                <?php if (User::ROLE_MANAGER === $user->role()): ?>
+                <li>
+                    <a href="/admin/console">
+                        <i class="fa fa-cog"></i>
+                        管理后台
+                    </a>
+                </li>
+                <?php endif; ?>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">

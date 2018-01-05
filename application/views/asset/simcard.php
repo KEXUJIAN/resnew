@@ -21,6 +21,12 @@ App::view('templates/header', ['title' => '测试卡']);
         </div>
     </div>
 </div>
+<div id="ajax-modal" class="modal ajax-modal fade" data-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
 <script>
 (function () {
     resRunInit();

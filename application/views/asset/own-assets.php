@@ -137,6 +137,12 @@ App::view('templates/header', ['title' => '我的库存']);
         </div>
     </div>
 </div>
+<div id="ajax-modal" class="modal ajax-modal fade" data-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
 <script>
 (function () {
     var initialPanelName = '#' + '<?=$panel?>' + '-panel';
@@ -181,6 +187,7 @@ App::view('templates/header', ['title' => '我的库存']);
         })
     });
     resRunInit(currentPanel);
+    resRunInit();
 })();
 </script>
 <?php
