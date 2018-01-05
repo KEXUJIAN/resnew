@@ -91,7 +91,6 @@ const initObj = {
                         name: 'submitException',
                         code: 1,
                     };
-                    return;
                 }
                 if (submitTrigger.prop('disabled')) {
                     return;
@@ -193,14 +192,18 @@ const initObj = {
             }
             let actionPanel = that.siblings('.data-table-action-wrapper');
             if (actionPanel.length) {
-                actionPanel.on('click', '[data-toggle="collapse"]', function () {
-                    let btnCollapse = $(this);
-                    if (actionPanel.find(btnCollapse.data('target')).is('.in')) {
-                        btnCollapse.find('i').removeClass('fa-caret-up').addClass('fa-caret-down');
-                    } else {
-                        btnCollapse.find('i').removeClass('fa-caret-down').addClass('fa-caret-up');
-                    }
-                });
+                actionPanel
+                    .on('click', '[data-toggle="collapse"]', function () {
+                        let btnCollapse = $(this);
+                        if (actionPanel.find(btnCollapse.data('target')).is('.in')) {
+                            btnCollapse.find('i').removeClass('fa-caret-up').addClass('fa-caret-down');
+                        } else {
+                            btnCollapse.find('i').removeClass('fa-caret-down').addClass('fa-caret-up');
+                        }
+                    })
+                    .on('click', '[data-role="refresh"]', function () {
+                        that.DataTable().draw(false);
+                    });
                 let filterForm = actionPanel.find('form');
                 filterForm
                     .on('submit', function (e) {

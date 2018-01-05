@@ -269,6 +269,17 @@ class Admin extends CI_Controller
                     $value .= '<button class="btn btn-info" style="padding-bottom: 0;padding-top: 0;"><i class="fa fa-edit"></i> 编辑</button>';
                 } elseif (array_key_exists($column, $fields)) {
                     switch ($column) {
+                        case 'status':
+                            $value .= $this->phoneStatus($phone);
+                            break;
+                        case 'carrier':
+                            $carrierList = explode(',', $phone->carrier());
+                            $labels = [];
+                            foreach ($carrierList as $carrierCode) {
+                                $labels[] = Phone::LABEL_CARRIER[$carrierCode];
+                            }
+                            $value .= '<span>' . implode(',', $labels) . '</span>';
+                            break;
                         case 'type':
                         case 'os':
                         case 'imei':
@@ -355,6 +366,17 @@ class Admin extends CI_Controller
                     $value .= '<button class="btn btn-info" style="padding-bottom: 0;padding-top: 0;"><i class="fa fa-edit"></i> 编辑</button>';
                 } elseif (array_key_exists($column, $fields)) {
                     switch ($column) {
+                        case 'status':
+                            $value .= $this->simCardStatus($simCard);
+                            break;
+                        case 'carrier':
+                            $carrierList = explode(',', $simCard->carrier());
+                            $labels = [];
+                            foreach ($carrierList as $carrierCode) {
+                                $labels[] = SimCard::LABEL_CARRIER[$carrierCode];
+                            }
+                            $value .= '<span>' . implode(',', $labels) . '</span>';
+                            break;
                         case 'imsi':
                             $value .= '<span class="long-data">' . htmlspecialchars($simCard->$column()) . '</span>';
                             break;
@@ -370,6 +392,48 @@ class Admin extends CI_Controller
         $response['data'] = $data;
         $response['recordsTotal'] = $response['recordsFiltered'] = $count;
         return $response;
+    }
+
+    private function phoneStatus(Phone $phone) : string
+    {
+        $result = '';
+        $status = Phone::LABEL_STATUS[$phone->status()];
+        switch ($phone->status()) {
+            case Phone::STATUS_IN_INVENTORY:
+                $result .= '<i class="fa fa-home text-success"></i>';
+                break;
+            case Phone::STATUS_RENT_OUT:
+                $result .= '<i class="fa fa-user text-warning"></i>';
+                break;
+            case Phone::STATUS_BROKEN:
+                $result .= '<i class="fa fa-times text-danger"></i>';
+                break;
+            case Phone::STATUS_OTHER:
+                $result .= '<i class="fa fa-question text-muted"></i>';
+                break;
+        }
+        return $result;
+    }
+
+    private function simCardStatus(SimCard $simCard) : string
+    {
+        $result = '';
+        $status = SimCard::LABEL_STATUS[$simCard->status()];
+        switch ($simCard->status()) {
+            case SimCard::STATUS_IN_INVENTORY:
+                $result .= '<i class="fa fa-home text-success"></i>';
+                break;
+            case SimCard::STATUS_RENT_OUT:
+                $result .= '<i class="fa fa-user text-warning"></i>';
+                break;
+            case SimCard::STATUS_BROKEN:
+                $result .= '<i class="fa fa-times text-danger"></i>';
+                break;
+            case SimCard::STATUS_OTHER:
+                $result .= '<i class="fa fa-question text-mute"></i>';
+                break;
+        }
+        return $result;
     }
 
     private function saveUser()

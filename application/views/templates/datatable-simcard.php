@@ -24,6 +24,9 @@ use Res\Model\User;
             <button class="btn btn-default" data-toggle="collapse" data-target="#simcard-filter">
                 <i class="fa fa-caret-down"></i>搜索框
             </button>
+            <button class="btn btn-info" data-role="refresh">
+                <i class="fa fa-refresh"></i> 刷新
+            </button>
         </div>
         <div id="simcard-filter" class="pull-left collapse">
             <form class="form-horizontal">

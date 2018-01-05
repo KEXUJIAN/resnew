@@ -1,8 +1,14 @@
+<?php
+if (isset($title)):
+    $title = is_array($title) ? $title : [$title];
+    $title = '库存系统 | ' . implode(' | ', $title);
+endif;
+?>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title><?php echo $title ?? 'Warehouse' ?></title>
+    <title><?php echo $title ?? '库存系统' ?></title>
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
@@ -18,7 +24,7 @@
     <script src="https://cdn.bootcss.com/blueimp-file-upload/9.19.2/js/vendor/jquery.ui.widget.min.js"></script>
     <script src="https://cdn.bootcss.com/blueimp-file-upload/9.19.2/js/jquery.iframe-transport.min.js"></script>
     <script src="https://cdn.bootcss.com/blueimp-file-upload/9.19.2/js/jquery.fileupload.min.js"></script>
-    <script src="/asset/app.2dad9e0b9350455d786b.js"></script>
+    <script src="/asset/app.4ab1f09c1ae8b615df28.js"></script>
     <style type="text/css">
         body {
             position: absolute;
@@ -103,20 +109,20 @@
                         <li class="divider"></li>
                         <li>
                             <a class="dropdown-item" href="javascript:;">
-                                <i class="fa fa-home"></i>
+                                <i class="fa fa-user"></i>
                                 个人资料
                             </a>
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a class="dropdown-item" href="javascript:;">
-                                <i class="fa"></i>
-                                我的
+                            <a class="dropdown-item" href="/assets/inventory" target="_blank">
+                                <i class="fa fa-cube"></i>
+                                我的库存
                             </a>
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a id="logout" href="/user/logout">
+                            <a id="logout" class="bg-danger" href="/user/logout">
                                 <i class="fa fa-power-off text-danger"></i> 退出
                             </a>
                         </li>

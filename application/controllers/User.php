@@ -18,7 +18,7 @@ class User extends CI_Controller
         $password = $_POST['password'] ?? '';
         $response = [
             'result' => true,
-            'message' => '/welcome/index',
+            'message' => '/assets/phone',
         ];
 
         if (!$username || !$password) {
@@ -42,6 +42,9 @@ class User extends CI_Controller
             $response['message'] = '用户名 / 密码错误';
             echo json_encode($response);
             return;
+        }
+        if (UserModel::ROLE_MANAGER === $user->role()) {
+            $response['message'] = '/admin/console';
         }
         $_SESSION['USER'] = $user->obj2Array();
         session_commit();

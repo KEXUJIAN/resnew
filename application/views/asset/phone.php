@@ -32,21 +32,22 @@ App::view('templates/header', ['title' => '测试机']);
    resRunInit();
    var table = $('table');
    table
-       .on('click', '[data-role="rent-out"], [data-role="transfer"]', function () {
+       .on('click', '[data-role="rent-out"], [data-role="transfer"], [data-role="return"]', function () {
            var that = $(this);
            $.get(that.data('url'), null, null, 'json')
                .done(function (ret) {
                    if (!ret.result) {
-                       bootbox.alert(ret.message || '发生错误');
+                       bootbox.alert(ret.message || '发生错误', function () {
+                           table.DataTable().draw(false);
+                       });
                        return;
                    }
-                   bootbox.alert(ret.message || '请求成功');
+                   bootbox.alert(ret.message || '请求成功', function () {
+                       table.DataTable().draw(false);
+                   });
                })
                .fail(function () {
                    ;
-               })
-               .always(function () {
-                   table.DataTable().ajax.reload();
                });
        });
 })();

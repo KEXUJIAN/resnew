@@ -6,7 +6,7 @@
  * Time: 15:26
  */
 
-App::view('templates/header');
+App::view('templates/header', ['title' => '测试卡']);
 ?>
 
 <div class="container">
@@ -24,6 +24,26 @@ App::view('templates/header');
 <script>
 (function () {
     resRunInit();
+    var table = $('table');
+    table
+        .on('click', '[data-role="rent-out"], [data-role="transfer"], [data-role="return"]', function () {
+            var that = $(this);
+            $.get(that.data('url'), null, null, 'json')
+                .done(function (ret) {
+                    if (!ret.result) {
+                        bootbox.alert(ret.message || '发生错误', function () {
+                            table.DataTable().draw(false);
+                        });
+                        return;
+                    }
+                    bootbox.alert(ret.message || '请求成功', function () {
+                        table.DataTable().draw(false);
+                    });
+                })
+                .fail(function () {
+                    ;
+                });
+        });
 })();
 </script>
 <?php
