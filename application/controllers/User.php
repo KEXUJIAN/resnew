@@ -12,6 +12,15 @@ class User extends CI_Controller
         App::view('profile');
     }
 
+    public function notification()
+    {
+        $result = [
+            'result' => true,
+            'message' => 1,
+        ];
+        echo json_encode($result);
+    }
+
     public function login()
     {
         App::view('login');

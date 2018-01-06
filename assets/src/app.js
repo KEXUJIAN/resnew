@@ -1,5 +1,31 @@
 const $ = require('jquery');
 
+$(function () {
+   let notify = $('#notification-bell');
+   if (!notify.length) {
+       return;
+   }
+
+    setTimeout(async () => {
+        await getNotification();
+    }, 0);
+
+   async function getNotification() {
+       let nr = 0;
+       try {
+           let ret = await $.post(notify.data('url'), null, null, 'json');
+           nr = ret.result ? ret.message : 0;
+       } catch (err) {
+           nr = 0;
+       } finally {
+           notify.find('.badge.badge-jump').text(nr || null);
+       }
+       setTimeout(async () => {
+           await getNotification();
+       }, 5000);
+   }
+});
+
 const appRes = {
     getFormData: (form) => {
         let formData = form.serializeArray();

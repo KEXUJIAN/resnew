@@ -27,7 +27,7 @@ endif;
     <script src="https://cdn.bootcss.com/blueimp-file-upload/9.19.2/js/vendor/jquery.ui.widget.min.js"></script>
     <script src="https://cdn.bootcss.com/blueimp-file-upload/9.19.2/js/jquery.iframe-transport.min.js"></script>
     <script src="https://cdn.bootcss.com/blueimp-file-upload/9.19.2/js/jquery.fileupload.min.js"></script>
-    <script src="/asset/app.4ab1f09c1ae8b615df28.js"></script>
+    <script src="/asset/app.19e20d67a2b9f607a152.js"></script>
     <style type="text/css">
         body {
             position: absolute;
@@ -134,9 +134,9 @@ endif;
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <a href="javascript:;">
+                    <a id="notification-bell" href="/user/profile" data-url="/user/notification">
                         <i class="fa fa-bell"></i>
-                        <span class="badge badge-jump">1</span>
+                        <span class="badge badge-jump"></span>
                     </a>
                 </li>
                 <li class="dropdown">
