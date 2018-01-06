@@ -63,6 +63,11 @@ class Phone extends CI_Controller
             $request->status(Request::STATUS_DONE);
             $request->save();
 
+            $label = htmlspecialchars($phone->label());
+            $content = "测试机借出\r\n测试机[标志]: {$label}\r\n借出人: {$user->name()}[{$user->username()}]\r\n";
+            $content .= "请求细节查看链接: " . site_url(['request', $request->id()]);
+            AppService::getEmail()->send('测试机借出', $content);
+
             $pdo->commit();
             $response['message'] = self::ERROR_MESSAGE[self::ERROR_NO_ERROR];
             $response['code'] = self::ERROR_NO_ERROR;
@@ -108,6 +113,14 @@ class Phone extends CI_Controller
                 $request->status(Request::STATUS_REJECT);
                 $request->timeModified(date('Y-m-d H:i:s'));
                 $request->save();
+                $fromUser = User::get($request->fromUserId());
+                if ($fromUser->email()) {
+                    $label = htmlspecialchars($phone->label());
+                    $content = "您的测试机转借请求被拒绝, 原因: 测试机被归还\r\n测试机[标志]: {$label}\r\n";
+                    $content .= "原借出人: {$user->name()}[{$user->username()}]\r\n";
+                    $content .= "请求细节查看链接: " . site_url(['request', $request->id()]);
+                    AppService::getEmail()->send('测试机转借|拒绝', $content, $fromUser->email());
+                }
                 unset($request);
             }
             $phone->status(PhoneModel::STATUS_IN_INVENTORY);
@@ -122,6 +135,11 @@ class Phone extends CI_Controller
             $request->assetType(Request::ASSET_TYPE_PHONE);
             $request->status(Request::STATUS_DONE);
             $request->save();
+
+            $label = htmlspecialchars($phone->label());
+            $content = "测试机归还\r\n测试机[标志]: {$label}\r\n归还人: {$user->name()}[{$user->username()}]\r\n";
+            $content .= "请求细节查看链接: " . site_url(['request', $request->id()]);
+            AppService::getEmail()->send('测试机归还', $content);
 
             $pdo->commit();
             $response['message'] = self::ERROR_MESSAGE[self::ERROR_NO_ERROR];
@@ -174,6 +192,15 @@ class Phone extends CI_Controller
             $request->assetType(Request::ASSET_TYPE_PHONE);
             $request->status(Request::STATUS_NEW);
             $request->save();
+
+            $toUser = User::get($phone->userId());
+            if ($toUser->email()) {
+                $label = htmlspecialchars($phone->label());
+                $content = "测试机转借请求\r\n测试机[标志]: {$label}\r\n";
+                $content .= "{$user->name()}[{$user->username()}]向你发起对该测试机的转借请求\r\n";
+                $content .= "处理链接: " . site_url(['assets', 'inventory', 'phone', $id]);
+                AppService::getEmail()->send('测试机转借请求', $content, $toUser->email());
+            }
 
             $pdo->commit();
             $response['message'] = self::ERROR_MESSAGE[self::ERROR_NO_ERROR];

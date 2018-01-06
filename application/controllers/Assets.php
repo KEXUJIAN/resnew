@@ -499,7 +499,6 @@ class Assets extends CI_Controller
                 ]);
                 if (App::getUser()->id() === $phone->userId()) {
                     if ($request) {
-                        // TODO transfer view
                         $result .= '<button data-toggle="modal" data-target="#ajax-modal" data-url="/phone/transferConfirmView/'. $request->id() . '" class="btn btn-warning btn-xs action-button">转借</button>';
                     }
                     $result .= '<button data-role="return" data-url="/phone/restore/' . $phoneId . '" class="btn btn-primary btn-xs action-button">归还</button>';
@@ -553,7 +552,6 @@ class Assets extends CI_Controller
                 ]);
                 if (App::getUser()->id() === $simCard->userId()) {
                     if ($request) {
-                        // TODO transfer view
                         $result .= '<button data-toggle="modal" data-target="#ajax-modal" data-url="/simCard/transferConfirmView/' . $request->id() . '" class="btn btn-warning btn-xs action-button">转借</button>';
                     }
                     $result .= '<button data-role="return" data-url="/simCard/restore/' . $simCardId . '" class="btn btn-primary btn-xs action-button">归还</button>';

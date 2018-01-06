@@ -18,7 +18,12 @@ class Service
         return self::singleton(\Res\Util\Upload::class);
     }
 
-    public static function getResCfg()
+    public static function getEmail() : \Res\Util\MyEmail
+    {
+        return self::singleton(\Res\Util\MyEmail::class);
+    }
+
+    public static function getResCfg() : \Res\Config\BaseConfig
     {
         $app_config = '\Res\Config\\' . ucfirst(ENVIRONMENT). '\Config';
         return self::singleton($app_config);

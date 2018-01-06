@@ -339,6 +339,9 @@ const initObj = {
                     that.data('isInit', true).data('backdrop', 'static');
                 });
         })
+    },
+    tooltip: function (scope) {
+        $('[data-toggle="tooltip"]', scope).tooltip();
     }
 };
 let Initialize = function (scope, name) {

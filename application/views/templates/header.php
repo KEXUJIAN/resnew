@@ -108,6 +108,12 @@ endif;
                 <?php endif; ?>
             </ul>
             <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="javascript:;">
+                        <i class="fa fa-bell"></i>
+                        <span class="badge">14</span>
+                    </a>
+                </li>
                 <li class="dropdown">
                     <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-user-circle"></i>

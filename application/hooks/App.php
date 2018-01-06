@@ -51,6 +51,11 @@ class App
         self::$CI =& get_instance();
     }
 
+    public static function getCI()
+    {
+        return self::$CI;
+    }
+
     public static function view(string $name, array $params = [])
     {
         $path = realpath(VIEWPATH . "{$name}.php");

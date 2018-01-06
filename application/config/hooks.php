@@ -22,4 +22,5 @@ $hook['pre_controller'] = function () {
 
 $hook['post_controller_constructor'] = function () {
     App::runBeforeMethod();
+    App::getCI()->load->helper('url');
 };
