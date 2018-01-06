@@ -45,6 +45,17 @@ endif;
             right: 0;
             overflow: auto;
         }
+        .sidebar {
+            position: fixed;
+            width: 23%;
+            padding: 15px;
+            left: 15px;
+        }
+        .content-panel {
+            padding: 10px;
+            float: left;
+            width: 100%;
+        }
         .panel-assets {
             padding-top: 10px;
             padding-bottom: 10px;
@@ -80,6 +91,20 @@ endif;
             content: '*';
             color: red;
         }
+        .badge-jump {
+            position: relative;
+            background-color: #337ab7;
+            animation: jump 2s linear infinite;
+        }
+        @keyframes jump {
+            0%, 30%, 100% {
+                transform: initial;
+            }
+            10% {
+                transform: translateY(-15px);
+            }
+        }
+
     </style>
 </head>
 <body <?php if ($pageId ?? ''): echo 'id="' . $pageId . '"'; endif; ?>>
@@ -93,9 +118,9 @@ endif;
                         <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/assets/phone" target="_blank">测试机</a></li>
+                        <li><a class="dropdown-item" href="/assets/phone">测试机</a></li>
                         <li class="divider"></li>
-                        <li><a class="dropdown-item" href="/assets/simcard" target="_blank">测试卡</a></li>
+                        <li><a class="dropdown-item" href="/assets/simcard">测试卡</a></li>
                     </ul>
                 </li>
                 <?php if (User::ROLE_MANAGER === $user->role()): ?>
@@ -111,7 +136,7 @@ endif;
                 <li>
                     <a href="javascript:;">
                         <i class="fa fa-bell"></i>
-                        <span class="badge">14</span>
+                        <span class="badge badge-jump">1</span>
                     </a>
                 </li>
                 <li class="dropdown">
@@ -125,14 +150,14 @@ endif;
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a class="dropdown-item" href="javascript:;">
+                            <a class="dropdown-item" href="/user/profile">
                                 <i class="fa fa-user"></i>
                                 个人资料
                             </a>
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a class="dropdown-item" href="/assets/inventory" target="_blank">
+                            <a class="dropdown-item" href="/assets/inventory">
                                 <i class="fa fa-cube"></i>
                                 我的库存
                             </a>

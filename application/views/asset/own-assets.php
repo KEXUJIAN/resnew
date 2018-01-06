@@ -8,19 +8,6 @@
 
 App::view('templates/header', ['title' => '我的库存']);
 ?>
-<style>
-    .sidebar {
-        position: fixed;
-        width: 23%;
-        padding: 15px;
-        left: 15px;
-    }
-    .content-panel {
-        padding: 10px;
-        float: left;
-        width: 100%;
-    }
-</style>
 <div class="container-fluid">
     <div class="row">
         <nav class="panel panel-default sidebar">

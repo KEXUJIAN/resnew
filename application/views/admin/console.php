@@ -9,17 +9,6 @@
 App::view('templates/header');
 ?>
 <style>
-    .sidebar {
-        position: fixed;
-        width: 23%;
-        padding: 15px;
-        left: 15px;
-    }
-    .content-panel {
-        padding: 10px;
-        float: left;
-        width: 100%;
-    }
     #upload-area {
         position: relative;
         border: 2px dashed #1f1d1d;

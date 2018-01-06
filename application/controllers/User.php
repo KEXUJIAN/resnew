@@ -7,6 +7,11 @@ use \Res\Model\User as UserModel;
 */
 class User extends CI_Controller
 {
+    public function profile()
+    {
+        App::view('profile');
+    }
+
     public function login()
     {
         App::view('login');

@@ -16,7 +16,7 @@ class Admin extends CI_Controller
 {
     public function console()
     {
-        App::view('console');
+        App::view('admin/console');
     }
 
     public function new($name)
