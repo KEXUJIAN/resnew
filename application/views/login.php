@@ -11,7 +11,7 @@ App::view('templates/header', ['title' => 'Login']);
         margin-top: 5%;
     }
 </style>
-<div class="container login-panel">
+<div class="container panel login-panel">
     <form class="form-horizontal ajax-form" action="/user/doLogin">
         <div class="form-group">
             <label class="control-label col-md-3">用户名: </label>

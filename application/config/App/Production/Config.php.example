@@ -52,29 +52,30 @@ class Config extends BaseConfig
     ];
 
     /**
-     * --------------------------------------------------------------------------
-     * permission configuration
-     * --------------------------------------------------------------------------
-     *
-     * @used by \Res\Util\Limit
-     * @var array
-     *
-     * role
-     *      the symbols you've decided to represent permission, as a json array
-     *
-     * rule
-     *      'request=[permission]' 空格会被替换为空字符串，一定要有等号
-     *      request: regular expression string like 'controller/function'
-     */
+             * --------------------------------------------------------------------------
+             * permission configuration
+             * --------------------------------------------------------------------------
+             *
+             * @used by \Res\Util\Limit
+             * @var array
+             *
+             * [
+             *   'uri' => role:array
+             * ]
+             * uri => controller[/method]
+             * 会作为正则表达式对请求进行权限验证, 转换成 "#^controller[/method]#", 靠前的规则优先级高
+             * role => [role1, role2, ... , ]
+             * 你用来作为权限控制的角色表达式, 未登录用户设为 NO_AUTH, 所有登录的用户默认会拥有 AUTH 权限
+             *
+             * eg: [
+             * 'user/login' => ['NO_AUTH'], // user/login 只允许未登录的用户访问
+             * 'user/logout' => [0, 1] OR 'logout' => ['admin', 'staff'], // user/logout 只允许权限表达式为 0, 1 或 'admin', 'staff' 的用户访问
+             * 'user/edit' => [0] // user/edit 只允许权限表达式为 0 的用户访问
+             * 'user' => ['AUTH'] // 剩下所有的 User 控制器中的方法所有登录的人可访问
+             * ]
+             */
 
-    protected $permission = [
-        'role' => [
-            string,
-            int,
-            etc,
-        ],
-        'rule' => [
-            'some url = [role]'
-        ],
-    ];
+            protected $permission = [
+                'controller[/method]' => [role1, role2, ...,],
+            ];
 }

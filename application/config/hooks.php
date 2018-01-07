@@ -17,7 +17,19 @@ $hook['pre_system'] = function () {
 };
 
 $hook['pre_controller'] = function () {
-    // laod our app specific bootstrap module
+    // get request uri
+    $uri =& load_class('URI', 'core');
+    $originUri = $uri->uri_string ?: '/';
+    $mappedUri = implode('/', $uri->rsegments);
+
+    // commit session
+    $session_not_immediately_commit_array = ['user/logout', 'user/doLogin'];
+    if (!in_array($mappedUri, $session_not_immediately_commit_array)) {
+        session_commit();
+    }
+    // check permission
+    $roleLimit = new \Res\Util\Permission($originUri, $mappedUri);
+    $roleLimit->check();
 };
 
 $hook['post_controller_constructor'] = function () {
