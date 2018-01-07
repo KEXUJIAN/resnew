@@ -189,7 +189,7 @@ class MY_Model
             $whereStr = 'WHERE ' . $where['string'];
             $whereValues = $where['array'];
         }
-        // var_dump($where);
+//         var_dump($where);
         $orderByStr = '';
         if ($orderBy) {
             $tmp = [];
@@ -295,12 +295,16 @@ class MY_Model
                 $whereStr[] = strtolower($column) . " in ({$value})";
                 continue;
             }
-            $whereVal[":{$column}"] = $value;
+            $key = ":{$column}";
+            if (isset($whereVal[$key])) {
+                $key .= time();
+            }
+            $whereVal[$key] = $value;
             if ('@' === $operator) {
                 $operator = 'LIKE';
-                $whereVal[":{$column}"] = "%{$value}%";
+                $whereVal[$key] = "%{$value}%";
             }
-            $whereStr[] = strtolower($column) . " {$operator} :{$column}";
+            $whereStr[] = strtolower($column) . " {$operator} {$key}";
         }
         $whereStr = implode(' AND ', $whereStr);
         $where = [

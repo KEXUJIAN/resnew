@@ -317,10 +317,10 @@ class Assets extends CI_Controller
             $c['status()'] = $_POST['status'];
         }
         if ('' !== ($_POST['timeAddedMin'] ?? '')) {
-            $c['timeAdded>='] = $_POST['timeAddedMin'];
+            $c['timeAdded>='] = date('Y-m-d 00:00:00', strtotime($_POST['timeAddedMin']));
         }
         if ('' !== ($_POST['timeAddedMax'] ?? '')) {
-            $c['timeAdded<='] = $_POST['timeAddedMax'];
+            $c['timeAdded<='] = date('Y-m-d 23:59:59', strtotime($_POST['timeAddedMax']));
         }
         $count = Phone::getCount($c);
         $columns = [];
@@ -414,10 +414,10 @@ class Assets extends CI_Controller
             $c['status()'] = $_POST['status'];
         }
         if ('' !== ($_POST['timeAddedMin'] ?? '')) {
-            $c['timeAdded>='] = $_POST['timeAddedMin'];
+            $c['timeAdded>='] = date('Y-m-d 00:00:00', strtotime($_POST['timeAddedMin']));
         }
         if ('' !== ($_POST['timeAddedMax'] ?? '')) {
-            $c['timeAdded<='] = $_POST['timeAddedMax'];
+            $c['timeAdded<='] = date('Y-m-d 23:59:59', strtotime($_POST['timeAddedMax']));
         }
         $count = SimCard::getCount($c);
         $columns = [];
