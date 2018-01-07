@@ -27,7 +27,7 @@ class Phone extends CI_Controller
         if (!$phone) {
             show_error(self::ERROR_MESSAGE[self::ERROR_NO_RECORD], 500, '找不到测试机');
         }
-//        App::view('');
+        App::view('asset/phone-info', ['phone' => $phone]);
     }
 
     public function rent($id)

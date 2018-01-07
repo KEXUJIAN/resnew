@@ -27,7 +27,7 @@ class SimCard extends CI_Controller
         if (!$simCard) {
             show_error(self::ERROR_MESSAGE[self::ERROR_NO_RECORD], 500, '找不到测试卡');
         }
-//        App::view('');
+        App::view('asset/simcard-info', ['simCard' => $simCard]);
     }
 
     public function rent($id)

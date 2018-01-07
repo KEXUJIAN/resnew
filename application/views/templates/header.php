@@ -104,6 +104,9 @@ endif;
                 transform: translateY(-15px);
             }
         }
+        .no-resize {
+            resize: none !important;
+        }
 
     </style>
 </head>
