@@ -273,7 +273,10 @@ class Admin extends CI_Controller
                             $value .= $this->phoneStatus($phone);
                             break;
                         case 'carrier':
-                            $carrierList = explode(',', $phone->carrier());
+                            if (!$phone->$column()) {
+                                break;
+                            }
+                            $carrierList = explode(',', $phone->$column());
                             $labels = [];
                             foreach ($carrierList as $carrierCode) {
                                 $labels[] = Phone::LABEL_CARRIER[$carrierCode];
@@ -370,6 +373,9 @@ class Admin extends CI_Controller
                             $value .= $this->simCardStatus($simCard);
                             break;
                         case 'carrier':
+                            if (!$simCard->$column()) {
+                                break;
+                            }
                             $carrierList = explode(',', $simCard->carrier());
                             $labels = [];
                             foreach ($carrierList as $carrierCode) {
