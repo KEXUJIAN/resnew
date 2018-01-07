@@ -6,7 +6,7 @@
  * Time: 11:56
  */
 
-App::view('templates/header');
+App::view('templates/header', ['title' => '后台']);
 ?>
 <style>
     #upload-area {

@@ -7,6 +7,7 @@
  */
 
 use Res\Model\User;
+use Res\Model\SimCard;
 
 ?>
 
@@ -49,10 +50,10 @@ use Res\Model\User;
                 <div class="col-md-12">
                     <div class="form-group">
                         <label class="control-label col-md-2">运营商:</label>
-                        <div class="col-md-4 checkbox">
-                            <label><input type="checkbox" value="0" name="carrier[]">第三方</label>
-                            <label><input type="checkbox" value="1" name="carrier[]">电信</label>
-                            <label><input type="checkbox" value="2" name="carrier[]">移动</label>
+                        <div class="col-md-4 radio">
+                            <?php foreach (SimCard::LABEL_CARRIER as $code => $label): ?>
+                                <label><input type="radio" name="carrier" value="<?=$code?>"><?=$label?></label>
+                            <?php endforeach; ?>
                         </div>
                         <label class="control-label col-md-2">添加时间:</label>
                         <div class="col-md-4">
@@ -68,8 +69,9 @@ use Res\Model\User;
                     <div class="form-group">
                         <label class="control-label col-md-2">状态:</label>
                         <div class="col-md-4 checkbox">
-                            <label><input type="checkbox" value="0" name="status[]">可借出</label>
-                            <label><input type="checkbox" value="2" name="status[]">已借出</label>
+                            <?php foreach (SimCard::LABEL_STATUS as $code => $label): ?>
+                                <label><input type="checkbox" name="status[]" value="<?=$code?>"><?=$label?></label>
+                            <?php endforeach; ?>
                         </div>
                     </div>
                 </div>

@@ -322,6 +322,9 @@ class Assets extends CI_Controller
         if ('' !== ($_POST['timeAddedMax'] ?? '')) {
             $c['timeAdded<='] = date('Y-m-d 23:59:59', strtotime($_POST['timeAddedMax']));
         }
+        if ('' !== ($_POST['carrier'] ?? '')) {
+            $c['carrier@'] = $_POST['carrier'];
+        }
         $count = Phone::getCount($c);
         $columns = [];
         foreach ($_POST['columns'] as $columnDef) {
@@ -418,6 +421,9 @@ class Assets extends CI_Controller
         }
         if ('' !== ($_POST['timeAddedMax'] ?? '')) {
             $c['timeAdded<='] = date('Y-m-d 23:59:59', strtotime($_POST['timeAddedMax']));
+        }
+        if ('' !== ($_POST['carrier'] ?? '')) {
+            $c['carrier@'] = $_POST['carrier'];
         }
         $count = SimCard::getCount($c);
         $columns = [];

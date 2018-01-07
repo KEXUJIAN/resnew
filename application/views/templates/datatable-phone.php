@@ -7,6 +7,7 @@
  */
 
 use Res\Model\User;
+use Res\Model\Phone;
 
 ?>
 
@@ -68,14 +69,25 @@ use Res\Model\User;
                 </div>
                 <div class="col-md-12">
                     <div class="form-group">
+                        <label class="control-label col-md-2">状态:</label>
+                        <div class="col-md-4 checkbox">
+                            <?php foreach (Phone::LABEL_STATUS as $code => $label): ?>
+                                <label><input type="checkbox" name="status[]" value="<?=$code?>"><?=$label?></label>
+                            <?php endforeach; ?>
+                        </div>
+                        <label class="control-label col-md-2">运营商:</label>
+                        <div class="col-md-4 radio">
+                            <?php foreach (Phone::LABEL_CARRIER as $code => $label): ?>
+                                <label><input type="radio" name="carrier" value="<?=$code?>"><?=$label?></label>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
                         <label class="control-label col-md-2">编号:</label>
                         <div class="col-md-2">
                             <input type="text" name="label" class="form-control" placeholder="">
-                        </div>
-                        <label class="control-label col-md-2">状态:</label>
-                        <div class="col-md-4 checkbox">
-                            <label><input type="checkbox" value="0" name="status[]">可借出</label>
-                            <label><input type="checkbox" value="2" name="status[]">已借出</label>
                         </div>
                     </div>
                 </div>
