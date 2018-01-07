@@ -7,9 +7,49 @@ use \Res\Model\User as UserModel;
 */
 class User extends CI_Controller
 {
-    public function profile()
+    public function profile($name = 'user')
     {
-        App::view('profile');
+        $valid = [
+            'user',
+            'notification',
+            'request',
+        ];
+        $panel = 'user';
+        if ($name && in_array($name, $valid, true)) {
+            $panel = $name;
+        }
+        App::view('user/profile', [
+            'user' => App::getUser(),
+            'panel' => $panel,
+        ]);
+    }
+
+    public function reset()
+    {
+        $password = $_POST['password'] ?? '';
+        $passwordCfm = $_POST['passwordCfm'] ?? '';
+        $response = [
+            'result' => true,
+            'message' => '密码修改成功',
+        ];
+        if (!$password || !$passwordCfm) {
+            $response['result'] = false;
+            $response['message'] = '新密码 / 确认密码不能为空';
+            echo json_encode($response);
+            return;
+        }
+        if ($password !== $passwordCfm) {
+            $response['result'] = false;
+            $response['message'] = '两次密码不符';
+            echo json_encode($response);
+            return;
+        }
+        $user = App::getUser();
+        $password = sha1($password . $user->passwordSalt());
+        $user->password($password);
+        $user->save();
+        $_SESSION['USER'] = $user->obj2Array();
+        echo json_encode($response);
     }
 
     public function notification()

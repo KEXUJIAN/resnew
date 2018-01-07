@@ -46,7 +46,7 @@ const appRes = {
         return dataObj;
     },
     validForm: function (form) {
-        let fields = form.find(':text[data-required="true"], select[data-required="true"]');
+        let fields = form.find(':text[data-required="true"], select[data-required="true"], :password[data-required="true"]');
         for (let i = 0; i < fields.length; ++i) {
             let field = $(fields[i]);
             if (!field.is(':visible')) {
@@ -89,7 +89,7 @@ const initObj = {
             that.on('submit', (e) => {
                 e.preventDefault();
             });
-            that.find(':text[data-required="true"], select[data-required="true"], .checkbox[data-required="true"], .radio[data-required="true"]').each(function () {
+            that.find(':text[data-required="true"], :password[data-required="true"], select[data-required="true"], .checkbox[data-required="true"], .radio[data-required="true"]').each(function () {
                 let input = $(this);
                 let wrapper = input.closest('div[class^=col]');
                 if (!wrapper.length) {

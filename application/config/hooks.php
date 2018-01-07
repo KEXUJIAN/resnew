@@ -23,7 +23,7 @@ $hook['pre_controller'] = function () {
     $mappedUri = implode('/', $uri->rsegments);
 
     // commit session
-    $session_not_immediately_commit_array = ['user/logout', 'user/doLogin'];
+    $session_not_immediately_commit_array = ['user/logout', 'user/doLogin', 'user/reset'];
     if (!in_array($mappedUri, $session_not_immediately_commit_array)) {
         session_commit();
     }
