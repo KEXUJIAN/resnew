@@ -66,7 +66,7 @@ class SimCard extends CI_Controller
 
             $label = htmlspecialchars($simCard->label());
             $content = "测试卡借出\r\n测试卡[标志]: {$label}\r\n借出人: {$user->name()}[{$user->username()}]\r\n";
-            $content .= "请求细节查看链接: " . site_url(['request', $request->id()]);
+            $content .= "请求细节查看链接: " . site_url(['profile', 'request', $request->id()]);
             AppService::getEmail()->send('测试卡借出', $content);
             $notify = new Notification();
             $notify->userId($admin->id());
@@ -122,7 +122,7 @@ class SimCard extends CI_Controller
                 $label = htmlspecialchars($simCard->label());
                 $content = "您的测试卡转借请求被拒绝, 原因: 测试卡被归还\r\n测试卡[标志]: {$label}\r\n";
                 $content .= "原借出人: {$user->name()}[{$user->username()}]\r\n";
-                $content .= "请求细节查看链接: " . site_url(['request', $request->id()]);
+                $content .= "请求细节查看链接: " . site_url(['profile', 'request', $request->id()]);
                 $notify = new Notification();
                 $notify->userId($fromUser->id());
                 $notify->message($content);
@@ -147,7 +147,7 @@ class SimCard extends CI_Controller
 
             $label = htmlspecialchars($simCard->label());
             $content = "测试卡归还\r\n测试卡[标志]: {$label}\r\n归还人: {$user->name()}[{$user->username()}]\r\n";
-            $content .= "请求细节查看链接: " . site_url(['request', $request->id()]);
+            $content .= "请求细节查看链接: " . site_url(['profile', 'request', $request->id()]);
 
             AppService::getEmail()->send('测试卡归还', $content);
             $notify = new Notification();

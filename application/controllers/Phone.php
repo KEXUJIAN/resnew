@@ -123,7 +123,7 @@ class Phone extends CI_Controller
                 $label = htmlspecialchars($phone->label());
                 $content = "您的测试机转借请求被拒绝, 原因: 测试机被归还\r\n测试机[标志]: {$label}\r\n";
                 $content .= "原借出人: {$user->name()}[{$user->username()}]\r\n";
-                $content .= "请求细节查看链接: " . site_url(['request', $request->id()]);
+                $content .= "请求细节查看链接: " . site_url(['profile', 'request', $request->id()]);
                 $notify = new Notification();
                 $notify->userId($fromUser->id());
                 $notify->message($content);
@@ -148,7 +148,7 @@ class Phone extends CI_Controller
 
             $label = htmlspecialchars($phone->label());
             $content = "测试机归还\r\n测试机[标志]: {$label}\r\n归还人: {$user->name()}[{$user->username()}]\r\n";
-            $content .= "请求细节查看链接: " . site_url(['request', $request->id()]);
+            $content .= "请求细节查看链接: " . site_url(['profile', 'request', $request->id()]);
 
             AppService::getEmail()->send('测试机归还', $content);
             $notify = new Notification();

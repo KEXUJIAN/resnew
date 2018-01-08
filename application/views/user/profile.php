@@ -71,7 +71,7 @@ App::view('templates/header', ['title' => '个人页']);
                     <table class="table dataTable ajax-table table-striped table-hover" data-url="/notification/dataTable">
                         <thead>
                         <tr>
-                            <th data-col-name="id" data-col-width="50px">
+                            <th data-col-name="id" data-col-width="50px" data-orderable="false">
                                 序号
                             </th>
                             <th data-col-name="message" data-orderable="false">

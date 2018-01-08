@@ -56,13 +56,7 @@ class Notification extends CI_Controller
         foreach ($_POST['columns'] as $columnDef) {
             $columns[] = $columnDef['data'];
         }
-        $order = [];
-        if ($_POST['order'] ?? []) {
-            foreach ($_POST['order'] as $orderDef) {
-                $key = $columns[$orderDef['column']];
-                $order[$key] = 'desc' === $orderDef['dir'] ? 'desc' : 'asc';
-            }
-        }
+        $order = ['id' => 'desc'];
         $limit = $_POST['length'];
         $offset = $_POST['start'];
         $notificationList = NotifyModal::getList($c, $order, $limit, $offset);
