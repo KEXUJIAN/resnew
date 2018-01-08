@@ -1,14 +1,24 @@
 <?php
 
 use \Res\Model\User as UserModel;
+use Res\Model\Notification;
 
 /**
 * User controller
 */
 class User extends CI_Controller
 {
-    public function profile($name = 'user')
+    public function profile(string $name = 'user')
     {
+        $pdo = AppService::getPDO();
+        $table = Notification::TABLE;
+        $sql = "UPDATE {$table} SET `read` = :readYes WHERE userid = :userId AND status = :readNo";
+        $sth = $pdo->prepare($sql);
+        $sth->execute([
+            ':readYes' => Notification::READ_YES,
+            ':userId' => App::getUser()->id(),
+            ':readNo' => Notification::READ_NO,
+        ]);
         $valid = [
             'user',
             'notification',
@@ -50,15 +60,6 @@ class User extends CI_Controller
         $user->save();
         $_SESSION['USER'] = $user->obj2Array();
         echo json_encode($response);
-    }
-
-    public function notification()
-    {
-        $result = [
-            'result' => true,
-            'message' => 1,
-        ];
-        echo json_encode($result);
     }
 
     public function login()

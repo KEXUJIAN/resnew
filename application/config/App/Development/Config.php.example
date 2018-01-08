@@ -66,6 +66,7 @@ class Config extends BaseConfig
          * 会作为正则表达式对请求进行权限验证, 转换成 "#^controller[/method]#", 靠前的规则优先级高
          * role => [role1, role2, ... , ]
          * 你用来作为权限控制的角色表达式, 未登录用户设为 NO_AUTH, 所有登录的用户默认会拥有 AUTH 权限
+         * 没有设置规则的 uri 默认不做权限控制
          *
          * eg: [
          * 'user/login' => ['NO_AUTH'], // user/login 只允许未登录的用户访问

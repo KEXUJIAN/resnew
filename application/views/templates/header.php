@@ -27,7 +27,7 @@ endif;
     <script src="https://cdn.bootcss.com/blueimp-file-upload/9.19.2/js/vendor/jquery.ui.widget.min.js"></script>
     <script src="https://cdn.bootcss.com/blueimp-file-upload/9.19.2/js/jquery.iframe-transport.min.js"></script>
     <script src="https://cdn.bootcss.com/blueimp-file-upload/9.19.2/js/jquery.fileupload.min.js"></script>
-    <script src="/asset/app.19e20d67a2b9f607a152.js"></script>
+    <script src="/asset/app.d39e520cb439d6aa3e41.js"></script>
     <style type="text/css">
         body {
             position: absolute;
@@ -137,7 +137,7 @@ endif;
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <a id="notification-bell" href="/user/profile" data-url="/user/notification">
+                    <a id="notification-bell" href="/user/profile/notification" data-url="/notification/count">
                         <i class="fa fa-bell"></i>
                         <span class="badge badge-jump"></span>
                     </a>
@@ -155,7 +155,7 @@ endif;
                         <li>
                             <a class="dropdown-item" href="/user/profile">
                                 <i class="fa fa-user"></i>
-                                个人资料
+                                个人页
                             </a>
                         </li>
                         <li class="divider"></li>

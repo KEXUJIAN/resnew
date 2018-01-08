@@ -70,3 +70,15 @@ CREATE TABLE `requests` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `notifications` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userid` int(11) DEFAULT NULL,
+  `message` text,
+  `read` tinyint(4) DEFAULT NULL,
+  `status` tinyint(4) DEFAULT NULL,
+  `extra` text,
+  `timeadded` timestamp NULL DEFAULT NULL,
+  `timemodified` timestamp NULL DEFAULT NULL,
+  `deleted` tinyint(4) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -44,20 +44,27 @@ class Permission
             }
             $this->show_403($this->origin);
         }
+        $accept = false;
         $matched = false;
         foreach ($this->permission as $rule => $roles) {
-            if (self::NO_AUTH !== $role && in_array(self::AUTH, $roles, true)) {
-                return;
-            }
             if (!preg_match("#^{$rule}#", $this->mapped)) {
                 continue;
             }
+            if (self::NO_AUTH !== $role && in_array(self::AUTH, $roles, true)) {
+                return;
+            }
+            $matched = true;
             if (in_array($role, $roles)) {
-                $matched = true;
+                $accept = true;
                 break;
             }
         }
-        if ($matched) {
+        // 没有在规则里
+        if (!$matched) {
+            return;
+        }
+        // 在规则里并拥有权限
+        if ($matched && $accept) {
             return;
         }
         if (self::NO_AUTH === $role) {

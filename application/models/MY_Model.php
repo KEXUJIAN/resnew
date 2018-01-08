@@ -178,7 +178,7 @@ class MY_Model
         $table = static::TABLE;
         $fields = static::COLUMNS;
         foreach ($fields as $index => $column) {
-            $fields[$index] = strtolower($column) . " AS {$column}";
+            $fields[$index] = '`' . strtolower($column) . "` AS `{$column}`";
         }
         $fields = implode(',', $fields);
 
@@ -292,7 +292,7 @@ class MY_Model
                 if (is_array($value)) {
                     $value = implode(',', $value);
                 }
-                $whereStr[] = strtolower($column) . " in ({$value})";
+                $whereStr[] = '`' . strtolower($column) . "` in ({$value})";
                 continue;
             }
             $key = ":{$column}";
@@ -304,7 +304,7 @@ class MY_Model
                 $operator = 'LIKE';
                 $whereVal[$key] = "%{$value}%";
             }
-            $whereStr[] = strtolower($column) . " {$operator} {$key}";
+            $whereStr[] = '`' . strtolower($column) . "` {$operator} {$key}";
         }
         $whereStr = implode(' AND ', $whereStr);
         $where = [
