@@ -61,11 +61,13 @@ class MY_Model
         $pdo = AppService::getPDO();
 
         if ($this->id === null) {
-            $insertFields = strtolower(implode(',', $columns));
+            $insertFields = [];
             $insertValues = [];
             foreach ($columns as $column) {
+                $insertFields[] = strtolower("`{$column}`");
                 $insertValues[] = ":{$column}";
             }
+            $insertFields = implode(',', $insertFields);
             $insertValues = implode(',', $insertValues);
             $sql = "INSERT INTO {$table}({$insertFields}) VALUES({$insertValues})";
             $sth = $pdo->prepare($sql);
@@ -82,7 +84,7 @@ class MY_Model
         }
         $updateFields = [];
         foreach ($columns as $index => $column) {
-            $updateFields[] = strtolower($column) . " = :{$column}";
+            $updateFields[] = strtolower("`{$column}`") . " = :{$column}";
         }
         if (!$updateFields) {
             return false;

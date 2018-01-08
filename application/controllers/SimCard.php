@@ -9,6 +9,7 @@
 use Res\Model\SimCard as SimCardModal;
 use Res\Model\Request;
 use Res\Model\User;
+use Res\Model\Notification;
 
 class SimCard extends CI_Controller
 {
@@ -67,6 +68,10 @@ class SimCard extends CI_Controller
             $content = "测试卡借出\r\n测试卡[标志]: {$label}\r\n借出人: {$user->name()}[{$user->username()}]\r\n";
             $content .= "请求细节查看链接: " . site_url(['request', $request->id()]);
             AppService::getEmail()->send('测试卡借出', $content);
+            $notify = new Notification();
+            $notify->userId($admin->id());
+            $notify->message($content);
+            $notify->save();
 
             $pdo->commit();
             $response['message'] = self::ERROR_MESSAGE[self::ERROR_NO_ERROR];
@@ -114,11 +119,15 @@ class SimCard extends CI_Controller
                 $request->timeModified(date('Y-m-d H:i:s'));
                 $request->save();
                 $fromUser = User::get($request->fromUserId());
+                $label = htmlspecialchars($simCard->label());
+                $content = "您的测试卡转借请求被拒绝, 原因: 测试卡被归还\r\n测试卡[标志]: {$label}\r\n";
+                $content .= "原借出人: {$user->name()}[{$user->username()}]\r\n";
+                $content .= "请求细节查看链接: " . site_url(['request', $request->id()]);
+                $notify = new Notification();
+                $notify->userId($fromUser->id());
+                $notify->message($content);
+                $notify->save();
                 if ($fromUser->email()) {
-                    $label = htmlspecialchars($simCard->label());
-                    $content = "您的测试卡转借请求被拒绝, 原因: 测试卡被归还\r\n测试卡[标志]: {$label}\r\n";
-                    $content .= "原借出人: {$user->name()}[{$user->username()}]\r\n";
-                    $content .= "请求细节查看链接: " . site_url(['request', $request->id()]);
                     AppService::getEmail()->send('测试卡转借|拒绝', $content, $fromUser->email());
                 }
                 unset($request);
@@ -139,7 +148,12 @@ class SimCard extends CI_Controller
             $label = htmlspecialchars($simCard->label());
             $content = "测试卡归还\r\n测试卡[标志]: {$label}\r\n归还人: {$user->name()}[{$user->username()}]\r\n";
             $content .= "请求细节查看链接: " . site_url(['request', $request->id()]);
+
             AppService::getEmail()->send('测试卡归还', $content);
+            $notify = new Notification();
+            $notify->userId($admin->id());
+            $notify->message($content);
+            $notify->save();
 
             $pdo->commit();
             $response['message'] = self::ERROR_MESSAGE[self::ERROR_NO_ERROR];
@@ -194,11 +208,16 @@ class SimCard extends CI_Controller
             $request->save();
 
             $toUser = User::get($simCard->userId());
+            $label = htmlspecialchars($simCard->label());
+            $content = "测试卡转借请求\r\n测试卡[标志]: {$label}\r\n";
+            $content .= "{$user->name()}[{$user->username()}]向你发起对该测试卡的转借请求\r\n";
+            $content .= "处理链接: " . site_url(['assets', 'inventory', 'simCard', $id]);
+
+            $notify = new Notification();
+            $notify->userId($toUser->id());
+            $notify->message($content);
+            $notify->save();
             if ($toUser->email()) {
-                $label = htmlspecialchars($simCard->label());
-                $content = "测试卡转借请求\r\n测试卡[标志]: {$label}\r\n";
-                $content .= "{$user->name()}[{$user->username()}]向你发起对该测试卡的转借请求\r\n";
-                $content .= "处理链接: " . site_url(['assets', 'inventory', 'simCard', $id]);
                 AppService::getEmail()->send('测试卡转借请求', $content, $toUser->email());
             }
 
@@ -232,6 +251,10 @@ class SimCard extends CI_Controller
             $simCard = SimCardModal::get($request->assetId(), true);
             $user = App::getUser();
             $fromUser = User::get($request->fromUserId());
+
+            $label = htmlspecialchars($simCard->label());
+            $content = "测试机转借\r\n测试机[标志]: {$label}, 原借出人: {$user->name()}[{$user->username()}], ";
+
             if ('accept' === $action) {
                 $simCard->userId($fromUser->id());
                 $simCard->statusDescription("{$fromUser->name()} [{$fromUser->username()}] 借走了该测试卡");
@@ -242,6 +265,17 @@ class SimCard extends CI_Controller
                 $request->status(Request::STATUS_REJECT);
                 $response['message'] = '已拒绝转借';
             }
+            $content .= "{$response['message']}\r\n";
+            $content .= "请求细节查看链接: " . site_url(['profile', 'request', $request->id()]);
+            $notify = new Notification();
+            $notify->userId($fromUser->id());
+            $notify->message($content);
+            $notify->save();
+            if ($fromUser->email()) {
+                $subject = '测试卡转借|' . ('accept' === $action ? '同意' : '拒绝');
+                AppService::getEmail()->send($subject, $content, $fromUser->email());
+            }
+
             $request->save();
             $pdo->commit();
         } catch (Throwable $t) {

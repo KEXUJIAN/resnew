@@ -44,7 +44,10 @@ class Notification extends CI_Controller
             return;
         }
         $response['draw'] = $_POST['draw'];
-        $c = ['deleted' => NotifyModal::DELETED_NO];
+        $c = [
+            'userId' => App::getUser()->id(),
+            'deleted' => NotifyModal::DELETED_NO
+        ];
         if ('' !== ($_POST['type'] ?? '')) {
             $c['type@'] = $_POST['type'];
         }
