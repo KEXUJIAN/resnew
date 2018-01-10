@@ -22,7 +22,8 @@ class MyEmail
         $CI->load->library('email');
         $this->email = $CI->email;
         $this->config = AppService::getResCfg()->getItem('mail');
-        $this->email->initialize($this->config);
+        $this->email->initialize($this->config)
+            ->set_mailtype('html');
     }
 
     public function send(string $subject, string $content, string $to = '') : bool
@@ -31,7 +32,7 @@ class MyEmail
         $result = $this->email->to($to)
             ->from($this->config['from'], $this->config['from_name'])
             ->subject($subject)
-            ->message($content)
+            ->message(nl2br($content))
             ->send();
 //        var_dump($this->email->print_debugger());
         return $result;

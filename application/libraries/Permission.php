@@ -32,15 +32,15 @@ class Permission
         // 快速搜索, 是否在 key 中
         if (array_key_exists($this->mapped, $this->permission)) {
             $roles = $this->permission[$this->mapped];
-            if (self::NO_AUTH !== $role && in_array(self::AUTH, $roles, true)) {
+            if (self::NO_AUTH === $role && !in_array($role, $roles, true)) {
+                header('Location: /user/login');
+                exit;
+            }
+            if (in_array(self::AUTH, $roles, true)) {
                 return;
             }
             if (in_array($role, $roles, true)) {
                 return;
-            }
-            if (self::NO_AUTH === $role) {
-                header('Location: /user/login');
-                exit;
             }
             $this->show_403($this->origin);
         }
@@ -50,11 +50,15 @@ class Permission
             if (!preg_match("#^{$rule}#", $this->mapped)) {
                 continue;
             }
-            if (self::NO_AUTH !== $role && in_array(self::AUTH, $roles, true)) {
+            if (self::NO_AUTH === $role && !in_array($role, $roles, true)) {
+                header('Location: /user/login');
+                exit;
+            }
+            if (in_array(self::AUTH, $roles, true)) {
                 return;
             }
             $matched = true;
-            if (in_array($role, $roles)) {
+            if (in_array($role, $roles, true)) {
                 $accept = true;
                 break;
             }
@@ -66,10 +70,6 @@ class Permission
         // 在规则里并拥有权限
         if ($matched && $accept) {
             return;
-        }
-        if (self::NO_AUTH === $role) {
-            header('Location: /user/login');
-            exit;
         }
         $this->show_403($this->origin);
     }

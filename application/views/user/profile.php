@@ -85,7 +85,21 @@ App::view('templates/header', ['title' => '个人页']);
                     </table>
                 </div>
                 <div id="request-panel" class="tab-pane fade">
-                    123
+                    <table class="table dataTable ajax-table table-striped table-hover" data-url="/request/dataTable">
+                        <thead>
+                        <tr>
+                            <th data-col-name="id" data-col-width="50px" data-orderable="false">
+                                序号
+                            </th>
+                            <th data-col-name="message" data-orderable="false">
+                                消息
+                            </th>
+                            <th data-col-name="#action" data-orderable="false" data-col-width="50px">
+                                操作
+                            </th>
+                        </tr>
+                        </thead>
+                    </table>
                 </div>
             </div>
         </div>
