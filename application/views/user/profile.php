@@ -68,6 +68,15 @@ App::view('templates/header', ['title' => '个人页']);
                     </form>
                 </div>
                 <div id="notification-panel" class="tab-pane fade">
+                    <div class="data-table-action-wrapper col-md-12">
+                        <div class="pull-left" style="width: 100%;">
+                            <div class="pull-right" style="margin-bottom: 10px">
+                                <button class="btn btn-info" data-role="refresh">
+                                    <i class="fa fa-refresh"></i> 刷新
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                     <table class="table dataTable ajax-table table-striped table-hover" data-url="/notification/dataTable">
                         <thead>
                         <tr>
@@ -85,14 +94,35 @@ App::view('templates/header', ['title' => '个人页']);
                     </table>
                 </div>
                 <div id="request-panel" class="tab-pane fade">
-                    <table class="table dataTable ajax-table table-striped table-hover" data-url="/request/dataTable">
+                    <div class="data-table-action-wrapper col-md-12">
+                        <div class="pull-left" style="width: 100%;">
+                            <div class="pull-right" style="margin-bottom: 10px">
+                                <button class="btn btn-info" data-role="refresh">
+                                    <i class="fa fa-refresh"></i> 刷新
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="table dataTable ajax-table table-striped table-bordered table-hover" data-url="/request/dataTable">
                         <thead>
                         <tr>
                             <th data-col-name="id" data-col-width="50px" data-orderable="false">
                                 序号
                             </th>
-                            <th data-col-name="message" data-orderable="false">
-                                消息
+                            <th data-col-name="fromUserId" data-orderable="false">
+                                发起人
+                            </th>
+                            <th data-col-name="toUserId" data-orderable="false">
+                                接收人
+                            </th>
+                            <th data-col-name="assetId" data-orderable="false">
+                                资源ID
+                            </th>
+                            <th data-col-name="assetType" data-orderable="false">
+                                种类
+                            </th>
+                            <th data-col-name="timeAdded" data-orderable="false">
+                                请求时间
                             </th>
                             <th data-col-name="#action" data-orderable="false" data-col-width="50px">
                                 操作
@@ -115,7 +145,7 @@ App::view('templates/header', ['title' => '个人页']);
 (function () {
     var initialPanelName = '#' + '<?=$panel?>' + '-panel';
     var currentPanel = $(initialPanelName).addClass('in');
-    $('a[href="' + initialPanelName + '"]').click();
+
     var initList = {};
     initList[currentPanel.attr('id')] = true;
     $('.sidebar')
@@ -145,7 +175,16 @@ App::view('templates/header', ['title' => '个人页']);
                 }, 1000);
             });
         });
+    <?php if ($id ?? false):?>
+    currentPanel.find('table')
+        .data('request', {specificId: <?=$id?>})
+        .one('xhr.dt', function () {
+            $(this).removeData('request');
+        });
+    <?php endif;?>
+    $('a[href="' + initialPanelName + '"]').click();
     resRunInit(currentPanel);
+    resRunInit(null, 'ajaxModal');
 })();
 </script>
 

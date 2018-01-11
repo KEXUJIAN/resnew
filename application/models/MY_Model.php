@@ -271,8 +271,6 @@ class MY_Model
 
     public static function buildWhere(array &$conf) : array
     {
-        $validCols = static::COLUMNS;
-        $validCols = array_flip($validCols);
         $validOperator = self::OPERATOR;
         $validOperator = array_flip($validOperator);
 
@@ -283,9 +281,6 @@ class MY_Model
                 throw new Exception("Invalid where statement key format. should be {colName[operator]}");
             }
             $column = $match[1];
-            if (!array_key_exists($column, $validCols)) {
-                throw new Exception("Invalid column name: {$column}");
-            }
             $operator = $match[2] ?? '=';
             if (!array_key_exists($operator, $validOperator)) {
                 throw new Exception("Invalid where statement operator: {$operator}");

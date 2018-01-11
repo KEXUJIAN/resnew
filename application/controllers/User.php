@@ -8,7 +8,7 @@ use Res\Model\Notification;
 */
 class User extends CI_Controller
 {
-    public function profile(string $name = 'user')
+    public function profile(string $name = 'user', $id = null)
     {
         $pdo = AppService::getPDO();
         $table = Notification::TABLE;
@@ -31,7 +31,17 @@ class User extends CI_Controller
         App::view('user/profile', [
             'user' => App::getUser(),
             'panel' => $panel,
+            'id' => $id,
         ]);
+    }
+
+    public function info($id)
+    {
+        $user = UserModel::get($id);
+        if (!$user || $user->deleted() === UserModel::DELETED_YES) {
+            show_error('您查看的用户不存在', 500, '找不到用户');
+        }
+        App::view('user/user-info', ['user' => $user]);
     }
 
     public function reset()
