@@ -47,7 +47,9 @@ App::view('templates/header', ['title' => '测试机']);
                    });
                })
                .fail(function () {
-                   bootbox.alert('服务器错误');
+                   bootbox.alert('服务器错误', function () {
+                       table.DataTable().draw(false);
+                   });
                });
        });
 })();

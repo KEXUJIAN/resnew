@@ -169,7 +169,9 @@ App::view('templates/header', ['title' => '我的库存']);
                     });
                 })
                 .fail(function () {
-                    ;
+                    bootbox.alert('发生错误', function () {
+                        that.DataTable().draw(false);
+                    });
                 });
         })
     });

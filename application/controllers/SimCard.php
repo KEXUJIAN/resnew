@@ -68,7 +68,7 @@ class SimCard extends CI_Controller
             $content = "测试卡借出\r\n测试卡[标志]: {$label}\r\n借出人: {$user->name()}[{$user->username()}]\r\n";
             $rUrl = site_url(['user', 'profile', 'request', $request->id()]);
             $content .= "请求细节查看链接: <a href='{$rUrl}'>{$rUrl}</a>";
-            AppService::getEmail()->send('测试卡借出', $content);
+            @AppService::getEmail()->send('测试卡借出', $content);
             $notify = new Notification();
             $notify->userId($admin->id());
             $notify->message($content);
@@ -130,7 +130,7 @@ class SimCard extends CI_Controller
                 $notify->message($content);
                 $notify->save();
                 if ($fromUser->email()) {
-                    AppService::getEmail()->send('测试卡转借|拒绝', $content, $fromUser->email());
+                    @AppService::getEmail()->send('测试卡转借|拒绝', $content, $fromUser->email());
                 }
                 unset($request);
             }
@@ -152,7 +152,7 @@ class SimCard extends CI_Controller
             $rUrl = site_url(['user', 'profile', 'request', $request->id()]);
             $content .= "请求细节查看链接: <a href='{$rUrl}'>{$rUrl}</a>";
 
-            AppService::getEmail()->send('测试卡归还', $content);
+            @AppService::getEmail()->send('测试卡归还', $content);
             $notify = new Notification();
             $notify->userId($admin->id());
             $notify->message($content);
@@ -222,7 +222,7 @@ class SimCard extends CI_Controller
             $notify->message($content);
             $notify->save();
             if ($toUser->email()) {
-                AppService::getEmail()->send('测试卡转借请求', $content, $toUser->email());
+                @AppService::getEmail()->send('测试卡转借请求', $content, $toUser->email());
             }
 
             $pdo->commit();
@@ -278,7 +278,7 @@ class SimCard extends CI_Controller
             $notify->save();
             if ($fromUser->email()) {
                 $subject = '测试卡转借|' . ('accept' === $action ? '同意' : '拒绝');
-                AppService::getEmail()->send($subject, $content, $fromUser->email());
+                @AppService::getEmail()->send($subject, $content, $fromUser->email());
             }
 
             $request->save();

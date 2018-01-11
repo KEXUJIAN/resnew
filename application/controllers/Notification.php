@@ -83,6 +83,9 @@ class Notification extends CI_Controller
                         case 'status':
                             $value .= '';
                             break;
+                        case 'message':
+                            $value .= nl2br($notification->$column());
+                            break;
                         default:
                             $value .= '<span>' . htmlspecialchars($notification->$column()) . '</span>';
                             break;
