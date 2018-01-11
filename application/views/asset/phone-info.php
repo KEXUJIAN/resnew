@@ -55,20 +55,25 @@ use Res\Model\Phone;
             <div class="col-md-12">
                 <div class="form-group">
                     <label class="col-md-2 control-label">运营商:</label>
-                    <div class="col-md-10 checkbox" >
-                        <?php foreach (Phone::LABEL_CARRIER as $code => $label): ?>
-                            <label><input type="checkbox" name="carrier[]" value="<?=$code?>"><?=$label?></label>
-                        <?php endforeach; ?>
+                    <div class="col-md-10" >
+                        <?php
+                        if ($tmp = $phone->carrier()):
+                            $intersect = array_intersect(explode(',', $tmp), array_keys(Phone::LABEL_CARRIER));
+                            foreach ($intersect as $value):
+                        ?>
+                                <label class="label label-default"><?=Phone::LABEL_CARRIER[$value]?></label>
+                        <?php
+                            endforeach;
+                        endif;
+                        ?>
                     </div>
                 </div>
             </div>
             <div class="col-md-12">
                 <div class="form-group">
                     <label class="col-md-2 control-label">状态:</label>
-                    <div class="col-md-10 radio" >
-                        <?php foreach (Phone::LABEL_STATUS as $code => $label): ?>
-                            <label><input type="radio" name="status" value="<?=$code?>"><?=$label?></label>
-                        <?php endforeach; ?>
+                    <div class="col-md-10" >
+                        <label class="label label-info"><?=Phone::LABEL_STATUS[$phone->status()]?></label>
                     </div>
                 </div>
             </div>
