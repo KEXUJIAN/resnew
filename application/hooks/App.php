@@ -56,14 +56,14 @@ class App
         return self::$CI;
     }
 
-    public static function view(string $name, array $params = [])
+    public static function view(string $name, array $params = [], bool $return = false)
     {
         $path = realpath(VIEWPATH . "{$name}.php");
         if (!$path) {
             show_404();
         }
         $params['CI'] = self::$CI;
-        self::$CI->load->view($name, $params);
+        self::$CI->load->view($name, $params, $return);
     }
 
     public static function includeJs(string $name)
