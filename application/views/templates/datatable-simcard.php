@@ -15,7 +15,7 @@ use Res\Model\SimCard;
     <div class="pull-left" style="width: 100%;">
         <div class="pull-right" style="margin-bottom: 10px">
             <?php if (App::getUser()->role() === User::ROLE_MANAGER && ($display ?? true)): ?>
-            <button class="btn btn-danger">
+            <button class="btn btn-danger" data-role="delete" data-url="/admin/delete/simcard">
                 <i class="fa fa-trash"></i> 删除测试卡
             </button>
             <button class="btn btn-primary" data-toggle="modal" data-target="#ajax-modal" data-url="/admin/new/simcard">

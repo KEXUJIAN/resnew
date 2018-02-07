@@ -14,7 +14,7 @@ use Res\Model\User;
     <div class="pull-left" style="width: 100%;">
         <div class="pull-right" style="margin-bottom: 10px">
             <?php if (App::getUser()->role() === User::ROLE_MANAGER): ?>
-            <button class="btn btn-danger">
+            <button class="btn btn-danger" data-role="delete" data-url="/admin/delete/user">
                 <i class="fa fa-trash"></i> 删除用户
             </button>
             <button class="btn btn-primary" data-toggle="modal" data-target="#ajax-modal" data-url="/admin/new/user">

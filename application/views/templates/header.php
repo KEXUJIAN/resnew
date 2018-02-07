@@ -27,7 +27,7 @@ endif;
     <script src="https://cdn.bootcss.com/blueimp-file-upload/9.19.2/js/vendor/jquery.ui.widget.min.js"></script>
     <script src="https://cdn.bootcss.com/blueimp-file-upload/9.19.2/js/jquery.iframe-transport.min.js"></script>
     <script src="https://cdn.bootcss.com/blueimp-file-upload/9.19.2/js/jquery.fileupload.min.js"></script>
-    <script src="/asset/app.d39e520cb439d6aa3e41.js"></script>
+    <script src="/asset/app.bd578a6c25ec1ae0f014.js"></script>
     <style type="text/css">
         body {
             position: absolute;
@@ -113,7 +113,7 @@ endif;
 <body <?php if ($pageId ?? ''): echo 'id="' . $pageId . '"'; endif; ?>>
     <?php if ($user = APP::getUser() ?? false): ?>
     <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
+        <div class="<?=$titleNavClass ?? 'container'?>">
             <ul class="nav navbar-nav navbar-left">
                 <li class="dropdown">
                     <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">

@@ -18,6 +18,7 @@ class Assets extends CI_Controller
         $params = [
             'panel' => $name,
             'assetId' => $id,
+            'titleNavClass' => 'container-fluid',
         ];
         App::view('asset/own-assets', $params);
     }
@@ -531,16 +532,16 @@ class Assets extends CI_Controller
         $status = Phone::LABEL_STATUS[$phone->status()];
         switch ($phone->status()) {
             case Phone::STATUS_IN_INVENTORY:
-                $result .= '<i class="fa fa-home text-success"></i>';
+                $result .= '<p class="text-success"><i class="fa fa-home"></i>' . $status . '</p>';
                 break;
             case Phone::STATUS_RENT_OUT:
-                $result .= '<i class="fa fa-user text-warning"></i>';
+                $result .= '<p class="text-warning"><i class="fa fa-user"></i>' . $status . '</p>';
                 break;
             case Phone::STATUS_BROKEN:
-                $result .= '<i class="fa fa-times text-danger"></i>';
+                $result .= '<p class="text-danger"><i class="fa fa-times"></i>' . $status . '</p>';
                 break;
             case Phone::STATUS_OTHER:
-                $result .= '<i class="fa fa-question text-muted"></i>';
+                $result .= '<p class="text-muted"><i class="fa fa-question"></i>' . $status . '</p>';
                 break;
         }
         return $result;
@@ -551,10 +552,10 @@ class Assets extends CI_Controller
         $simCardId = $simCard->id();
         $result = '<button data-toggle="modal" data-target="#ajax-modal" data-url="/simCard/info/' . $simCardId . '" class="btn btn-info btn-xs action-button">查看</button>';
         switch ($simCard->status()) {
-            case Phone::STATUS_IN_INVENTORY:
+            case SimCard::STATUS_IN_INVENTORY:
                 $result .= '<button data-role="rent-out" data-url="/simCard/rent/' . $simCardId . '" class="btn btn-success btn-xs action-button">借出</button>';
                 break;
-            case Phone::STATUS_RENT_OUT:
+            case SimCard::STATUS_RENT_OUT:
                 $request = Request::getOne([
                     'assetId' => $simCardId,
                     'deleted' => Request::DELETED_NO,
@@ -584,16 +585,16 @@ class Assets extends CI_Controller
         $status = SimCard::LABEL_STATUS[$simCard->status()];
         switch ($simCard->status()) {
             case SimCard::STATUS_IN_INVENTORY:
-                $result .= '<i class="fa fa-home text-success"></i>';
+                $result .= '<p class="text-success"><i class="fa fa-home"></i>' . $status . '</p>';
                 break;
             case SimCard::STATUS_RENT_OUT:
-                $result .= '<i class="fa fa-user text-warning"></i>';
+                $result .= '<p class="text-warning"><i class="fa fa-user"></i>' . $status . '</p>';
                 break;
             case SimCard::STATUS_BROKEN:
-                $result .= '<i class="fa fa-times text-danger"></i>';
+                $result .= '<p class="text-danger"><i class="fa fa-times"></i>' . $status . '</p>';
                 break;
             case SimCard::STATUS_OTHER:
-                $result .= '<i class="fa fa-question text-mute"></i>';
+                $result .= '<p class="text-muted"><i class="fa fa-question"></i>' . $status . '</p>';
                 break;
         }
         return $result;

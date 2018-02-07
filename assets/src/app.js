@@ -1,32 +1,79 @@
 const $ = require('jquery');
 
+bootbox.addLocale('cn', {
+    OK: '确定',
+    CANCEL: '取消',
+    CONFIRM: '确定',
+});
+bootbox.setLocale('cn');
 $(function () {
-   let notify = $('#notification-bell');
-   if (!notify.length) {
-       return;
-   }
+    let notify = $('#notification-bell');
+    if (!notify.length) {
+        return;
+    }
 
     setTimeout(async () => {
         await getNotification();
     }, 0);
 
-   async function getNotification() {
-       let nr = 0;
-       try {
-           let ret = await $.post(notify.data('url'), null, null, 'json');
-           nr = ret.result ? ret.message : 0;
-       } catch (err) {
-           nr = 0;
-       } finally {
-           notify.find('.badge.badge-jump').text(nr || null);
-       }
-       setTimeout(async () => {
-           await getNotification();
-       }, 5000);
-   }
+    async function getNotification() {
+        let nr = 0;
+        try {
+            let ret = await $.post(notify.data('url'), null, null, 'json');
+            nr = ret.result ? ret.message : 0;
+        } catch (err) {
+            nr = 0;
+        } finally {
+            notify.find('.badge.badge-jump').text(nr || null);
+        }
+        setTimeout(async () => {
+            await getNotification();
+        }, 5000);
+    }
 });
 
 const appRes = {
+    /**
+     *
+     * @param elm
+     * @param endTime
+     * @param affix
+     * @returns {number} 1 = need jquery element
+     *                   2 = time must be lt 0
+     *                   3 = invalid affix
+     */
+    countDown: (elm, endTime, affix) => {
+        if (!(elm instanceof $)) {
+            return 1;
+        }
+        if (typeof endTime !== 'number' || endTime <= 0) {
+            return 2;
+        }
+
+        affix = affix || '';
+
+        if (typeof affix !== 'string') {
+            return 3;
+        }
+        let originText = elm.text();
+        elm.prop('disabled', true);
+
+        let fn = (elm, endTime, affix) => {
+            if (endTime > 0) {
+                elm.text(endTime + ' 秒后' + affix);
+            } else {
+                elm.text(originText);
+                elm.prop('disabled', false);
+                return;
+            }
+            setTimeout(() => {
+                --endTime;
+                fn(elm, endTime, affix);
+            }, 1000);
+        };
+        fn(elm, endTime, affix);
+        return 0;
+    },
     getFormData: (form) => {
         let formData = form.serializeArray();
         let dataObj = {};
@@ -44,6 +91,20 @@ const appRes = {
             dataObj[key].push(value);
         });
         return dataObj;
+    },
+    initValidator: function (that) {
+        that.find(':text[data-required="true"], :password[data-required="true"], select[data-required="true"], .checkbox[data-required="true"], .radio[data-required="true"]').each(function () {
+            let input = $(this);
+            let wrapper = input.closest('div[class^=col]');
+            if (!wrapper.length) {
+                return;
+            }
+            let label = wrapper.prev();
+            if (!label.length || !label.is('.control-label')) {
+                return;
+            }
+            label.addClass('required');
+        });
     },
     validForm: function (form) {
         let fields = form.find(':text[data-required="true"], select[data-required="true"], :password[data-required="true"]');
@@ -89,18 +150,7 @@ const initObj = {
             that.on('submit', (e) => {
                 e.preventDefault();
             });
-            that.find(':text[data-required="true"], :password[data-required="true"], select[data-required="true"], .checkbox[data-required="true"], .radio[data-required="true"]').each(function () {
-                let input = $(this);
-                let wrapper = input.closest('div[class^=col]');
-                if (!wrapper.length) {
-                    return;
-                }
-                let label = wrapper.prev();
-                if (!label.length || !label.is('.control-label')) {
-                    return;
-                }
-                label.addClass('required');
-            });
+            appRes.initValidator(that);
             // 监听我们自己的提交事件
             that.on('ajaxSubmit.resmanager', async function (e, submitTrigger) {
                 if (appRes.validForm(that)) {
@@ -212,9 +262,18 @@ const initObj = {
             that.data('isInit', true);
             let idElm = that.find('th[data-col-name="id"]');
             if (idElm.length) {
-                idElm.on('click', '.checkbox', function (e) {
-                    e.stopImmediatePropagation();
-                });
+                idElm
+                    .on('click', '.checkbox', function (e) {
+                        e.stopImmediatePropagation();
+                    })
+                    .on('change', ':checkbox', function () {
+                        let index = that.find('th').index(idElm);
+                        if (idElm.find(':checkbox').is(':checked')) {
+                            that.find(`tr td:nth-child(${index + 1}) :checkbox`).prop('checked', true);
+                            return;
+                        }
+                        that.find(`tr td:nth-child(${index + 1}) :checkbox`).prop('checked', false);
+                    });
             }
             let actionPanel = that.siblings('.data-table-action-wrapper');
             if (actionPanel.length) {
@@ -229,6 +288,53 @@ const initObj = {
                     })
                     .on('click', '[data-role="refresh"]', function () {
                         that.DataTable().draw(false);
+                    })
+                    .on('click', '[data-role="delete"]', function () {
+                        let btnDel = $(this);
+
+                        if (btnDel.prop('disabled')) {
+                            return;
+                        }
+
+                        if (!idElm.length) {
+                            return;
+                        }
+                        let index = that.find('th').index(idElm);
+                        let checkedElms = that.find(`tr td:nth-child(${index + 1}) :checkbox:checked`);
+                        if (!checkedElms.length) {
+                            bootbox.alert('没有要删除的项');
+                            return;
+                        }
+                        let nr = checkedElms.length;
+                        bootbox.confirm(`确定删除 ${nr} 项吗?`, async (result) => {
+                            if (!result) {
+                                return;
+                            }
+                            btnDel.prop('disabled', true);
+
+                            let delItemIds = [];
+                            checkedElms.each((i, elm) => {
+                                delItemIds.push($(elm).val());
+                            });
+
+                            try {
+                                let ret = await $.post(btnDel.data('url'), {
+                                    postIds: delItemIds
+                                }, null, 'json');
+                                if (!ret.result) {
+                                    bootbox.alert(ret.message);
+                                } else {
+                                    // 之后更换为 toast
+                                    bootbox.alert(ret.message);
+                                    that.DataTable().draw(false);
+                                }
+                            } catch (err) {
+                                bootbox.alert('服务器错误或没有网络');
+                            } finally {
+                                btnDel.prop('disabled', false);
+                                idElm.find(':checked').prop('checked', false);
+                            }
+                        });
                     });
                 let filterForm = actionPanel.find('form');
                 filterForm
@@ -305,7 +411,7 @@ const initObj = {
             that.DataTable($.extend({}, options, altOptions));
         });
         $('.dataTable.basic', scope).each(function () {
-           ;
+            ;
         });
     },
     ajaxModal: function (scope) {

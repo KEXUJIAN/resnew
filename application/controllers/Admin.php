@@ -16,7 +16,7 @@ class Admin extends CI_Controller
 {
     public function console()
     {
-        App::view('admin/console');
+        App::view('admin/console', ['titleNavClass' => 'container-fluid']);
     }
 
     public function new($name)
@@ -77,6 +77,27 @@ class Admin extends CI_Controller
         echo json_encode($response);
     }
 
+    public function update($name, $id)
+    {
+        $response = [];
+        switch ($name) {
+            case 'user':
+                $response += $this->updateUser($id);
+                break;
+            case 'phone':
+                $response += $this->updatePhone($id);
+                break;
+            case 'simcard':
+                $response += $this->updateSimCard($id);
+                break;
+            default:
+                $response += [
+                    'result' => false,
+                ];
+        }
+        echo json_encode($response);
+    }
+
     public function upload($name)
     {
         $response = [];
@@ -110,6 +131,34 @@ class Admin extends CI_Controller
                 ];
         }
         echo json_encode($response);
+    }
+
+    public function edit($name, $id)
+    {
+        switch ($name) {
+            case 'user':
+                $o = User::get($id);
+                if (!$o || USer::DELETED_YES === $o->deleted()) {
+                    show_error('用户不存在', 500, '');
+                }
+                App::view('admin/user-edit', ['user' => $o]);
+                break;
+            case 'phone':
+                $o = Phone::get($id);
+                if (!$o || Phone::DELETED_YES === $o->deleted()) {
+                    show_error('测试机不存在', 500, '');
+                }
+                App::view('admin/phone-edit', ['phone' => $o]);
+                break;
+            case 'simcard':
+                $o = SimCard::get($id);
+                if (!$o || SimCard::DELETED_YES === $o->deleted()) {
+                    show_error('测试卡不存在', 500, '');
+                }
+                App::view('admin/simcard-edit', ['simcard' => $o]);
+                break;
+            default:
+        }
     }
 
     private function dataUsers() : array
@@ -173,7 +222,7 @@ class Admin extends CI_Controller
                 if ('id' === $column) {
                     $value .= '<span class="checkbox"><label><input value="' . $user->$column() . '" type="checkbox"> ' . ($index++ + $offset). '</label></span>';
                 } elseif ('#action' === $column) {
-                    $value .= '<button class="btn btn-info" style="padding-bottom: 0;padding-top: 0;"><i class="fa fa-edit"></i> 编辑</button>';
+                    $value .= '<button data-toggle="modal" data-target="#ajax-modal" data-url="/admin/edit/user/'. $user->id() .'" class="btn btn-info" style="padding-bottom: 0;padding-top: 0;"><i class="fa fa-edit"></i> 编辑</button>';
                 } elseif (array_key_exists($column, $fields)) {
                     switch ($column) {
                         case 'role':
@@ -266,7 +315,7 @@ class Admin extends CI_Controller
                 if ('id' === $column) {
                     $value .= '<span class="checkbox"><label><input value="' . $phone->$column() . '" type="checkbox"> ' . ($index++ + $offset). '</label></span>';
                 } elseif ('#action' === $column) {
-                    $value .= '<button class="btn btn-info" style="padding-bottom: 0;padding-top: 0;"><i class="fa fa-edit"></i> 编辑</button>';
+                    $value .= '<button data-toggle="modal" data-target="#ajax-modal" data-url="/admin/edit/phone/'. $phone->id() .'" class="btn btn-info" style="padding-bottom: 0;padding-top: 0;"><i class="fa fa-edit"></i> 编辑</button>';
                 } elseif (array_key_exists($column, $fields)) {
                     switch ($column) {
                         case 'status':
@@ -366,7 +415,7 @@ class Admin extends CI_Controller
                 if ('id' === $column) {
                     $value .= '<span class="checkbox"><label><input value="' . $simCard->$column() . '" type="checkbox"> ' . ($index++ + $offset). '</label></span>';
                 } elseif ('#action' === $column) {
-                    $value .= '<button class="btn btn-info" style="padding-bottom: 0;padding-top: 0;"><i class="fa fa-edit"></i> 编辑</button>';
+                    $value .= '<button data-toggle="modal" data-target="#ajax-modal" data-url="/admin/edit/simcard/'. $simCard->id() .'" class="btn btn-info" style="padding-bottom: 0;padding-top: 0;"><i class="fa fa-edit"></i> 编辑</button>';
                 } elseif (array_key_exists($column, $fields)) {
                     switch ($column) {
                         case 'status':
@@ -406,16 +455,16 @@ class Admin extends CI_Controller
         $status = Phone::LABEL_STATUS[$phone->status()];
         switch ($phone->status()) {
             case Phone::STATUS_IN_INVENTORY:
-                $result .= '<i class="fa fa-home text-success"></i>';
+                $result .= '<p class="text-success"><i class="fa fa-home"></i>' . $status . '</p>';
                 break;
             case Phone::STATUS_RENT_OUT:
-                $result .= '<i class="fa fa-user text-warning"></i>';
+                $result .= '<p class="text-warning"><i class="fa fa-user"></i>' . $status . '</p>';
                 break;
             case Phone::STATUS_BROKEN:
-                $result .= '<i class="fa fa-times text-danger"></i>';
+                $result .= '<p class="text-danger"><i class="fa fa-times"></i>' . $status . '</p>';
                 break;
             case Phone::STATUS_OTHER:
-                $result .= '<i class="fa fa-question text-muted"></i>';
+                $result .= '<p class="text-muted"><i class="fa fa-question"></i>' . $status . '</p>';
                 break;
         }
         return $result;
@@ -427,16 +476,16 @@ class Admin extends CI_Controller
         $status = SimCard::LABEL_STATUS[$simCard->status()];
         switch ($simCard->status()) {
             case SimCard::STATUS_IN_INVENTORY:
-                $result .= '<i class="fa fa-home text-success"></i>';
+                $result .= '<p class="text-success"><i class="fa fa-home"></i>' . $status . '</p>';
                 break;
             case SimCard::STATUS_RENT_OUT:
-                $result .= '<i class="fa fa-user text-warning"></i>';
+                $result .= '<p class="text-warning"><i class="fa fa-user"></i>' . $status . '</p>';
                 break;
             case SimCard::STATUS_BROKEN:
-                $result .= '<i class="fa fa-times text-danger"></i>';
+                $result .= '<p class="text-danger"><i class="fa fa-times"></i>' . $status . '</p>';
                 break;
             case SimCard::STATUS_OTHER:
-                $result .= '<i class="fa fa-question text-mute"></i>';
+                $result .= '<p class="text-muted"><i class="fa fa-question"></i>' . $status . '</p>';
                 break;
         }
         return $result;
@@ -449,31 +498,16 @@ class Admin extends CI_Controller
             'message' => '',
         ];
         $required = [
-            'name' => 'str',
-            'username' => 'str',
-            'password' => 'str',
-            'email' => 'str',
+            'name' => ['type' => 'str', 'name' => '姓名'],
+            'username' => ['type' => 'str', 'name' => '用户名'],
+            'password' => ['type' => 'str', 'name' => '密码'],
+            'email' => ['type' => 'str', 'name' => '邮箱'],
         ];
-        $missing = '';
-        foreach ($required as $name => $type) {
-            $val = $_POST[$name] ?? '';
-            if ('array' === $type) {
-                if (is_array($val) && count($val)) {
-                    continue;
-                }
-                $missing = $name;
-                break;
-            }
-            if ('' === trim($val)) {
-                $missing = $name;
-                break;
-            }
+        $error = App::checkRequired($required, $_POST);
+        if ($error) {
+            return array_merge($response, $error);
         }
-        if ($missing) {
-            $response['result'] = false;
-            $response['message'] = "缺少字段: {$missing}";
-            return $response;
-        }
+
         $username = $_POST['username'];
         $o = User::getOne([
             'deleted' => User::DELETED_NO,
@@ -503,32 +537,17 @@ class Admin extends CI_Controller
             'message' => '',
         ];
         $required = [
-            'type' => 'str',
-            'os' => 'str',
-            'carrier' => 'array',
-            'status' => 'str',
-            'label' => 'str',
+            'type' => ['type' => 'str', 'name' => '机型'],
+            'os' => ['type' => 'str', 'name' => '系统'],
+            'carrier' => ['type' => 'array', 'name' => '运营商'],
+            'status' => ['type' => 'str', 'name' => ''],
+            'label' => ['type' => 'str', 'name'],
         ];
-        $missing = '';
-        foreach ($required as $name => $type) {
-            $val = $_POST[$name] ?? '';
-            if ('array' === $type) {
-                if (is_array($val) && count($val)) {
-                    continue;
-                }
-                $missing = $name;
-                break;
-            }
-            if ('' === trim($val)) {
-                $missing = $name;
-                break;
-            }
+        $error = App::checkRequired($required, $_POST);
+        if ($error) {
+            return array_merge($response, $error);
         }
-        if ($missing) {
-            $response['result'] = false;
-            $response['message'] = "缺少字段: {$missing}";
-            return $response;
-        }
+
         $label = $_POST['label'];
         $o = Phone::getOne([
             'deleted' => User::DELETED_NO,
@@ -594,31 +613,16 @@ class Admin extends CI_Controller
             'message' => '',
         ];
         $required = [
-            'phoneNumber' => 'str',
-            'label' => 'str',
-            'carrier' => 'array',
-            'status' => 'str',
+            'phoneNumber' => ['type' => 'str', 'name' => '手机号'],
+            'label' => ['type' => 'str', 'name' => '标识'],
+            'carrier' => ['type' => 'array', 'name' => '运营商'],
+            'status' => ['type' => 'str', 'name' => '状态'],
         ];
-        $missing = '';
-        foreach ($required as $name => $type) {
-            $val = $_POST[$name] ?? '';
-            if ('array' === $type) {
-                if (is_array($val) && count($val)) {
-                    continue;
-                }
-                $missing = $name;
-                break;
-            }
-            if ('' === trim($val)) {
-                $missing = $name;
-                break;
-            }
+        $error = App::checkRequired($required, $_POST);
+        if ($error) {
+            return array_merge($response, $error);
         }
-        if ($missing) {
-            $response['result'] = false;
-            $response['message'] = "缺少字段: {$missing}";
-            return $response;
-        }
+
         $phoneNumber = $_POST['phoneNumber'];
         $o = SimCard::getOne([
             'deleted' => User::DELETED_NO,
@@ -961,6 +965,70 @@ class Admin extends CI_Controller
         $o->fileName($fileName);
         $o->uploadByUser(App::getUser()->id());
         $o->save();
+        return $response;
+    }
+
+    private function updateUser($id)
+    {
+        $response = [
+            'result' => true,
+            'message' => '',
+        ];
+        $o = User::get($id);
+        if (!$o || User::DELETED_YES === $o->deleted()) {
+            return array_merge($response, [
+                'result' => false,
+                'message' => '用户不存在',
+            ]);
+        }
+        if ('' !== trim($_POST['name'] ?? '')) {
+            $o->name($_POST['name']);
+        }
+        if ('' !== trim($_POST['password'] ?? '')) {
+            $password = sha1("{$_POST['password']}{$o->passwordSalt()}");
+            $o->password($password);
+        }
+        if ('' !== trim($_POST['email'] ?? '')) {
+            $o->email($_POST['email']);
+        }
+        $changed = $o->save();
+        $response['message'] = $changed ? '成功保存' : '没有更改';
+        return $response;
+    }
+
+    private function updatePhone($id)
+    {
+        $response = [
+            'result' => true,
+            'message' => '',
+        ];
+        $o = Phone::get($id);
+        if (!$o || Phone::DELETED_YES === $o->deleted()) {
+            return array_merge($response, [
+                'result' => false,
+                'message' => '测试机不存在',
+            ]);
+        }
+        $changed = $o->save();
+        $response['message'] = $changed ? '成功保存' : '没有更改';
+        return $response;
+    }
+
+    private function updateSimCard($id)
+    {
+        $response = [
+            'result' => true,
+            'message' => '',
+        ];
+        $o = SimCard::get($id);
+        if (!$o || SimCard::DELETED_YES === $o->deleted()) {
+            return array_merge($response, [
+                'result' => false,
+                'message' => '测试卡不存在',
+            ]);
+        }
+        $changed = $o->save();
+        $response['message'] = $changed ? '成功保存' : '没有更改';
         return $response;
     }
 }

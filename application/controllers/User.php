@@ -32,6 +32,7 @@ class User extends CI_Controller
             'user' => App::getUser(),
             'panel' => $panel,
             'id' => $id,
+            'titleNavClass' => 'container-fluid',
         ]);
     }
 

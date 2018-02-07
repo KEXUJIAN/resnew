@@ -133,7 +133,7 @@ class MY_Model
         $table = static::TABLE;
         $fields = static::COLUMNS;
         foreach ($fields as $index => $column) {
-            $fields[$index] = strtolower($column) . " AS {$column}";
+            $fields[$index] = '`' . strtolower($column) . "` AS `{$column}`";
         }
         $fields = implode(',', $fields);
         $sql = "SELECT {$fields} FROM {$table} WHERE id = :id ";
@@ -196,7 +196,7 @@ class MY_Model
         if ($orderBy) {
             $tmp = [];
             foreach ($orderBy as $key => $value) {
-                $tmp[] = strtolower($key) . ' ' . strtoupper($value);
+                $tmp[] = '`' . strtolower($key) . '` ' . strtoupper($value);
             }
             $tmp = implode(',', $tmp);
             $orderByStr = "ORDER BY {$tmp}";

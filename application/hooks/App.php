@@ -4,8 +4,8 @@ defined('APPPATH') || define('APPPATH', realpath(dirname(__DIR__)) . DIRECTORY_S
 defined('ROOT_PATH') || define('ROOT_PATH', dirname(APPPATH) . DIRECTORY_SEPARATOR);
 defined('ENVIRONMENT') || define('ENVIRONMENT', 'development');
 /**
-* Bootstrap
-*/
+ * Bootstrap
+ */
 class App
 {
     /**
@@ -63,7 +63,7 @@ class App
             show_404();
         }
         $params['CI'] = self::$CI;
-        self::$CI->load->view($name, $params, $return);
+        return self::$CI->load->view($name, $params, $return);
     }
 
     public static function includeJs(string $name)
@@ -75,5 +75,40 @@ class App
             return;
         }
         echo '<script type="text/javascript" src="' . $file . '"></script>';
+    }
+
+    public static function checkRequired(array &$required, array &$check)
+    {
+        $missing = '';
+        foreach ($required as $key => $def) {
+            $def = is_array($def) && isset($def['name'], $def['type']) ? $def : [
+                'type' => 'str',
+                'name' => $key,
+            ];
+            if (!array_key_exists($key, $check)) {
+                $missing = $def['name'];
+                break;
+            }
+            $val = $check[$key];
+            if ('array' === $def['type']) {
+                if (is_array($val) && count($val)) {
+                    continue;
+                }
+                $missing = $def['name'];
+                break;
+            }
+            if ('' === trim($val)) {
+                $missing = $def['name'];
+                break;
+            }
+        }
+        if ($missing) {
+            $response = [
+                'result' => false,
+                'message' => "缺少字段: {$missing}",
+            ];
+            return $response;
+        }
+        return [];
     }
 }

@@ -16,7 +16,7 @@ application/logs/*
 !application/*/.htaccess
 
 composer.lock
-assets/dest/*.html
+assets/dest/
 
 /user_guide/
 
