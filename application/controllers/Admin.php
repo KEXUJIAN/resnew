@@ -161,6 +161,36 @@ class Admin extends CI_Controller
         }
     }
 
+    public function delete($name)
+    {
+        $required = [
+            'postIds' => ['type' => 'array', 'name' => '要删除的项'],
+        ];
+        $error = App::checkRequired($required, $_POST);
+        if ($error) {
+            echo json_encode($error);
+            return;
+        }
+        $ids = $_POST['postIds'];
+        $nr = 0;
+        switch ($name) {
+            case 'user':
+                $nr += User::hidden($ids);
+                break;
+            case 'phone':
+                $nr += Phone::hidden($ids);
+                break;
+            case 'simcard':
+                $nr += SimCard::hidden($ids);
+                break;
+        }
+
+        echo json_encode([
+            'result' => true,
+            'message' => "成功删除 {$nr} 项",
+        ]);
+    }
+
     private function dataUsers() : array
     {
         $response = [

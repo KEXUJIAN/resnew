@@ -248,21 +248,19 @@ class MY_Model
         return $result;
     }
 
-    public static function hidden(array $ids)
+    public static function hidden(array $ids) : int
     {
         if (!in_array('deleted', static::COLUMNS)) {
-            return false;
+            return 0;
         }
         $pdo = AppService::getPDO();
         $table = static::TABLE;
         $deleted_yes = static::DELETED_YES;
         $deleted_no  = static::DELETED_NO;
-        $sth = $pdo->prepare("UPDATE {$table} SET deleted = {$deleted_yes} WHERE id = :id AND deleted = {$deleted_no}");
+        $now = date('Y-m-d H:i:s');
+        $sth = $pdo->prepare("UPDATE {$table} SET deleted = {$deleted_yes}, timemodified = '{$now}' WHERE id = :id AND deleted = {$deleted_no}");
         $row_count = 0;
         foreach ($ids as $id) {
-            if (!is_scalar($id)) {
-                throw new Exception("Invalid id");
-            }
             $sth->execute([':id' => $id]);
             $row_count += $sth->rowCount();
         }
