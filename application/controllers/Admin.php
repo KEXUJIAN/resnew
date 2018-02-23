@@ -352,7 +352,7 @@ class Admin extends CI_Controller
                             $value .= $this->phoneStatus($phone);
                             break;
                         case 'carrier':
-                            if (!$phone->$column()) {
+                            if (!$phone->$column() && '0' !== $phone->$column()) {
                                 break;
                             }
                             $carrierList = explode(',', $phone->$column());
@@ -452,7 +452,7 @@ class Admin extends CI_Controller
                             $value .= $this->simCardStatus($simCard);
                             break;
                         case 'carrier':
-                            if (!$simCard->$column()) {
+                            if (!$simCard->$column() && '0' !== $simCard->$column()) {
                                 break;
                             }
                             $carrierList = explode(',', $simCard->carrier());

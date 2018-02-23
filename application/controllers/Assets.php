@@ -361,7 +361,7 @@ class Assets extends CI_Controller
                 } elseif (array_key_exists($column, $fields)) {
                     switch ($column) {
                         case 'carrier':
-                            if (!$phone->$column()) {
+                            if (!$phone->$column() && '0' !== $phone->$column()) {
                                 break;
                             }
                             $carrierList = explode(',', $phone->$column());
@@ -470,7 +470,7 @@ class Assets extends CI_Controller
                             $value .= '<span class="long-data">' . htmlspecialchars($simCard->$column()) . '</span>';
                             break;
                         case 'carrier':
-                            if (!$simCard->$column()) {
+                            if (!$simCard->$column() && '0' !== $simCard->$column()) {
                                 break;
                             }
                             $carrierList = explode(',', $simCard->carrier());
