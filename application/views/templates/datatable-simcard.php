@@ -73,6 +73,10 @@ use Res\Model\SimCard;
                                 <label><input type="checkbox" name="status[]" value="<?=$code?>"><?=$label?></label>
                             <?php endforeach; ?>
                         </div>
+                        <label class="control-label col-md-2">IMSI:</label>
+                        <div class="col-md-4">
+                            <input type="text" name="imsi" class="form-control" placeholder="">
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-6 col-md-offset-5">
@@ -103,6 +107,9 @@ use Res\Model\SimCard;
         </th>
         <th data-col-name="carrier" data-orderable="false">
             运营商
+        </th>
+        <th data-col-name="place" data-orderable="false">
+            归属地
         </th>
         <th data-col-name="imsi" data-orderable="false">
             IMSI

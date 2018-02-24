@@ -11,6 +11,7 @@ use \Res\Model\SimCard;
 use \Res\Model\User;
 use \Res\Model\UploadFile;
 use \Res\Util\MyExcel;
+use Res\Biz\AssetBiz;
 
 class Admin extends CI_Controller
 {
@@ -287,33 +288,8 @@ class Admin extends CI_Controller
         }
         $response['draw'] = $_POST['draw'];
         $c = ['deleted' => Phone::DELETED_NO];
-        if ('' !== ($_POST['type'] ?? '')) {
-            $c['type@'] = $_POST['type'];
-        }
-        if ('' !== ($_POST['label'] ?? '')) {
-            $c['label@'] = $_POST['label'];
-        }
-        if ('' !== ($_POST['os'] ?? '')) {
-            $c['os@'] = $_POST['os'];
-        }
-        if ('' !== ($_POST['resolution'] ?? '')) {
-            $c['resolution@'] = $_POST['resolution'];
-        }
-        if ('' !== ($_POST['ramMin'] ?? '')) {
-            $c['ram>='] = $_POST['ramMin'];
-        }
-        if ('' !== ($_POST['ramMax'] ?? '')) {
-            $c['ram<='] = $_POST['ramMax'];
-        }
-        if (isset($_POST['status']) && is_array($_POST['status'])) {
-            $c['status()'] = $_POST['status'];
-        }
-        if ('' !== ($_POST['timeAddedMin'] ?? '')) {
-            $c['timeAdded>='] = date('Y-m-d 00:00:00', strtotime($_POST['timeAddedMin']));
-        }
-        if ('' !== ($_POST['timeAddedMax'] ?? '')) {
-            $c['timeAdded<='] = date('Y-m-d 23:59:59', strtotime($_POST['timeAddedMax']));
-        }
+        AssetBiz::phoneCondition($c, $_POST);
+
         $count = Phone::getCount($c);
         $columns = [];
         foreach ($_POST['columns'] as $columnDef) {
@@ -349,7 +325,7 @@ class Admin extends CI_Controller
                 } elseif (array_key_exists($column, $fields)) {
                     switch ($column) {
                         case 'status':
-                            $value .= $this->phoneStatus($phone);
+                            $value .= AssetBiz::phoneStatus($phone);
                             break;
                         case 'carrier':
                             if (!$phone->$column() && '0' !== $phone->$column()) {
@@ -395,25 +371,9 @@ class Admin extends CI_Controller
             return $response;
         }
         $response['draw'] = $_POST['draw'];
-        $c = [];
-        if ('' !== ($_POST['phoneNumber'] ?? '')) {
-            $c['phoneNumber@'] = $_POST['phoneNumber'];
-        }
-        if ('' !== ($_POST['place'] ?? '')) {
-            $c['place@'] = $_POST['place'];
-        }
-        if ('' !== ($_POST['label'] ?? '')) {
-            $c['label@'] = $_POST['label'];
-        }
-        if (isset($_POST['status']) && is_array($_POST['status'])) {
-            $c['status()'] = $_POST['status'];
-        }
-        if ('' !== ($_POST['timeAddedMin'] ?? '')) {
-            $c['timeAdded>='] = date('Y-m-d 00:00:00', strtotime($_POST['timeAddedMin']));
-        }
-        if ('' !== ($_POST['timeAddedMax'] ?? '')) {
-            $c['timeAdded<='] = date('Y-m-d 23:59:59', strtotime($_POST['timeAddedMax']));
-        }
+        $c = ['deleted' => SimCard::DELETED_NO];
+        AssetBiz::simCardCondition($c, $_POST);
+
         $count = SimCard::getCount($c);
         $columns = [];
         foreach ($_POST['columns'] as $columnDef) {
@@ -449,7 +409,7 @@ class Admin extends CI_Controller
                 } elseif (array_key_exists($column, $fields)) {
                     switch ($column) {
                         case 'status':
-                            $value .= $this->simCardStatus($simCard);
+                            $value .= AssetBiz::simCardStatus($simCard);
                             break;
                         case 'carrier':
                             if (!$simCard->$column() && '0' !== $simCard->$column()) {
@@ -465,6 +425,9 @@ class Admin extends CI_Controller
                         case 'imsi':
                             $value .= '<span class="long-data">' . htmlspecialchars($simCard->$column()) . '</span>';
                             break;
+                        case 'place':
+                            $value .= htmlspecialchars($simCard->$column());
+                            break;
                         default:
                             $value .= '<span>' . htmlspecialchars($simCard->$column()) . '</span>';
                             break;
@@ -477,48 +440,6 @@ class Admin extends CI_Controller
         $response['data'] = $data;
         $response['recordsTotal'] = $response['recordsFiltered'] = $count;
         return $response;
-    }
-
-    private function phoneStatus(Phone $phone) : string
-    {
-        $result = '';
-        $status = Phone::LABEL_STATUS[$phone->status()];
-        switch ($phone->status()) {
-            case Phone::STATUS_IN_INVENTORY:
-                $result .= '<p class="text-success"><i class="fa fa-home"></i>' . $status . '</p>';
-                break;
-            case Phone::STATUS_RENT_OUT:
-                $result .= '<p class="text-warning"><i class="fa fa-user"></i>' . $status . '</p>';
-                break;
-            case Phone::STATUS_BROKEN:
-                $result .= '<p class="text-danger"><i class="fa fa-times"></i>' . $status . '</p>';
-                break;
-            case Phone::STATUS_OTHER:
-                $result .= '<p class="text-muted"><i class="fa fa-question"></i>' . $status . '</p>';
-                break;
-        }
-        return $result;
-    }
-
-    private function simCardStatus(SimCard $simCard) : string
-    {
-        $result = '';
-        $status = SimCard::LABEL_STATUS[$simCard->status()];
-        switch ($simCard->status()) {
-            case SimCard::STATUS_IN_INVENTORY:
-                $result .= '<p class="text-success"><i class="fa fa-home"></i>' . $status . '</p>';
-                break;
-            case SimCard::STATUS_RENT_OUT:
-                $result .= '<p class="text-warning"><i class="fa fa-user"></i>' . $status . '</p>';
-                break;
-            case SimCard::STATUS_BROKEN:
-                $result .= '<p class="text-danger"><i class="fa fa-times"></i>' . $status . '</p>';
-                break;
-            case SimCard::STATUS_OTHER:
-                $result .= '<p class="text-muted"><i class="fa fa-question"></i>' . $status . '</p>';
-                break;
-        }
-        return $result;
     }
 
     private function saveUser()

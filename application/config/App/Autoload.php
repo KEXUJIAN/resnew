@@ -19,6 +19,7 @@ class Autoload
             'Res\Hook'   => [realpath(APPPATH . 'hooks')],
             'Res\Model'  => [realpath(APPPATH . 'models')],
             'Res\Util'   => [realpath(APPPATH . 'libraries')],
+            'Res\Biz'    => [realpath(APPPATH . 'biz')],
             'Res'        => [APPPATH],
         ];
     }

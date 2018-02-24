@@ -69,6 +69,18 @@ use Res\Model\Phone;
                 </div>
                 <div class="col-md-12">
                     <div class="form-group">
+                        <label class="control-label col-md-2">编号:</label>
+                        <div class="col-md-2">
+                            <input type="text" name="label" class="form-control" placeholder="">
+                        </div>
+                        <label class="control-label col-md-2 col-md-offset-2">IMEI:</label>
+                        <div class="col-md-4">
+                            <input type="text" name="imei" class="form-control" placeholder="">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
                         <label class="control-label col-md-2">状态:</label>
                         <div class="col-md-4 checkbox">
                             <?php foreach (Phone::LABEL_STATUS as $code => $label): ?>
@@ -80,14 +92,6 @@ use Res\Model\Phone;
                             <?php foreach (Phone::LABEL_CARRIER as $code => $label): ?>
                                 <label><input type="radio" name="carrier" value="<?=$code?>"><?=$label?></label>
                             <?php endforeach; ?>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label class="control-label col-md-2">编号:</label>
-                        <div class="col-md-2">
-                            <input type="text" name="label" class="form-control" placeholder="">
                         </div>
                     </div>
                 </div>
