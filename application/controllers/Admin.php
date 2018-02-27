@@ -156,7 +156,7 @@ class Admin extends CI_Controller
                 if (!$o || SimCard::DELETED_YES === $o->deleted()) {
                     show_error('测试卡不存在', 500, '');
                 }
-                App::view('admin/simcard-edit', ['simcard' => $o]);
+                App::view('admin/simcard-edit', ['simCard' => $o]);
                 break;
             default:
         }
@@ -478,6 +478,8 @@ class Admin extends CI_Controller
         $o->email($_POST['email']);
         $saved = $o->save();
         $response['message'] = $saved ? '保存成功' : '未保存';
+
+        $this->opLog('新建用户', $o->obj2Array(), $response['message']);
         return $response;
     }
 
@@ -491,8 +493,8 @@ class Admin extends CI_Controller
             'type' => ['type' => 'str', 'name' => '机型'],
             'os' => ['type' => 'str', 'name' => '系统'],
             'carrier' => ['type' => 'array', 'name' => '运营商'],
-            'status' => ['type' => 'str', 'name' => ''],
-            'label' => ['type' => 'str', 'name'],
+            'status' => ['type' => 'str', 'name' => '状态'],
+            'label' => ['type' => 'str', 'name' => '标签'],
         ];
         $error = App::checkRequired($required, $_POST);
         if ($error) {
@@ -539,6 +541,8 @@ class Admin extends CI_Controller
         $imei = $imei ?: null;
         $type = $_POST['type'] ?? null;
         $os = $_POST['os'];
+        $statusDescription = trim($_POST['statusDescription'] ?? '') ?: null;
+
         $o = new Phone();
         if ($resolutionH && $resolutionW) {
             $o->resolution("{$resolutionW} X {$resolutionH}");
@@ -552,8 +556,12 @@ class Admin extends CI_Controller
         $o->carrier($carrier);
         $o->imei($imei);
         $o->userId($userId);
+        $o->statusDescription($statusDescription);
+
         $saved = $o->save();
         $response['message'] = $saved ? '保存成功' : '未保存';
+
+        $this->opLog('新建测试机', $o->obj2Array(), $response['message']);
         return $response;
     }
 
@@ -606,6 +614,7 @@ class Admin extends CI_Controller
         $label = $_POST['label'];
         $place = $_POST['place'] ?? null;
         $imsi = $_POST['imsi'] ?? null;
+        $statusDescription = trim($_POST['statusDescription'] ?? '') ?: null;
 
         $o = new SimCard();
         $o->phoneNumber($phoneNumber);
@@ -615,8 +624,12 @@ class Admin extends CI_Controller
         $o->imsi($imsi);
         $o->userId($userId);
         $o->place($place);
+        $o->statusDescription($statusDescription);
+
         $saved = $o->save();
         $response['message'] = $saved ? '保存成功' : '未保存';
+
+        $this->opLog('新建测试卡', $o->obj2Array(), $response['message']);
         return $response;
     }
 
@@ -932,6 +945,7 @@ class Admin extends CI_Controller
                 'message' => '用户不存在',
             ]);
         }
+        $oldData = $o->obj2Array();
         if ('' !== trim($_POST['name'] ?? '')) {
             $o->name($_POST['name']);
         }
@@ -942,8 +956,15 @@ class Admin extends CI_Controller
         if ('' !== trim($_POST['email'] ?? '')) {
             $o->email($_POST['email']);
         }
+        $newData = $o->obj2Array();
+        if ($oldData !== $newData) {
+            $o->timeModified(date('Y-m-d H:i:s'));
+        }
+
         $changed = $o->save();
         $response['message'] = $changed ? '成功保存' : '没有更改';
+
+        $this->opLog('修改用户', $o->obj2Array(), $response['message']);
         return $response;
     }
 
@@ -960,8 +981,60 @@ class Admin extends CI_Controller
                 'message' => '测试机不存在',
             ]);
         }
+        $oldData = $o->obj2Array();
+        if ('' !== trim($_POST['type'] ?? '')) {
+            $o->type($_POST['type']);
+        }
+        if ('' !== trim($_POST['os'] ?? '')) {
+            $o->os($_POST['os']);
+        }
+        if ('' !== trim($_POST['resolutionW'] ?? '') && ('' !== trim($_POST['resolutionH'] ?? ''))) {
+            $o->resolution("{$_POST['resolutionW']} X {$_POST['resolutionH']}");
+        }
+        if ('' !== trim($_POST['ram'] ?? '')) {
+            $o->ram(intval($_POST['ram']));
+        }
+        if ('' !== trim($_POST['screenSize'] ?? '')) {
+            $o->screenSize($_POST['screenSize']);
+        }
+        $label = trim($_POST['label'] ?? '');
+        if ($o->label() !== $label && '' !== $label) {
+            $old = Phone::getOne([
+                'label' => $_POST['label'],
+                'deleted' => Phone::DELETED_NO,
+            ]);
+            if ($old) {
+                return array_merge($response, [
+                    'result' => false,
+                    'message' => '同标识的测试机已存在',
+                ]);
+            }
+            $o->label($label);
+        }
+        if ($_POST['carrier']) {
+            $o->carrier(implode(',', $_POST['carrier']));
+        }
+        if ('' !== trim($_POST['status'] ?? '')) {
+            $o->status(intval($_POST['status']));
+        }
+        if ('' !== trim($_POST['userId'] ?? '')) {
+            $o->userId($_POST['userId']);
+        }
+        if ('' !== trim($_POST['imei'] ?? '')) {
+            $o->imei($_POST['imei']);
+        }
+        if ('' !== trim($_POST['statusDescription'] ?? '')) {
+            $o->statusDescription($_POST['statusDescription']);
+        }
+        $newData = $o->obj2Array();
+        if ($oldData !== $newData) {
+            $o->timeModified(date('Y-m-d H:i:s'));
+        }
+
         $changed = $o->save();
         $response['message'] = $changed ? '成功保存' : '没有更改';
+
+        $this->opLog('修改测试机', $o->obj2Array(), $response['message']);
         return $response;
     }
 
@@ -978,8 +1051,50 @@ class Admin extends CI_Controller
                 'message' => '测试卡不存在',
             ]);
         }
+        $oldData = $o->obj2Array();
+        if ('' !== trim($_POST['place'] ?? '')) {
+            $o->place($_POST['place']);
+        }
+        if ('' !== trim($_POST['phoneNumber'] ?? '')) {
+            $o->phoneNumber($_POST['phoneNumber']);
+        }
+        if ($_POST['carrier']) {
+            $o->carrier(implode(',', $_POST['carrier']));
+        }
+        if ('' !== trim($_POST['status'] ?? '')) {
+            $o->status(intval($_POST['status']));
+        }
+        if ('' !== trim($_POST['userId'] ?? '')) {
+            $o->userId($_POST['userId']);
+        }
+        if ('' !== trim($_POST['imsi'] ?? '')) {
+            $o->imsi($_POST['imsi']);
+        }
+        if ('' !== trim($_POST['label'] ?? '')) {
+            $o->label($_POST['label']);
+        }
+        if ('' !== trim($_POST['statusDescription'] ?? '')) {
+            $o->statusDescription($_POST['statusDescription']);
+        }
+        $newData = $o->obj2Array();
+        if ($oldData !== $newData) {
+            $o->timeModified(date('Y-m-d H:i:s'));
+        }
+
         $changed = $o->save();
         $response['message'] = $changed ? '成功保存' : '没有更改';
+
+        $this->opLog('修改测试卡', $o->obj2Array(), $response['message']);
         return $response;
+    }
+
+    private function opLog(string $operate, array $data, string $result)
+    {
+        $admin = App::getUser();
+        $message = "用户: {$admin->id()} => [{$admin->name()}, {$admin->username()}]\n";
+        $message .= "操作: {$operate}\n";
+        $message .= "数据: " . json_encode($data, JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT) . "\n";
+        $message .= "结果: {$result}\n";
+        log_message('error', $message);
     }
 }

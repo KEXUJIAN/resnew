@@ -61,7 +61,7 @@ use Res\Model\Phone;
                             $intersect = array_intersect(explode(',', $tmp), array_keys(Phone::LABEL_CARRIER));
                             foreach ($intersect as $value):
                         ?>
-                                <label class="label label-default"><?=Phone::LABEL_CARRIER[$value]?></label>
+                            <label class="label label-default"><?=Phone::LABEL_CARRIER[$value]?></label>
                         <?php
                             endforeach;
                         endif;
@@ -95,7 +95,7 @@ use Res\Model\Phone;
             </div>
             <div class="col-md-12">
                 <div class="form-group">
-                    <label class="col-md-2 control-label">描述:</label>
+                    <label class="col-md-2 control-label">状态描述:</label>
                     <div class="col-md-10">
                         <textarea name="statusDescription" class="form-control no-resize" readonly><?=htmlspecialchars($phone->statusDescription())?></textarea>
                     </div>

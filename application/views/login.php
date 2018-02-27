@@ -3,7 +3,7 @@ App::view('templates/header', ['title' => 'Login']);
 ?>
 <style type="text/css">
     .login-panel {
-        width: 50%;
+        width: 40%;
         padding-top: 30px;
         border-radius: 5px;
         background-color: #f8f8f8;

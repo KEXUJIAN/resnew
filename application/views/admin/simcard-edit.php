@@ -1,19 +1,19 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: KE
- * Date: 2018/1/3
- * Time: 21:20
+ * User: KE, XUJIAN
+ * Date: 2018/2/27
+ * Time: 22:52
  */
 
 use Res\Model\SimCard;
 
 ?>
 
-<form id="new-simcard-form" class="form-horizontal ajax-form" action="/admin/save/simcard">
+<form id="edit-simcard-form" class="form-horizontal ajax-form" action="/admin/update/simcard/<?=$simCard->id()?>">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">添加测试卡</h4>
+        <h4 class="modal-title">编辑测试卡</h4>
     </div>
     <div class="modal-body">
         <div class="row">
@@ -21,7 +21,7 @@ use Res\Model\SimCard;
                 <div class="form-group">
                     <label class="col-md-2 control-label">手机号:</label>
                     <div class="col-md-4">
-                        <input type="text" name="phoneNumber" class="form-control" data-required="true">
+                        <input type="text" name="phoneNumber" class="form-control" data-required="true" value="<?=htmlspecialchars($simCard->phoneNumber())?>">
                     </div>
                 </div>
             </div>
@@ -29,20 +29,22 @@ use Res\Model\SimCard;
                 <div class="form-group">
                     <label class="col-md-2 control-label">归属地:</label>
                     <div class="col-md-4">
-                        <input type="text" name="place" class="form-control">
+                        <input type="text" name="place" class="form-control" value="<?=htmlspecialchars($simCard->place())?>">
                     </div>
                     <label class="col-md-2 control-label">标识:</label>
                     <div class="col-md-4">
-                        <input type="text" name="label" class="form-control" data-required="true">
+                        <input type="text" name="label" class="form-control" data-required="true" value="<?=htmlspecialchars($simCard->label())?>">
                     </div>
                 </div>
             </div>
             <div class="col-md-12">
                 <div class="form-group">
                     <label class="col-md-2 control-label">运营商:</label>
+                    <?php $cLabelList = array_flip(explode(',', $simCard->carrier())); ?>
                     <div class="col-md-10 checkbox" data-required="true">
                         <?php foreach (SimCard::LABEL_CARRIER as $code => $label): ?>
-                            <label><input type="checkbox" name="carrier[]" value="<?=$code?>"><?=$label?></label>
+                            <?php $match = array_key_exists($code, $cLabelList);?>
+                            <label><input type="checkbox" name="carrier[]" value="<?=$code?>" <?php if ($match):?>checked<?php endif;?>><?=$label?></label>
                         <?php endforeach; ?>
                     </div>
                 </div>
@@ -51,6 +53,7 @@ use Res\Model\SimCard;
                 <div class="form-group">
                     <label class="col-md-2 control-label">状态:</label>
                     <div class="col-md-10 radio" data-required="true">
+                        <?php $status = $simCard->status();?>
                         <?php foreach (SimCard::LABEL_STATUS as $code => $label): ?>
                             <label><input type="radio" name="status" value="<?=$code?>"><?=$label?></label>
                         <?php endforeach; ?>
@@ -69,7 +72,7 @@ use Res\Model\SimCard;
                 <div class="form-group">
                     <label class="col-md-2 control-label">IMSI:</label>
                     <div class="col-md-10">
-                        <input type="text" name="imsi" class="form-control">
+                        <input type="text" name="imsi" class="form-control" value="<?=htmlspecialchars($simCard->imsi())?>">
                     </div>
                 </div>
             </div>
@@ -77,7 +80,7 @@ use Res\Model\SimCard;
                 <div class="form-group">
                     <label class="col-md-2 control-label">状态描述:</label>
                     <div class="col-md-10">
-                        <textarea name="statusDescription" class="form-control no-resize"></textarea>
+                        <textarea name="statusDescription" class="form-control no-resize"><?=htmlspecialchars($simCard->statusDescription())?></textarea>
                     </div>
                 </div>
             </div>
@@ -90,7 +93,15 @@ use Res\Model\SimCard;
 </form>
 <script>
 (function () {
-    $('#new-simcard-form')
+    var form = $('#edit-simcard-form')
+        .data('beforeSubmit', function () {
+            var newData = resmanager.getFormData(form);
+            if (JSON.stringify(newData) === oldData) {
+                bootbox.alert('没有值被改变，不需要保存');
+                return false;
+            }
+            return true;
+        })
         .data('submitDoneSucc', function (ret, form) {
             var _modal = form.closest('.ajax-modal');
             _modal
@@ -114,5 +125,7 @@ use Res\Model\SimCard;
                 .find('select[name="userId"]').val(null).trigger('changed').empty()
                 .closest('.col-md-12').hide();
         });
+    form.find(':radio[name="status"][value="<?=$status?>"]').click();
+    var oldData = JSON.stringify(resmanager.getFormData(form));
 })();
 </script>
