@@ -10,6 +10,7 @@ namespace Res\Biz;
 
 use Res\Model\Phone;
 use Res\Model\SimCard;
+use Res\Model\User;
 
 class AssetBiz
 {
@@ -22,7 +23,8 @@ class AssetBiz
                 $result .= '<p class="text-success"><i class="fa fa-home"></i>' . $status . '</p>';
                 break;
             case Phone::STATUS_RENT_OUT:
-                $result .= '<p class="text-warning"><i class="fa fa-user"></i>' . $status . '</p>';
+                $user = User::getOne(['id' => $phone->userId()]);
+                $result .= '<p class="text-warning"><i class="fa fa-user"></i>' . $user->name() . '</p>';
                 break;
             case Phone::STATUS_BROKEN:
                 $result .= '<p class="text-danger"><i class="fa fa-times"></i>' . $status . '</p>';
@@ -43,7 +45,8 @@ class AssetBiz
                 $result .= '<p class="text-success"><i class="fa fa-home"></i>' . $status . '</p>';
                 break;
             case SimCard::STATUS_RENT_OUT:
-                $result .= '<p class="text-warning"><i class="fa fa-user"></i>' . $status . '</p>';
+                $user = User::getOne(['id' => $simCard->userId()]);
+                $result .= '<p class="text-warning"><i class="fa fa-user"></i>' . $user->name() . '</p>';
                 break;
             case SimCard::STATUS_BROKEN:
                 $result .= '<p class="text-danger"><i class="fa fa-times"></i>' . $status . '</p>';

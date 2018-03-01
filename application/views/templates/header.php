@@ -6,6 +6,8 @@ if (isset($title)):
     $title = is_array($title) ? $title : [$title];
     $title = '库存系统 | ' . implode(' | ', $title);
 endif;
+
+$user = APP::getUser() ?? false;
 ?>
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -16,18 +18,26 @@ endif;
     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="https://cdn.bootcss.com/jquery-toast-plugin/1.3.2/jquery.toast.min.css" rel="stylesheet">
+    <?php if ($user): ?>
     <link href="https://cdn.bootcss.com/datatables/1.10.16/css/dataTables.bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/select2/4.0.5/css/select2.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css" rel="stylesheet">
+    <?php endif;?>
     <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://cdn.bootcss.com/jquery-toast-plugin/1.3.2/jquery.toast.min.js"></script>
     <script src="https://cdn.bootcss.com/bootbox.js/4.4.0/bootbox.min.js"></script>
     <script src="https://cdn.bootcss.com/js-sha1/0.6.0/sha1.min.js"></script>
+    <?php if ($user): ?>
     <script src="https://cdn.bootcss.com/datatables/1.10.16/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.bootcss.com/datatables/1.10.16/js/dataTables.bootstrap.min.js"></script>
     <script src="https://cdn.bootcss.com/blueimp-file-upload/9.19.2/js/vendor/jquery.ui.widget.min.js"></script>
     <script src="https://cdn.bootcss.com/blueimp-file-upload/9.19.2/js/jquery.iframe-transport.min.js"></script>
     <script src="https://cdn.bootcss.com/blueimp-file-upload/9.19.2/js/jquery.fileupload.min.js"></script>
-    <script src="/asset/app.bd578a6c25ec1ae0f014.js"></script>
+    <script src="https://cdn.bootcss.com/select2/4.0.5/js/select2.min.js"></script>
+    <script src="https://cdn.bootcss.com/select2/4.0.5/js/i18n/zh-CN.js"></script>
+    <?php endif;?>
+    <script src="/asset/app.8833c32b687dfb387fef.js"></script>
     <style type="text/css">
         body {
             position: absolute;
@@ -111,7 +121,7 @@ endif;
     </style>
 </head>
 <body <?php if ($pageId ?? ''): echo 'id="' . $pageId . '"'; endif; ?>>
-    <?php if ($user = APP::getUser() ?? false): ?>
+    <?php if ($user): ?>
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="<?=$titleNavClass ?? 'container'?>">
             <ul class="nav navbar-nav navbar-left">

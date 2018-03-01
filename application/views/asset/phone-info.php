@@ -7,6 +7,7 @@
  */
 
 use Res\Model\Phone;
+use Res\Model\User;
 
 ?>
 <form class="form-horizontal">
@@ -73,7 +74,12 @@ use Res\Model\Phone;
                 <div class="form-group">
                     <label class="col-md-2 control-label">状态:</label>
                     <div class="col-md-10" >
-                        <label class="label label-info"><?=Phone::LABEL_STATUS[$phone->status()]?></label>
+                        <?php $status = $phone->status();?>
+                        <label class="label label-info"><?=Phone::LABEL_STATUS[$status]?></label>
+                        <?php if (Phone::STATUS_RENT_OUT === $status): ?>
+                            <?php $user = User::get($phone->userId());?>
+                        <label class="label label-primary"><?=$user->name()?></label>
+                        <?php endif;?>
                     </div>
                 </div>
             </div>

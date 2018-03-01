@@ -7,6 +7,7 @@
  */
 
 use Res\Model\SimCard;
+use Res\Model\User;
 
 ?>
 
@@ -58,7 +59,12 @@ use Res\Model\SimCard;
                 <div class="form-group">
                     <label class="col-md-2 control-label">状态:</label>
                     <div class="col-md-10" >
-                        <label class="label label-info"><?=SimCard::LABEL_STATUS[$simCard->status()]?></label>
+                        <?php $status = $simCard->status();?>
+                        <label class="label label-info"><?=SimCard::LABEL_STATUS[$status]?></label>
+                        <?php if (SimCard::STATUS_RENT_OUT === $status): ?>
+                            <?php $user = User::get($simCard->userId());?>
+                        <label class="label label-primary"><?=$user->name()?></label>
+                        <?php endif;?>
                     </div>
                 </div>
             </div>

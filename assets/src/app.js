@@ -6,6 +6,11 @@ bootbox.addLocale('cn', {
     CONFIRM: '确定',
 });
 bootbox.setLocale('cn');
+
+if ($.fn.select2 !== undefined) {
+    $.fn.select2.defaults.set("theme", "bootstrap");
+}
+
 $(function () {
     let notify = $('#notification-bell');
     if (!notify.length) {
@@ -33,47 +38,6 @@ $(function () {
 });
 
 const appRes = {
-    /**
-     *
-     * @param elm
-     * @param endTime
-     * @param affix
-     * @returns {number} 1 = need jquery element
-     *                   2 = time must be lt 0
-     *                   3 = invalid affix
-     */
-    countDown: (elm, endTime, affix) => {
-        if (!(elm instanceof $)) {
-            return 1;
-        }
-        if (typeof endTime !== 'number' || endTime <= 0) {
-            return 2;
-        }
-
-        affix = affix || '';
-
-        if (typeof affix !== 'string') {
-            return 3;
-        }
-        let originText = elm.text();
-        elm.prop('disabled', true);
-
-        let fn = (elm, endTime, affix) => {
-            if (endTime > 0) {
-                elm.text(endTime + ' 秒后' + affix);
-            } else {
-                elm.text(originText);
-                elm.prop('disabled', false);
-                return;
-            }
-            setTimeout(() => {
-                --endTime;
-                fn(elm, endTime, affix);
-            }, 1000);
-        };
-        fn(elm, endTime, affix);
-        return 0;
-    },
     getFormData: (form) => {
         let formData = form.serializeArray();
         let dataObj = {};
@@ -409,6 +373,15 @@ const initObj = {
             };
             let altOptions = that.data('option');
             that.DataTable($.extend({}, options, altOptions));
+            that.on('draw.dt', function () {
+                if (!idElm.length) {
+                    return;
+                }
+                let checkbox = idElm.find(':checkbox');
+                if (checkbox.is(':checked')) {
+                    checkbox.prop('checked', false);
+                }
+            });
         });
         $('.dataTable.basic', scope).each(function () {
             ;
@@ -471,6 +444,17 @@ const initObj = {
                     that.data('isInit', true).data('backdrop', 'static');
                 });
         })
+    },
+    select2: function (scope) {
+        if ($.fn.select2 === undefined) {
+            return;
+        }
+        $('.select2', scope).each(function () {
+            var that = $(this);
+            that.select2({
+                language: 'zh-CN',
+            });
+        });
     },
     tooltip: function (scope) {
         $('[data-toggle="tooltip"]', scope).tooltip();

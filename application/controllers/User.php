@@ -130,4 +130,12 @@ class User extends CI_Controller
         session_destroy();
         header('Location: /user/login');
     }
+
+    public function select2()
+    {
+        $c = [];
+        $list = UserModel::getList($c);
+        $response = [];
+        echo json_encode($response);
+    }
 }

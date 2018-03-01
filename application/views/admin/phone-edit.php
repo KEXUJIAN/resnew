@@ -7,6 +7,7 @@
  */
 
 use Res\Model\Phone;
+use Res\Model\User;
 
 ?>
 
@@ -92,7 +93,12 @@ use Res\Model\Phone;
                 <div class="form-group">
                     <label class="col-md-2 control-label">借出人:</label>
                     <div class="col-md-4">
-                        <select name="userId" class="form-control" data-required="true"></select>
+                        <select name="userId" class="form-control select2" data-url="/user/select2" data-required="true">
+                            <?php if (Phone::STATUS_RENT_OUT === $status):?>
+                                <?php $user = User::get($phone->userId());?>
+                            <option value="<?=$user->id()?>"><?=$user->name()?></option>
+                            <?php endif;?>
+                        </select>
                     </div>
                 </div>
             </div>
