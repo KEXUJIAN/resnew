@@ -134,8 +134,18 @@ class User extends CI_Controller
     public function select2()
     {
         $c = [];
+        if ('' !== ($_GET['q'] ?? '')) {
+            $c['name@'] = $_GET['q'];
+        }
         $list = UserModel::getList($c);
-        $response = [];
+        $response = ['results' => []];
+        foreach ($list as $user) {
+            $response['results'][] = [
+                'id' => $user->id(),
+                'text' => $user->name(),
+            ];
+        }
+        header('content-type: application/json');
         echo json_encode($response);
     }
 }

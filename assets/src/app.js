@@ -449,11 +449,19 @@ const initObj = {
         if ($.fn.select2 === undefined) {
             return;
         }
+        let option = {
+            language: 'zh-CN',
+        };
         $('.select2', scope).each(function () {
             var that = $(this);
-            that.select2({
-                language: 'zh-CN',
-            });
+            let ajax = {};
+            let url = that.data('url');
+            if (url) {
+                ajax['ajax'] = {
+                    url: url
+                };
+            }
+            that.select2($.extend({}, option, ajax, that.data('option')));
         });
     },
     tooltip: function (scope) {

@@ -96,7 +96,7 @@ use Res\Model\User;
                         <select name="userId" class="form-control select2" data-url="/user/select2" data-required="true">
                             <?php if (Phone::STATUS_RENT_OUT === $status):?>
                                 <?php $user = User::get($phone->userId());?>
-                            <option value="<?=$user->id()?>"><?=$user->name()?></option>
+                            <option value="<?=$user->id()?>" selected="selected"><?=$user->name()?></option>
                             <?php endif;?>
                         </select>
                     </div>
