@@ -75,6 +75,22 @@ use Res\Model\SimCard;
             </div>
             <div class="col-md-12">
                 <div class="form-group">
+                    <label class="col-md-2 control-label">身份证:</label>
+                    <div class="col-md-10">
+                        <input type="text" name="idCard" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="col-md-2 control-label">服务密码:</label>
+                    <div class="col-md-10">
+                        <input type="text" name="servicePassword" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
                     <label class="col-md-2 control-label">状态描述:</label>
                     <div class="col-md-10">
                         <textarea name="statusDescription" class="form-control no-resize"></textarea>

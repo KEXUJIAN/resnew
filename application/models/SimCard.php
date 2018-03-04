@@ -11,7 +11,7 @@ namespace Res\Model;
 class SimCard extends MY_Model
 {
     const TABLE = 'simcards';
-    const COLUMNS = ['id', 'userId', 'phoneNumber', 'label', 'carrier', 'place', 'imsi', 'status', 'statusDescription', 'timeAdded', 'timeModified', 'deleted',];
+    const COLUMNS = ['id', 'userId', 'phoneNumber', 'label', 'carrier', 'place', 'imsi', 'status', 'statusDescription', 'idCard', 'servicePassword', 'timeAdded', 'timeModified', 'deleted',];
 
     protected $id = null;
     protected $idIsChanged = false;
@@ -31,6 +31,10 @@ class SimCard extends MY_Model
     protected $statusIsChanged = false;
     protected $statusDescription = null;
     protected $statusDescriptionIsChanged = false;
+    protected $idCard = null;
+    protected $idCardIsChanged = false;
+    protected $servicePassword = null;
+    protected $servicePasswordIsChanged = false;
     protected $timeAdded = null;
     protected $timeAddedIsChanged = false;
     protected $timeModified = null;
@@ -194,6 +198,32 @@ class SimCard extends MY_Model
             $this->statusDescriptionIsChanged = true;
         }
         return $this->statusDescription;
+    }
+
+    public function idCard($value = MY_Model::VAL_NOT_SET)
+    {
+        if ($value === MY_Model::VAL_NOT_SET) {
+            return $this->idCard;
+        }
+        $ret = $this->idCard;
+        if ($ret !== $value) {
+            $this->idCard = $value;
+            $this->idCardIsChanged = true;
+        }
+        return $this->idCard;
+    }
+
+    public function servicePassword($value = MY_Model::VAL_NOT_SET)
+    {
+        if ($value === MY_Model::VAL_NOT_SET) {
+            return $this->servicePassword;
+        }
+        $ret = $this->servicePassword;
+        if ($ret !== $value) {
+            $this->servicePassword = $value;
+            $this->servicePasswordIsChanged = true;
+        }
+        return $this->servicePassword;
     }
 
     public function timeAdded($value = MY_Model::VAL_NOT_SET)

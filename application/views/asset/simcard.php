@@ -13,9 +13,68 @@ App::view('templates/header', ['title' => '测试卡']);
     <div class="row">
         <div class="col-md-12 panel panel-default panel-assets">
             <?php
+            $headConfigs = [
+                [
+                    'content' => '序号',
+                    'data' => [
+                        'col-name' => 'id',
+                        'col-width' => '50px',
+                    ],
+                ],
+                [
+                    'content' => '手机号',
+                    'data' => [
+                        'col-name' => 'phoneNumber',
+                        'orderable' => 'false',
+                    ],
+                ],
+                [
+                    'content' => '标志',
+                    'data' => [
+                        'col-name' => 'label',
+                        'orderable' => 'false',
+                    ],
+                ],
+                [
+                    'content' => '运营商',
+                    'data' => [
+                        'col-name' => 'carrier',
+                        'orderable' => 'false',
+                    ],
+                ],
+                [
+                    'content' => '归属地',
+                    'data' => [
+                        'col-name' => 'place',
+                        'orderable' => 'false',
+                    ],
+                ],
+                [
+                    'content' => 'IMSI',
+                    'data' => [
+                        'col-name' => 'imsi',
+                        'orderable' => 'false',
+                    ],
+                ],
+                [
+                    'content' => '状态',
+                    'data' => [
+                        'col-name' => 'status',
+                        'orderable' => 'false',
+                    ],
+                ],
+                [
+                    'content' => '操作',
+                    'data' => [
+                        'col-name' => '#action',
+                        'orderable' => 'false',
+                    ],
+                ],
+            ];
             App::view('templates/datatable-simcard', [
                 'url' => '/assets/dataTable/simcard',
                 'display' => false,
+                'headConfigs' => $headConfigs,
             ]);
             ?>
         </div>

@@ -619,6 +619,8 @@ class Admin extends CI_Controller
         $place = $_POST['place'] ?? null;
         $imsi = $_POST['imsi'] ?? null;
         $statusDescription = trim($_POST['statusDescription'] ?? '') ?: null;
+        $idCard = trim($_POST['idCard'] ?? '') ?: null;
+        $servicePassword = trim($_POST['servicePassword'] ?? '') ?: null;
 
         $o = new SimCard();
         $o->phoneNumber($phoneNumber);
@@ -629,6 +631,8 @@ class Admin extends CI_Controller
         $o->userId($userId);
         $o->place($place);
         $o->statusDescription($statusDescription);
+        $o->idCard($idCard);
+        $o->servicePassword($servicePassword);
 
         $saved = $o->save();
         $response['message'] = $saved ? '保存成功' : '未保存';
@@ -841,6 +845,8 @@ class Admin extends CI_Controller
             'place' => ['#归属地#u'],
             'imsi' => ['#imsi#i'],
             'status' => ['#状态#u'],
+            'idCard' => ['#身份证#u'],
+            'servicePassword' => ['#服务密码#u'],
         ];
         $excelResult = $excel->load($files['tmp_name'], $head);
         $response = array_merge($response, $excelResult);
@@ -1083,6 +1089,12 @@ class Admin extends CI_Controller
         }
         if ('' !== trim($_POST['statusDescription'] ?? '')) {
             $o->statusDescription($_POST['statusDescription']);
+        }
+        if ('' !== trim($_POST['idCard'] ?? '')) {
+            $o->idCard($_POST['idCard']);
+        }
+        if ('' !== trim($_POST['servicePassword'] ?? '')) {
+            $o->servicePassword($_POST['servicePassword']);
         }
         $newData = $o->obj2Array();
         if ($oldData !== $newData) {

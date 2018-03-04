@@ -124,6 +124,12 @@ use Res\Model\SimCard;
         <th data-col-name="status" data-orderable="false">
             状态
         </th>
+        <th data-col-name="idCard" data-orderable="false">
+            身份证
+        </th>
+        <th data-col-name="servicePassword" data-orderable="false">
+            服务密码
+        </th>
         <th data-col-name="timeAdded" data-orderable="false">
             添加时间
         </th>

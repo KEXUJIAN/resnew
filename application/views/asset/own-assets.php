@@ -23,102 +23,166 @@ App::view('templates/header', ['title' => '我的库存']);
         <div class="col-md-9 col-md-offset-3">
             <div class="tab-content panel panel-default content-panel">
                 <div id="phone-panel" class="tab-pane fade">
-                    <div class="data-table-action-wrapper col-md-12">
-                        <div class="pull-left" style="width: 100%;">
-                            <div class="pull-right" style="margin-bottom: 10px">
-                                <button class="btn btn-info" data-role="refresh">
-                                    <i class="fa fa-refresh"></i> 刷新
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <table class="table dataTable ajax-table table-striped table-bordered no-footer table-hover" data-url="/assets/ownAssets/phone">
-                        <thead>
-                        <tr>
-                            <th data-col-name="id" data-col-width="50px">
-                                <div class="checkbox" style="margin: 0">
-                                    <label><input type="checkbox"> 序号</label>
-                                </div>
-                            </th>
-                            <th data-col-name="type" data-orderable="false">
-                                机型
-                            </th>
-                            <th data-col-name="os" data-orderable="false">
-                                系统
-                            </th>
-                            <th data-col-name="resolution" data-orderable="false">
-                                分辨率
-                            </th>
-                            <th data-col-name="ram" data-orderable="false">
-                                RAM (M)
-                            </th>
-                            <th data-col-name="carrier" data-orderable="false">
-                                运营商
-                            </th>
-                            <th data-col-name="screenSize" data-orderable="false">
-                                屏幕尺寸
-                            </th>
-                            <th data-col-name="label" data-orderable="false">
-                                编号
-                            </th>
-                            <th data-col-name="imei" data-orderable="false">
-                                IMEI
-                            </th>
-                            <th data-col-name="status" data-orderable="false">
-                                状态
-                            </th>
-                            <th data-col-name="timeAdded" data-orderable="false">
-                                添加时间
-                            </th>
-                            <th data-col-name="#action" data-orderable="false">
-                                操作
-                            </th>
-                        </tr>
-                        </thead>
-                    </table>
+                    <?php
+                    $headConfigs = [
+                        [
+                            'content' => '序号',
+                            'data' => [
+                                'col-name' => 'id',
+                                'col-width' => '50px',
+                            ],
+                        ],
+                        [
+                            'content' => '机型',
+                            'data' => [
+                                'col-name' => 'type',
+                                'orderable' => 'false',
+                            ],
+                        ],
+                        [
+                            'content' => '系统',
+                            'data' => [
+                                'col-name' => 'os',
+                                'orderable' => 'false',
+                            ],
+                        ],
+                        [
+                            'content' => '分辨率',
+                            'data' => [
+                                'col-name' => 'resolution',
+                                'orderable' => 'false',
+                            ],
+                        ],
+                        [
+                            'content' => 'RAM (M)',
+                            'data' => [
+                                'col-name' => 'ram',
+                                'orderable' => 'false',
+                            ],
+                        ],
+                        [
+                            'content' => '运营商',
+                            'data' => [
+                                'col-name' => 'carrier',
+                                'orderable' => 'false',
+                            ],
+                        ],
+                        [
+                            'content' => '屏幕尺寸',
+                            'data' => [
+                                'col-name' => 'screenSize',
+                                'orderable' => 'false',
+                            ],
+                        ],
+                        [
+                            'content' => '编号',
+                            'data' => [
+                                'col-name' => 'label',
+                                'orderable' => 'false',
+                            ],
+                        ],
+                        [
+                            'content' => 'IMEI',
+                            'data' => [
+                                'col-name' => 'imei',
+                                'orderable' => 'false',
+                            ],
+                        ],
+                        [
+                            'content' => '状态',
+                            'data' => [
+                                'col-name' => 'status',
+                                'orderable' => 'false',
+                            ],
+                        ],
+                        [
+                            'content' => '备注',
+                            'data' => [
+                                'col-name' => 'remark',
+                                'orderable' => 'false',
+                            ],
+                        ],
+                        [
+                            'content' => '操作',
+                            'data' => [
+                                'col-name' => '#action',
+                                'orderable' => 'false',
+                            ],
+                        ],
+                    ];
+                    App::view('templates/datatable-phone', [
+                        'url' => '/assets/ownAssets/phone',
+                        'display' => false,
+                        'headConfigs' => $headConfigs,
+                    ]);
+                    ?>
                 </div>
                 <div id="simcard-panel" class="tab-pane fade">
-                    <div class="data-table-action-wrapper col-md-12">
-                        <div class="pull-left" style="width: 100%;">
-                            <div class="pull-right" style="margin-bottom: 10px">
-                                <button class="btn btn-info" data-role="refresh">
-                                    <i class="fa fa-refresh"></i> 刷新
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <table class="table dataTable ajax-table table-striped table-bordered no-footer table-hover" data-url="/assets/ownAssets/simcard">
-                        <thead>
-                        <tr>
-                            <th data-col-name="id" data-col-width="50px">
-                                <div class="checkbox" style="margin: 0">
-                                    <label><input type="checkbox"> 序号</label>
-                                </div>
-                            </th>
-                            <th data-col-name="phoneNumber" data-orderable="false">
-                                手机号
-                            </th>
-                            <th data-col-name="label" data-orderable="false">
-                                标志
-                            </th>
-                            <th data-col-name="carrier" data-orderable="false">
-                                运营商
-                            </th>
-                            <th data-col-name="imsi" data-orderable="false">
-                                IMSI
-                            </th>
-                            <th data-col-name="status" data-orderable="false">
-                                状态
-                            </th>
-                            <th data-col-name="timeAdded" data-orderable="false">
-                                添加时间
-                            </th>
-                            <th data-col-name="#action" data-orderable="false">
-                                操作
-                            </th>
-                        </tr>
-                        </thead>
-                    </table>
+                    <?php
+                    $headConfigs = [
+                        [
+                            'content' => '序号',
+                            'data' => [
+                                'col-name' => 'id',
+                                'col-width' => '50px',
+                            ],
+                        ],
+                        [
+                            'content' => '手机号',
+                            'data' => [
+                                'col-name' => 'phoneNumber',
+                                'orderable' => 'false',
+                            ],
+                        ],
+                        [
+                            'content' => '标志',
+                            'data' => [
+                                'col-name' => 'label',
+                                'orderable' => 'false',
+                            ],
+                        ],
+                        [
+                            'content' => '运营商',
+                            'data' => [
+                                'col-name' => 'carrier',
+                                'orderable' => 'false',
+                            ],
+                        ],
+                        [
+                            'content' => '归属地',
+                            'data' => [
+                                'col-name' => 'place',
+                                'orderable' => 'false',
+                            ],
+                        ],
+                        [
+                            'content' => 'IMSI',
+                            'data' => [
+                                'col-name' => 'imsi',
+                                'orderable' => 'false',
+                            ],
+                        ],
+                        [
+                            'content' => '状态',
+                            'data' => [
+                                'col-name' => 'status',
+                                'orderable' => 'false',
+                            ],
+                        ],
+                        [
+                            'content' => '操作',
+                            'data' => [
+                                'col-name' => '#action',
+                                'orderable' => 'false',
+                            ],
+                        ],
+                    ];
+                    App::view('templates/datatable-simcard', [
+                        'url' => '/assets/ownAssets/simcard',
+                        'display' => false,
+                        'headConfigs' => $headConfigs,
+                    ]);
+                    ?>
                 </div>
             </div>
         </div>
