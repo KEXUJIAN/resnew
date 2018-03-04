@@ -94,6 +94,13 @@ use Res\Model\SimCard;
 <table class="table dataTable ajax-table table-striped table-bordered no-footer table-hover" data-url="<?=$url ?? ''?>">
     <thead>
     <tr>
+    <?php if ($headConfigs ?? $headConfigs = []):?>
+        <?php foreach ($headConfigs as $config):?>
+        <th <?php foreach ($config['data'] as $key => $value): echo "data-{$key}=\"{$value}\" "; endforeach;?>>
+            <?=$config['content']?>
+        </th>
+        <?php endforeach;?>
+    <?php else:?>
         <th data-col-name="id" data-col-width="50px">
             <div class="checkbox" style="margin: 0">
                 <label><input type="checkbox"> 序号</label>
@@ -123,6 +130,7 @@ use Res\Model\SimCard;
         <th data-col-name="#action" data-orderable="false">
             操作
         </th>
+    <?php endif;?>
     </tr>
     </thead>
 </table>

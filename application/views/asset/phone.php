@@ -13,9 +13,96 @@ App::view('templates/header', ['title' => '测试机']);
     <div class="row">
         <div class="col-md-12 panel panel-default panel-assets">
             <?php
+            $headConfigs = [
+                [
+                    'content' => '序号',
+                    'data' => [
+                        'col-name' => 'id',
+                        'col-width' => '50px',
+                    ],
+                ],
+                [
+                    'content' => '机型',
+                    'data' => [
+                        'col-name' => 'type',
+                        'orderable' => 'false',
+                    ],
+                ],
+                [
+                    'content' => '系统',
+                    'data' => [
+                        'col-name' => 'os',
+                        'orderable' => 'false',
+                    ],
+                ],
+                [
+                    'content' => '分辨率',
+                    'data' => [
+                        'col-name' => 'resolution',
+                        'orderable' => 'false',
+                    ],
+                ],
+                [
+                    'content' => 'RAM (M)',
+                    'data' => [
+                        'col-name' => 'ram',
+                        'orderable' => 'false',
+                    ],
+                ],
+                [
+                    'content' => '运营商',
+                    'data' => [
+                        'col-name' => 'carrier',
+                        'orderable' => 'false',
+                    ],
+                ],
+                [
+                    'content' => '屏幕尺寸',
+                    'data' => [
+                        'col-name' => 'screenSize',
+                        'orderable' => 'false',
+                    ],
+                ],
+                [
+                    'content' => '编号',
+                    'data' => [
+                        'col-name' => 'label',
+                        'orderable' => 'false',
+                    ],
+                ],
+                [
+                    'content' => 'IMEI',
+                    'data' => [
+                        'col-name' => 'imei',
+                        'orderable' => 'false',
+                    ],
+                ],
+                [
+                    'content' => '状态',
+                    'data' => [
+                        'col-name' => 'status',
+                        'orderable' => 'false',
+                    ],
+                ],
+                [
+                    'content' => '备注',
+                    'data' => [
+                        'col-name' => 'remark',
+                        'orderable' => 'false',
+                    ],
+                ],
+                [
+                    'content' => '操作',
+                    'data' => [
+                        'col-name' => '#action',
+                        'orderable' => 'false',
+                    ],
+                ],
+            ];
             App::view('templates/datatable-phone', [
                 'url' => '/assets/dataTable/phone',
                 'display' => false,
+                'headConfigs' => $headConfigs,
             ]);
             ?>
         </div>

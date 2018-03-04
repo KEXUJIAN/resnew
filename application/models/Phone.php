@@ -7,7 +7,7 @@ namespace Res\Model;
 class Phone extends MY_Model
 {
     const TABLE = 'phones';
-    const COLUMNS = ['id', 'userId', 'type', 'os', 'resolution', 'ram', 'carrier', 'screenSize', 'label', 'imei', 'status', 'statusDescription', 'timeAdded', 'timeModified', 'deleted',];
+    const COLUMNS = ['id', 'userId', 'type', 'os', 'resolution', 'ram', 'carrier', 'screenSize', 'label', 'imei', 'status', 'statusDescription', 'remark', 'timeAdded', 'timeModified', 'deleted',];
 
     protected $id = null;
     protected $idIsChanged = false;
@@ -33,6 +33,8 @@ class Phone extends MY_Model
     protected $statusIsChanged = false;
     protected $statusDescription = null;
     protected $statusDescriptionIsChanged = false;
+    protected $remark = null;
+    protected $remarkIsChanged = false;
     protected $timeAdded = null;
     protected $timeAddedIsChanged = false;
     protected $timeModified = null;
@@ -233,6 +235,19 @@ class Phone extends MY_Model
             $this->statusDescriptionIsChanged = true;
         }
         return $this->statusDescription;
+    }
+
+    public function remark($value = MY_Model::VAL_NOT_SET)
+    {
+        if ($value === MY_Model::VAL_NOT_SET) {
+            return $this->remark;
+        }
+        $ret = $this->remark;
+        if ($ret !== $value) {
+            $this->remark = $value;
+            $this->remarkIsChanged = true;
+        }
+        return $this->remark;
     }
 
     public function timeAdded($value = MY_Model::VAL_NOT_SET)

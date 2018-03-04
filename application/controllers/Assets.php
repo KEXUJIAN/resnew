@@ -315,6 +315,7 @@ class Assets extends CI_Controller
                         case 'type':
                         case 'os':
                         case 'imei':
+                        case 'remark':
                             $value .= '<span class="long-data">' . htmlspecialchars($phone->$column()) . '</span>';
                             break;
                         default:

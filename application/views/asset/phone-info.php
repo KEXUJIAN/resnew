@@ -107,6 +107,14 @@ use Res\Model\User;
                     </div>
                 </div>
             </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="col-md-2 control-label">备注:</label>
+                    <div class="col-md-10">
+                        <textarea name="remark" class="form-control no-resize" readonly ><?=htmlspecialchars($phone->remark())?></textarea>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="modal-footer">

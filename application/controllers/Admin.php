@@ -131,6 +131,7 @@ class Admin extends CI_Controller
                     'result' => false,
                 ];
         }
+        header('content-type: application/json');
         echo json_encode($response);
     }
 
@@ -341,6 +342,7 @@ class Admin extends CI_Controller
                         case 'type':
                         case 'os':
                         case 'imei':
+                        case 'remark':
                             $value .= '<span class="long-data">' . htmlspecialchars($phone->$column()) . '</span>';
                             break;
                         default:
@@ -542,6 +544,7 @@ class Admin extends CI_Controller
         $type = $_POST['type'] ?? null;
         $os = $_POST['os'];
         $statusDescription = trim($_POST['statusDescription'] ?? '') ?: null;
+        $remark = trim($_POST['remark'] ?? '') ?: null;
 
         $o = new Phone();
         if ($resolutionH && $resolutionW) {
@@ -557,6 +560,7 @@ class Admin extends CI_Controller
         $o->imei($imei);
         $o->userId($userId);
         $o->statusDescription($statusDescription);
+        $o->remark($remark);
 
         $saved = $o->save();
         $response['message'] = $saved ? '保存成功' : '未保存';
@@ -705,6 +709,7 @@ class Admin extends CI_Controller
             'label' => ['#编号#u'],
             'imei' => ['#imei#i'],
             'status' => ['#状态#u'],
+            'remark' => ['#备注#u'],
         ];
         $excelResult = $excel->load($files['tmp_name'], $head);
         $response = array_merge($response, $excelResult);
@@ -1025,6 +1030,9 @@ class Admin extends CI_Controller
         }
         if ('' !== trim($_POST['statusDescription'] ?? '')) {
             $o->statusDescription($_POST['statusDescription']);
+        }
+        if ('' !== trim($_POST['remark'] ?? '')) {
+            $o->remark($_POST['remark']);
         }
         $newData = $o->obj2Array();
         if ($oldData !== $newData) {

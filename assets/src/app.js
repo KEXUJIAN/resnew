@@ -451,6 +451,7 @@ const initObj = {
         }
         let option = {
             language: 'zh-CN',
+            placeholder: '请选择',
         };
         $('.select2', scope).each(function () {
             var that = $(this);

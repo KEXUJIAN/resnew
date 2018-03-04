@@ -148,8 +148,11 @@ App::view('templates/header', ['title' => '后台']);
                     fileInput: _clone,
                     replaceFileInput: false,
                 })
-                .bind('fileuploaddone', function () {
-                    ;
+                .bind('fileuploaddone', function (e, data) {
+                    var ret = data.result;
+                    if (!ret.result) {
+                        bootbox.alert(ret.message);
+                    }
                 })
                 .bind('fileuploadfail',function () {
                     ;

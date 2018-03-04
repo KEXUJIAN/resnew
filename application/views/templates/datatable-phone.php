@@ -110,6 +110,13 @@ use Res\Model\Phone;
 <table class="table dataTable ajax-table table-striped table-bordered no-footer table-hover" data-url="<?=$url ?? ''?>">
     <thead>
     <tr>
+    <?php if ($headConfigs ?? $headConfigs = []):?>
+        <?php foreach ($headConfigs as $config):?>
+        <th <?php foreach ($config['data'] as $key => $value):?><?="data-{$key}=\"{$value}\" "?><?php endforeach;?>>
+            <?=$config['content']?>
+        </th>
+        <?php endforeach;?>
+    <?php else:?>
         <th data-col-name="id" data-col-width="50px">
             <div class="checkbox" style="margin: 0">
                 <label><input type="checkbox"> 序号</label>
@@ -142,12 +149,16 @@ use Res\Model\Phone;
         <th data-col-name="status" data-orderable="false">
             状态
         </th>
+        <th data-col-name="remark" data-orderable="false">
+            备注
+        </th>
         <th data-col-name="timeAdded" data-orderable="false">
             添加时间
         </th>
         <th data-col-name="#action" data-orderable="false">
             操作
         </th>
+    <?php endif;?>
     </tr>
     </thead>
 </table>
