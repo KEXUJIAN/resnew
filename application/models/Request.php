@@ -48,16 +48,16 @@ class Request extends MY_Model
     const STATUS_DONE = 1;
     const STATUS_REJECT = 2;
     const LABEL_STATUS = [
-        0 => 'new',
-        1 => 'done',
-        2 => 'reject',
+        0 => '待申请',
+        1 => '通过',
+        2 => '拒绝',
     ];
 
     const ASSET_TYPE_PHONE = 0;
     const ASSET_TYPE_SIM_CARD = 1;
     const LABEL_ASSET_TYPE = [
-        0 => 'phone',
-        1 => 'simcard',
+        0 => '测试机',
+        1 => '测试卡',
     ];
 
     const DELETED_YES = 1;

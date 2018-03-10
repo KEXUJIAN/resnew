@@ -119,10 +119,19 @@ App::view('templates/header', ['title' => '个人页']);
                                 资源ID
                             </th>
                             <th data-col-name="assetType" data-orderable="false">
-                                种类
+                                资产种类
+                            </th>
+                            <th data-col-name="type" data-orderable="false">
+                                资产种类
+                            </th>
+                            <th data-col-name="status" data-orderable="false">
+                                状态
                             </th>
                             <th data-col-name="timeAdded" data-orderable="false">
-                                请求时间
+                                发起时间
+                            </th>
+                            <th data-col-name="timeModified" data-orderable="false">
+                                结束时间
                             </th>
                             <th data-col-name="#action" data-orderable="false" data-col-width="50px">
                                 操作

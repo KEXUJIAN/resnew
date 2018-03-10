@@ -112,6 +112,22 @@ class Request extends CI_Controller
                         case 'assetType':
                             $value .= ReqModal::LABEL_ASSET_TYPE[$o->$column()];
                             break;
+                        case 'type':
+                            $value .= ReqModal::LABEL_TYPE[$o->$column()];
+                            break;
+                        case 'status':
+                            $value .= ReqModal::LABEL_STATUS[$o->$column()];
+                            break;
+                        case 'timeModified':
+                            if (ReqModal::STATUS_NEW !== $o->status()) {
+                                $value .= '<span class="long-data">' . htmlspecialchars($o->$column()) . '</span>';
+                            } else {
+                                $value .= '请求暂未被处理';
+                            }
+                            break;
+                        case 'timeAdded':
+                            $value .= '<span class="long-data">' . htmlspecialchars($o->$column()) . '</span>';
+                            break;
                         default:
                             $value .= htmlspecialchars($o->$column());
                     }
