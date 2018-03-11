@@ -32,6 +32,8 @@ class AssetBiz
             case Phone::STATUS_OTHER:
                 $result .= '<p class="text-muted"><i class="fa fa-question"></i>' . $status . '</p>';
                 break;
+            default:
+                $result .= '<p class="text-info"><i class="fa fa-lock"></i>' . "{$status}, 待确认" . '</p>';
         }
         return $result;
     }
@@ -54,6 +56,8 @@ class AssetBiz
             case SimCard::STATUS_OTHER:
                 $result .= '<p class="text-muted"><i class="fa fa-question"></i>' . $status . '</p>';
                 break;
+            default:
+                $result .= '<p class="text-info"><i class="fa fa-lock"></i>' . "{$status}, 待确认" . '</p>';
         }
         return $result;
     }

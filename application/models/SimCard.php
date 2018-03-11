@@ -46,11 +46,15 @@ class SimCard extends MY_Model
     const STATUS_RENT_OUT = 1;
     const STATUS_BROKEN = 2;
     const STATUS_OTHER = 3;
+    const STATUS_RENTING = 4;
+    const STATUS_RETURNING = 5;
     const LABEL_STATUS = [
         0 => '可借出',
         1 => '已借出',
         2 => '不可用',
         3 => '其他',
+        4 => '申请借用',
+        5 => '申请归还',
     ];
 
     const CARRIER_CHINA_TELECOM = 0;

@@ -51,27 +51,33 @@ class Phone extends CI_Controller
             if ($phone->status() !== PhoneModel::STATUS_IN_INVENTORY) {
                 throw new Exception(self::ERROR_MESSAGE[self::ERROR_WRONG_STATUS] . ', 不能借出', self::ERROR_WRONG_STATUS);
             }
-            $phone->status(PhoneModel::STATUS_RENT_OUT);
-            $phone->userId($user->id());
-            $phone->statusDescription("{$user->name()} [{$user->username()}] 借走了该测试机");
-            $phone->save();
             $request = new Request();
+
+            $phone->status(PhoneModel::STATUS_RENTING);
+            $phone->userId($user->id());
+            $phone->statusDescription("{$user->name()} [{$user->username()}] 申请借用该测试机");
+            $phone->timeModified($request->timeAdded());
+            $phone->save();
+
             $request->type(Request::TYPE_RENT_OUT);
             $request->fromUserId($user->id());
             $request->toUserId($admin->id());
             $request->assetId($id);
             $request->assetType(Request::ASSET_TYPE_PHONE);
-            $request->status(Request::STATUS_DONE);
+            $request->status(Request::STATUS_NEW);
             $request->save();
 
             $label = htmlspecialchars($phone->label());
-            $content = "测试机借出\r\n测试机[标志]: {$label}\r\n借出人: {$user->name()}[{$user->username()}]\r\n";
-            $rUrl = site_url(['user', 'profile', 'request', $request->id()]);
-            $content .= "请求细节查看链接: <a href='{$rUrl}'>{$rUrl}</a>";
-            @AppService::getEmail()->send('测试机借出', $content);
+            $content = "测试机借出申请\r\n测试机[标志]: {$label}\r\n申请借用人: {$user->name()}[{$user->username()}]\r\n";
+            $rUrl = implode('/', ['user', 'profile', 'request', $request->id()]);
+            $placeholder = '[:rUrl]';
+            $content .= "请求细节查看链接: <a href=\"{$placeholder}\">{$placeholder}</a>";
+
+            @AppService::getEmail()->send('测试机借出申请', str_replace($placeholder, site_url($rUrl), $content));
+
             $notify = new Notification();
             $notify->userId($admin->id());
-            $notify->message($content);
+            $notify->message(str_replace($placeholder, "/{$rUrl}", $content));
             $notify->save();
 
             $pdo->commit();
@@ -124,39 +130,44 @@ class Phone extends CI_Controller
                 $label = htmlspecialchars($phone->label());
                 $content = "您的测试机转借请求被拒绝, 原因: 测试机被归还\r\n测试机[标志]: {$label}\r\n";
                 $content .= "原借出人: {$user->name()}[{$user->username()}]\r\n";
-                $rUrl = site_url(['user', 'profile', 'request', $request->id()]);
-                $content .= "请求细节查看链接: <a href='{$rUrl}'>{$rUrl}</a>";
+                $rUrl = implode('/', ['user', 'profile', 'request', $request->id()]);
+                $placeholder = '[:rUrl]';
+                $content .= "请求细节查看链接: <a href=\"{$placeholder}\">{$placeholder}</a>";
+
                 $notify = new Notification();
                 $notify->userId($fromUser->id());
-                $notify->message($content);
+                $notify->message(str_replace($placeholder, "/{$rUrl}", $content));
                 $notify->save();
                 if ($fromUser->email()) {
-                    @AppService::getEmail()->send('测试机转借|拒绝', $content, $fromUser->email());
+                    @AppService::getEmail()->send('测试机转借|拒绝', str_replace($placeholder, site_url($rUrl), $content), $fromUser->email());
                 }
                 unset($request);
             }
-            $phone->status(PhoneModel::STATUS_IN_INVENTORY);
-            $phone->statusDescription('');
-            $phone->userId(null);
-            $phone->save();
             $request = new Request();
+
+            $phone->status(PhoneModel::STATUS_RETURNING);
+            $phone->statusDescription('');
+            $phone->timeModified($request->timeAdded());
+            $phone->save();
+
             $request->type(Request::TYPE_RETURN);
             $request->fromUserId($user->id());
             $request->toUserId($admin->id());
             $request->assetId($id);
             $request->assetType(Request::ASSET_TYPE_PHONE);
-            $request->status(Request::STATUS_DONE);
+            $request->status(Request::STATUS_NEW);
             $request->save();
 
             $label = htmlspecialchars($phone->label());
-            $content = "测试机归还\r\n测试机[标志]: {$label}\r\n归还人: {$user->name()}[{$user->username()}]\r\n";
-            $rUrl = site_url(['user', 'profile', 'request', $request->id()]);
-            $content .= "请求细节查看链接: <a href='{$rUrl}'>{$rUrl}</a>";
+            $content = "测试机归还申请\r\n测试机[标志]: {$label}\r\n申请归还人: {$user->name()}[{$user->username()}]\r\n";
+            $rUrl = implode('/', ['user', 'profile', 'request', $request->id()]);
+            $placeholder = '[:rUrl]';
+            $content .= "请求细节查看链接: <a href=\"{$placeholder}\">{$placeholder}</a>";
 
-            @AppService::getEmail()->send('测试机归还', $content);
+            @AppService::getEmail()->send('测试机归还申请', str_replace($placeholder, site_url($rUrl), $content));
             $notify = new Notification();
             $notify->userId($admin->id());
-            $notify->message($content);
+            $notify->message(str_replace($placeholder, "/{$rUrl}", $content));
             $notify->save();
 
             $pdo->commit();
@@ -215,14 +226,17 @@ class Phone extends CI_Controller
             $label = htmlspecialchars($phone->label());
             $content = "测试机转借请求\r\n测试机[标志]: {$label}\r\n";
             $content .= "{$user->name()}[{$user->username()}]向你发起对该测试机的转借请求\r\n";
-            $rUrl = site_url(['assets', 'inventory', 'phone', $id]);
-            $content .= "处理链接: <a href='{$rUrl}'>{$rUrl}</a>";
+            $rUrl = implode('/', ['assets', 'inventory', 'phone', $id]);
+            $placeholder = '[:rUrl]';
+            $content .= "处理链接: <a href=\"{$placeholder}\">{$placeholder}</a>";
+
             $notify = new Notification();
             $notify->userId($toUser->id());
-            $notify->message($content);
+            $notify->message(str_replace($placeholder, "/{$rUrl}", $content));
             $notify->save();
+
             if ($toUser->email()) {
-                @AppService::getEmail()->send('测试机转借请求', $content, $toUser->email());
+                @AppService::getEmail()->send('测试机转借请求', str_replace($placeholder, site_url($rUrl), $content), $toUser->email());
             }
 
             $pdo->commit();
@@ -270,15 +284,17 @@ class Phone extends CI_Controller
                 $response['message'] = '已拒绝转借';
             }
             $content .= "{$response['message']}\r\n";
-            $rUrl = site_url(['user', 'profile', 'request', $request->id()]);
-            $content .= "请求细节查看链接: <a href='{$rUrl}'>{$rUrl}</a>";
+            $rUrl = implode('/', ['/user', 'profile', 'request', $request->id()]);
+            $placeholder = '[:rUrl]';
+            $content .= "处理链接: <a href=\"{$placeholder}\">{$placeholder}</a>";
+
             $notify = new Notification();
             $notify->userId($fromUser->id());
-            $notify->message($content);
+            $notify->message(str_replace($placeholder, "/{$rUrl}", $content));
             $notify->save();
             if ($fromUser->email()) {
-                $subject = '测试卡转借|' . ('accept' === $action ? '同意' : '拒绝');
-                @AppService::getEmail()->send($subject, $content, $fromUser->email());
+                $subject = '测试机转借|' . ('accept' === $action ? '同意' : '拒绝');
+                @AppService::getEmail()->send($subject, str_replace($placeholder, site_url($rUrl), $content), $fromUser->email());
             }
 
             $request->save();

@@ -122,7 +122,7 @@ App::view('templates/header', ['title' => '个人页']);
                                 资产种类
                             </th>
                             <th data-col-name="type" data-orderable="false">
-                                资产种类
+                                请求类型
                             </th>
                             <th data-col-name="status" data-orderable="false">
                                 状态

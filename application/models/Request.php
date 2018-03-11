@@ -48,7 +48,7 @@ class Request extends MY_Model
     const STATUS_DONE = 1;
     const STATUS_REJECT = 2;
     const LABEL_STATUS = [
-        0 => '待申请',
+        0 => '待审核',
         1 => '通过',
         2 => '拒绝',
     ];
