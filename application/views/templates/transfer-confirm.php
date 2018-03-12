@@ -54,6 +54,6 @@
         })
         .data('submitDoneFail', function (ret) {
             bootbox.alert(ret.message);
-        });;
+        });
 })();
 </script>

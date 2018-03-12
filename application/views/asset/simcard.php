@@ -80,6 +80,11 @@ App::view('templates/header', ['title' => '测试卡']);
         </div>
     </div>
 </div>
+<div class="service">
+    <a target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=1689118050&site=qq&menu=yes">
+        <img border="0" src="http://wpa.qq.com/pa?p=2:1689118050:41" alt="点击这里给我发消息" title="点击这里给我发消息"/>
+    </a>
+</div>
 <div id="ajax-modal" class="modal ajax-modal fade" data-backdrop="static" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

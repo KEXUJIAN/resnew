@@ -184,6 +184,21 @@ App::view('templates/header', ['title' => '个人页']);
                 }, 1000);
             });
         });
+    $('#request-panel').find('table.ajax-table')
+        .on('click', '[data-role="action"]', function (e) {
+            var table = $(e.delegateTarget);
+            var that = $(this);
+            $.getJSON(that.data('url'))
+                .done(function (ret) {
+                    bootbox.alert(ret.message);
+                })
+                .fail(function () {
+                    bootbox.alert('服务器错误');
+                })
+                .always(function () {
+                    table.DataTable().draw(false);
+                });
+        });
     <?php if ($id ?? false):?>
     currentPanel.find('table')
         .data('request', {specificId: <?=$id?>})

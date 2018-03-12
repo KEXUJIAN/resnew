@@ -117,7 +117,11 @@ $user = APP::getUser() ?? false;
         .no-resize {
             resize: none !important;
         }
-
+        .service {
+            position: fixed;
+            bottom: 120px;
+            right: 20px;
+        }
     </style>
 </head>
 <body <?php if ($pageId ?? ''): echo 'id="' . $pageId . '"'; endif; ?>>

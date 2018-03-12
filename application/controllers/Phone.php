@@ -146,7 +146,7 @@ class Phone extends CI_Controller
             $request = new Request();
 
             $phone->status(PhoneModel::STATUS_RETURNING);
-            $phone->statusDescription('');
+            $phone->statusDescription("{$user->name()} [{$user->username()}] 申请归还该测试机");
             $phone->timeModified($request->timeAdded());
             $phone->save();
 

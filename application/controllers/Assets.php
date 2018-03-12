@@ -433,14 +433,19 @@ class Assets extends CI_Controller
                     'type' => Request::TYPE_TRANSFER,
                     'status' => Request::STATUS_NEW,
                 ]);
-                if (App::getUser()->id() === $phone->userId()) {
+                $myId = App::getUser()->id();
+                if ($myId === $phone->userId()) {
                     if ($request) {
                         $result .= '<button data-toggle="modal" data-target="#ajax-modal" data-url="/phone/transferConfirmView/'. $request->id() . '" class="btn btn-warning btn-xs action-button">转借</button>';
                     }
                     $result .= '<button data-role="return" data-url="/phone/restore/' . $phoneId . '" class="btn btn-primary btn-xs action-button">归还</button>';
                     break;
                 }
-                if ($request) {
+                if ($request && $request->fromUserId() !== $myId) {
+                    $result .= '<button class="btn btn-default btn-xs action-button"><i class="fa fa-lock"> 他人已申请</button>';
+                    break;
+                } elseif ($request) {
+                    $result .= '<button class="btn btn-default btn-xs action-button"><i class="fa fa-clock-o"> 待对方审核</button>';
                     break;
                 }
                 $result .= '<button data-role="transfer" data-url="/phone/transferApply/' . $phoneId . '" class="btn btn-warning btn-xs action-button">申请转借</button>';
@@ -465,14 +470,19 @@ class Assets extends CI_Controller
                     'type' => Request::TYPE_TRANSFER,
                     'status' => Request::STATUS_NEW,
                 ]);
-                if (App::getUser()->id() === $simCard->userId()) {
+                $myId = App::getUser()->id();
+                if ($myId === $simCard->userId()) {
                     if ($request) {
                         $result .= '<button data-toggle="modal" data-target="#ajax-modal" data-url="/simCard/transferConfirmView/' . $request->id() . '" class="btn btn-warning btn-xs action-button">转借</button>';
                     }
                     $result .= '<button data-role="return" data-url="/simCard/restore/' . $simCardId . '" class="btn btn-primary btn-xs action-button">归还</button>';
                     break;
                 }
-                if ($request) {
+                if ($request && $request->fromUserId() !== $myId) {
+                    $result .= '<button class="btn btn-default btn-xs action-button"><i class="fa fa-lock"> 他人已申请</button>';
+                    break;
+                } elseif ($request) {
+                    $result .= '<button class="btn btn-default btn-xs action-button"><i class="fa fa-clock-o"> 待对方审核</button>';
                     break;
                 }
                 $result .= '<button data-role="transfer" data-url="/simCard/transferApply/' . $simCardId . '" class="btn btn-warning btn-xs action-button">申请转借</button>';

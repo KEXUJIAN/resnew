@@ -130,6 +130,9 @@ use Res\Model\SimCard;
         <th data-col-name="servicePassword" data-orderable="false">
             服务密码
         </th>
+        <th data-col-name="remark" data-orderable="false">
+            备注
+        </th>
         <th data-col-name="timeAdded" data-orderable="false">
             添加时间
         </th>

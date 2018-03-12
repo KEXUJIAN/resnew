@@ -11,7 +11,7 @@ namespace Res\Model;
 class SimCard extends MY_Model
 {
     const TABLE = 'simcards';
-    const COLUMNS = ['id', 'userId', 'phoneNumber', 'label', 'carrier', 'place', 'imsi', 'status', 'statusDescription', 'idCard', 'servicePassword', 'timeAdded', 'timeModified', 'deleted',];
+    const COLUMNS = ['id', 'userId', 'phoneNumber', 'label', 'carrier', 'place', 'imsi', 'status', 'statusDescription', 'idCard', 'servicePassword', 'remark', 'timeAdded', 'timeModified', 'deleted',];
 
     protected $id = null;
     protected $idIsChanged = false;
@@ -35,6 +35,8 @@ class SimCard extends MY_Model
     protected $idCardIsChanged = false;
     protected $servicePassword = null;
     protected $servicePasswordIsChanged = false;
+    protected $remark = null;
+    protected $remarkIsChanged = false;
     protected $timeAdded = null;
     protected $timeAddedIsChanged = false;
     protected $timeModified = null;
@@ -228,6 +230,19 @@ class SimCard extends MY_Model
             $this->servicePasswordIsChanged = true;
         }
         return $this->servicePassword;
+    }
+
+    public function remark($value = MY_Model::VAL_NOT_SET)
+    {
+        if ($value === MY_Model::VAL_NOT_SET) {
+            return $this->remark;
+        }
+        $ret = $this->remark;
+        if ($ret !== $value) {
+            $this->remark = $value;
+            $this->remarkIsChanged = true;
+        }
+        return $this->remark;
     }
 
     public function timeAdded($value = MY_Model::VAL_NOT_SET)

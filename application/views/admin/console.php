@@ -137,7 +137,7 @@ App::view('templates/header', ['title' => '后台']);
             }
             var file = data.files[0];
             if (file.size > 8388608) {
-                alert('文件过大');
+                bootbox.alert('文件过大');
                 return;
             }
             var _clone = uploadElm.clone();

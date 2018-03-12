@@ -12,6 +12,9 @@ use \Res\Model\User;
 use \Res\Model\UploadFile;
 use \Res\Util\MyExcel;
 use Res\Biz\AssetBiz;
+use Res\Model\Request;
+use Res\Biz\RequestBiz;
+use Res\Model\Notification;
 
 class Admin extends CI_Controller
 {
@@ -190,6 +193,122 @@ class Admin extends CI_Controller
         echo json_encode([
             'result' => true,
             'message' => "成功删除 {$nr} 项",
+        ]);
+    }
+
+    public function accept($rid)
+    {
+        $request = Request::get($rid);
+
+        if (!$request || Request::DELETED_YES === $request->deleted()) {
+            echo json_encode([
+                'result' => false,
+                'message' => '请求不存在',
+            ]);
+        }
+        $o = RequestBiz::assetFactory($request->assetType(), $request->assetId());
+        if (!$o) {
+            echo json_encode([
+                'result' => false,
+                'message' => '此资产不存在',
+            ]);
+        }
+
+        $user = User::get($request->fromUserId());
+
+        $now = date('Y-m-d H:i:s');
+        switch ($request->type()) {
+            case Request::TYPE_RENT_OUT:
+                $o->userId($user->id());
+                $o->status($o->getClass()::STATUS_RENT_OUT);
+                $o->statusDescription("目前属于{$user->name()}[{$user->username()}]");
+                break;
+            case Request::TYPE_RETURN:
+                $o->userId(null);
+                $o->status($o->getClass()::STATUS_IN_INVENTORY);
+                $o->statusDescription('');
+        }
+        $o->timeModified($now);
+        $o->save();
+
+        $request->timeModified($now);
+        $request->status(Request::STATUS_DONE);
+        $request->save();
+
+        $placeholder = '[:rUrl]';
+        $rUrl = implode('/', ['user', 'profile', 'request', $request->id()]);
+        $content = "管理员通过了你的申请\r\n";
+        $content .= "请求细节查看链接: <a href=\"{$placeholder}\">{$placeholder}</a>";
+
+        $notification = new Notification();
+        $notification->userId($user->id());
+        $notification->message(str_replace($placeholder, "/{$rUrl}", $content));
+        $notification->save();
+
+        if ($user->email()) {
+            @AppService::getEmail()->send('申请通过', str_replace($placeholder, "/{$rUrl}", $content), $user->email());
+        }
+
+        echo json_encode([
+            'result' => true,
+            'message' => '操作成功',
+        ]);
+    }
+
+    public function reject($rid)
+    {
+        $request = Request::get($rid);
+
+        if (!$request || Request::DELETED_YES === $request->deleted()) {
+            echo json_encode([
+                'result' => false,
+                'message' => '请求不存在',
+            ]);
+        }
+        $o = RequestBiz::assetFactory($request->assetType(), $request->assetId());
+        if (!$o) {
+            echo json_encode([
+                'result' => false,
+                'message' => '此资产不存在',
+            ]);
+        }
+
+        $user = User::get($request->fromUserId());
+
+        $now = date('Y-m-d H:i:s');
+        switch ($request->type()) {
+            case Request::TYPE_RENT_OUT:
+                $o->userId(null);
+                $o->status($o->getClass()::STATUS_IN_INVENTORY);
+                $o->statusDescription('');
+                break;
+            case Request::TYPE_RETURN:
+                $o->status($o->getClass()::STATUS_RENT_OUT);
+                $o->statusDescription("目前属于{$user->name()}[{$user->username()}]");
+        }
+        $o->save();
+
+        $request->timeModified($now);
+        $request->status(Request::STATUS_REJECT);
+        $request->save();
+
+        $placeholder = '[:rUrl]';
+        $rUrl = implode('/', ['user', 'profile', 'request', $request->id()]);
+        $content = "管理员驳回了你的申请\r\n";
+        $content .= "请求细节查看链接: <a href=\"{$placeholder}\">{$placeholder}</a>";
+
+        $notification = new Notification();
+        $notification->userId($user->id());
+        $notification->message(str_replace($placeholder, "/{$rUrl}", $content));
+        $notification->save();
+
+        if ($user->email()) {
+            @AppService::getEmail()->send('申请被驳回', str_replace($placeholder, "/{$rUrl}", $content), $user->email());
+        }
+
+        echo json_encode([
+            'result' => true,
+            'message' => '操作成功',
         ]);
     }
 
@@ -621,6 +740,7 @@ class Admin extends CI_Controller
         $statusDescription = trim($_POST['statusDescription'] ?? '') ?: null;
         $idCard = trim($_POST['idCard'] ?? '') ?: null;
         $servicePassword = trim($_POST['servicePassword'] ?? '') ?: null;
+        $remark = trim($_POST['remark'] ?? '') ?: null;
 
         $o = new SimCard();
         $o->phoneNumber($phoneNumber);
@@ -633,6 +753,7 @@ class Admin extends CI_Controller
         $o->statusDescription($statusDescription);
         $o->idCard($idCard);
         $o->servicePassword($servicePassword);
+        $o->remark($remark);
 
         $saved = $o->save();
         $response['message'] = $saved ? '保存成功' : '未保存';
@@ -773,16 +894,11 @@ class Admin extends CI_Controller
                         $o->$name($value);
                         break;
                     case 'status':
-                        if ('' === $value) {
-                            $o->$name(Phone::STATUS_OTHER);
-                            $o->statusDescription('没有注明');
-                            break;
-                        }
-                        if (false !== strpos($value, '组内')) {
+                        if ('' === $value || false !== strpos($value, '组内')) {
                             $o->$name(Phone::STATUS_IN_INVENTORY);
                             break;
                         }
-                        if (false !== strpos($value, '坏')) {
+                        if (preg_match('#坏|报废#u', $value)) {
                             $o->$name(Phone::STATUS_BROKEN);
                             break;
                         }
@@ -847,6 +963,7 @@ class Admin extends CI_Controller
             'status' => ['#状态#u'],
             'idCard' => ['#身份证#u'],
             'servicePassword' => ['#服务密码#u'],
+            'remark' => ['#备注#u'],
         ];
         $excelResult = $excel->load($files['tmp_name'], $head);
         $response = array_merge($response, $excelResult);
@@ -894,16 +1011,11 @@ class Admin extends CI_Controller
                         $o->$name($carrierCodes);
                         break;
                     case 'status':
-                        if ('' === $value) {
-                            $o->$name(SimCard::STATUS_OTHER);
-                            $o->statusDescription('没有注明');
-                            break;
-                        }
-                        if (false !== strpos($value, '组内')) {
+                        if ('' === $value || false !== strpos($value, '组内')) {
                             $o->$name(SimCard::STATUS_IN_INVENTORY);
                             break;
                         }
-                        if (preg_match('#暂停|注销#u', $value)) {
+                        if (preg_match('#暂停|注销|报废#u', $value)) {
                             $o->$name(SimCard::STATUS_BROKEN);
                             break;
                         }
@@ -1034,12 +1146,10 @@ class Admin extends CI_Controller
         if ('' !== trim($_POST['imei'] ?? '')) {
             $o->imei($_POST['imei']);
         }
-        if ('' !== trim($_POST['statusDescription'] ?? '')) {
-            $o->statusDescription($_POST['statusDescription']);
-        }
-        if ('' !== trim($_POST['remark'] ?? '')) {
-            $o->remark($_POST['remark']);
-        }
+
+        $o->statusDescription($_POST['statusDescription']);
+        $o->remark($_POST['remark']);
+
         $newData = $o->obj2Array();
         if ($oldData !== $newData) {
             $o->timeModified(date('Y-m-d H:i:s'));
@@ -1087,9 +1197,9 @@ class Admin extends CI_Controller
         if ('' !== trim($_POST['label'] ?? '')) {
             $o->label($_POST['label']);
         }
-        if ('' !== trim($_POST['statusDescription'] ?? '')) {
-            $o->statusDescription($_POST['statusDescription']);
-        }
+        $o->statusDescription($_POST['statusDescription'] ?? null);
+        $o->remark($_POST['remark'] ?? null);
+
         if ('' !== trim($_POST['idCard'] ?? '')) {
             $o->idCard($_POST['idCard']);
         }

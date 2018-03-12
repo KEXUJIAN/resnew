@@ -144,7 +144,7 @@ class SimCard extends CI_Controller
             $request = new Request();
 
             $simCard->status(SimCardModal::STATUS_RETURNING);
-            $simCard->statusDescription('');
+            $simCard->statusDescription("{$user->name()} [{$user->username()}] 申请归还该测试卡");
             $simCard->timeModified($request->timeAdded());
             $simCard->save();
 

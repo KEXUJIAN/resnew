@@ -7,6 +7,7 @@
  */
 
 use Res\Model\Request as ReqModal;
+use Res\Biz\RequestBiz;
 use Res\Model\User;
 
 class Request extends CI_Controller
@@ -80,7 +81,7 @@ class Request extends CI_Controller
                 if ('id' === $column) {
                     $value .= '<label class="index-label" data-id="' . $o->$column() . '">' . ($index++ + $offset). '</label>';
                 } elseif ('#action' === $column) {
-
+                    $value .= RequestBiz::requestAction($o);
                 } elseif (array_key_exists($column, $fields)) {
                     switch ($column) {
                         case 'fromUserId':

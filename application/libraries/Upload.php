@@ -52,7 +52,7 @@ class Upload
         $ext = pathinfo($file['name'])['extension'];
         $oriName = substr($file['name'], 0, strrpos($file['name'], '.'));
         $prefix = UploadFile::LABEL_TYPE[$type];
-        $fileName = $this->uploadPath . DIRECTORY_SEPARATOR . "{$prefix}_{$now}_({$oriName}).{$ext}";
+        $fileName = $this->uploadPath . DIRECTORY_SEPARATOR . $prefix . DIRECTORY_SEPARATOR . "{$prefix}_{$now}_({$oriName}).{$ext}";
         move_uploaded_file($file['tmp_name'], $fileName);
         return $fileName;
     }

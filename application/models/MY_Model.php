@@ -308,4 +308,9 @@ class MY_Model
         ];
         return $where;
     }
+
+    public function getClass()
+    {
+        return static::class;
+    }
 }

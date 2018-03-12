@@ -97,6 +97,14 @@ use Res\Model\SimCard;
                     </div>
                 </div>
             </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="col-md-2 control-label">备注:</label>
+                    <div class="col-md-10">
+                        <textarea name="remark" class="form-control no-resize"></textarea>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="modal-footer">
