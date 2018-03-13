@@ -94,7 +94,10 @@ class User extends CI_Controller
             return;
         }
 
-        $user = UserModel::getOne(['username' => $username,]);
+        $user = UserModel::getOne([
+            'username' => $username,
+            'deleted' => UserModel::DELETED_NO
+        ]);
         if (!$user) {
             $response['result'] = false;
             $response['message'] = '用户不存在';

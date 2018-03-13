@@ -31,24 +31,24 @@ class RequestBiz
         $buttonDefs = [
             Request::TYPE_RENT_OUT => [
                 '同意借出' => [
-                    'class="btn '. $btnClass . ' btn-success"',
+                    'class="'. $btnClass . ' btn-success"',
                     'data-role="' . $role . '"',
                     'data-url="' . "{$accept}{$request->id()}" . '"',
                 ],
                 '驳回请求' => [
-                    'class="btn '. $btnClass . ' btn-danger"',
+                    'class="'. $btnClass . ' btn-danger"',
                     'data-role="' . $role . '"',
                     'data-url="' . "{$reject}{$request->id()}" . '"',
                 ],
             ],
             Request::TYPE_RETURN => [
                 '确认归还' => [
-                    'class="btn '. $btnClass . ' btn-primary"',
+                    'class="'. $btnClass . ' btn-primary"',
                     'data-role="' . $role . '"',
                     'data-url="' . "{$accept}{$request->id()}" . '"',
                 ],
                 '驳回请求' => [
-                    'class="btn '. $btnClass . ' btn-danger"',
+                    'class="'. $btnClass . ' btn-danger"',
                     'data-role="' . $role . '"',
                     'data-url="' . "{$reject}{$request->id()}" . '"',
                 ],
@@ -57,7 +57,7 @@ class RequestBiz
                 '转借' => [
                     'data-toggle="modal"',
                     'data-target="#ajax-modal"',
-                    'class="btn '. $btnClass . ' btn-warming"',
+                    'class="'. $btnClass . ' btn-warning"',
                     'data-url="/simCard/transferConfirmView/' . $request->id() . '"'
                 ],
             ],

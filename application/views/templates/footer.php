@@ -9,6 +9,14 @@
                 <li>
                     <a href="javasricpt:;">KE, XUJIAN <i class="fa fa-copyright"></i> 2017, License: MIT </a>
                 </li>
+                <?php $user = App::getUser();?>
+                <?php if ($user && \Res\Model\User::ROLE_MANAGER !== $user->role()): ?>
+                <li>
+                    <a class="service" target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=1689118050&site=qq&menu=yes">
+                       <i class="fa fa-qq"> 联系管理员</i>
+                    </a>
+                </li>
+                <?php endif;?>
                 <li style="display: none;">
                     <a href="http://codeigniter.org.cn/" target="_blank">Powered by <i class="fa fa-fire"></i> CodeIgniter</a>
                 </li>

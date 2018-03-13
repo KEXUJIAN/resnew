@@ -117,10 +117,13 @@ $user = APP::getUser() ?? false;
         .no-resize {
             resize: none !important;
         }
-        .service {
-            position: fixed;
-            bottom: 120px;
-            right: 20px;
+        .navbar-fixed-bottom .navbar-nav>li>a.service {
+            background-color: #337ab7;
+            color: #ffffff;
+        }
+        .navbar-fixed-bottom .navbar-nav>li>a.service:hover {
+            background-color: #ffffff;
+                color: #337ab7;
         }
     </style>
 </head>

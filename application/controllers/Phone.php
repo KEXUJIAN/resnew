@@ -284,7 +284,7 @@ class Phone extends CI_Controller
                 $response['message'] = '已拒绝转借';
             }
             $content .= "{$response['message']}\r\n";
-            $rUrl = implode('/', ['/user', 'profile', 'request', $request->id()]);
+            $rUrl = implode('/', ['user', 'profile', 'request', $request->id()]);
             $placeholder = '[:rUrl]';
             $content .= "处理链接: <a href=\"{$placeholder}\">{$placeholder}</a>";
 
