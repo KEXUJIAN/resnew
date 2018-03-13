@@ -314,15 +314,15 @@ class Phone extends CI_Controller
     {
         $request = Request::get($rqId);
         if (!$request || $request->deleted() === Request::DELETED_YES || $request->assetType() !== Request::ASSET_TYPE_PHONE) {
-            show_404();
+            show_error('此请求不存在', 500, '发生错误');
         }
         $fromUser = User::get($request->fromUserId());
         if (!$fromUser || $fromUser->deleted() === User::DELETED_YES) {
-            show_404();
+            show_error('用户不存在', 500, '发生错误');
         }
         $phone = PhoneModel::get($request->assetId());
         if (!$phone || $phone->deleted() === PhoneModel::DELETED_YES) {
-            show_404();
+            show_error('测试机不存在', 500, '发生错误');
         }
         $contents = [];
         App::view('templates/transfer-confirm', [

@@ -311,11 +311,11 @@ class SimCard extends CI_Controller
     {
         $request = Request::get($rqId);
         if (!$request || $request->deleted() === Request::DELETED_YES) {
-            show_404();
+            show_error('此请求不存在', 500, '发生错误');
         }
         $fromUser = User::get($request->fromUserId());
         if (!$fromUser || $fromUser->deleted() === User::DELETED_YES) {
-            show_404();
+            show_error('用户不存在', 500, '发生错误');
         }
         $contents = [];
         App::view('templates/transfer-confirm', [
