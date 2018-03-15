@@ -9,6 +9,8 @@
 use Res\Model\Request as ReqModal;
 use Res\Biz\RequestBiz;
 use Res\Model\User;
+use Res\Model\Phone;
+use Res\Model\SimCard;
 
 class Request extends CI_Controller
 {
@@ -30,15 +32,19 @@ class Request extends CI_Controller
         $response['draw'] = $_POST['draw'];
         $data = [];
         $count = 0;
-        $uid = App::getUser()->id();
+        $user = App::getUser();
+        $uid = $user->id();
         $c = [];
         if (!empty($_POST['specificId'])) {
             $c['id'] = $_POST['specificId'];
         }
-        $c += [
-            'fromUserId' => $uid,
-            'toUserId' => $uid,
-        ];
+
+        if (User::ROLE_MANAGER !== $user->role()) {
+            $c += [
+                'fromUserId' => $uid,
+                'toUserId' => $uid,
+            ];
+        }
         $where = $this->buildWhere($c);
         $table = ReqModal::TABLE;
         $limit = $_POST['length'] ?? '';
@@ -99,15 +105,21 @@ class Request extends CI_Controller
                         case 'assetId': {
                             $url = '';
                             $id = $o->$column();
+                            $label = '';
                             switch ($o->assetType()) {
                                 case ReqModal::ASSET_TYPE_PHONE:
+                                    $label = Phone::get($id)->label();
                                     $url .= "/phone/info/{$id}";
                                     break;
                                 case ReqModal::ASSET_TYPE_SIM_CARD:
+                                    $label = SimCard::get($id)->label();
                                     $url .= "/simCard/info/{$id}";
                                     break;
                             }
-                            $value .= '<label data-toggle="modal" data-target="#ajax-modal" data-url="' . $url . '" class="label label-info" style="cursor: pointer;">' . $id . '</label>';
+                            if (!$label) {
+                                $label = $id;
+                            }
+                            $value .= '<label data-toggle="modal" data-target="#ajax-modal" data-url="' . $url . '" class="label label-info" style="cursor: pointer;">' . $label . '</label>';
                             break;
                         }
                         case 'assetType':
@@ -151,6 +163,12 @@ class Request extends CI_Controller
 
     private function buildWhere(array &$c) : array
     {
+        if (!$c) {
+            return [
+                'string' => '1 = 1',
+                'array' => [],
+            ];
+        }
         $where = [
             'string' => '',
             'array'  => [],
@@ -161,17 +179,19 @@ class Request extends CI_Controller
             $where['array'][':id'] =  $c['id'];
         }
 
-        if ($where['string']) {
-            $where['string'] .= 'AND ';
-        }
+        if (isset($c['toUserId'], $c['fromUserId'])) {
+            if ($where['string']) {
+                $where['string'] .= 'AND ';
+            }
 
-        $where['string'] .= '(touserid = :toUserId OR fromuserid = :fromUserId) ';
-        $tmp = [
-            ':toUserId' => $c['toUserId'],
-            ':fromUserId' => $c['fromUserId'],
-        ];
-        $where['array'] = array_merge($where['array'], $tmp);
-        unset($c['id'], $c['toUserId'], $c['fromUserId']);
+            $where['string'] .= '(touserid = :toUserId OR fromuserid = :fromUserId) ';
+            $tmp = [
+                ':toUserId' => $c['toUserId'],
+                ':fromUserId' => $c['fromUserId'],
+            ];
+            $where['array'] = array_merge($where['array'], $tmp);
+            unset($c['id'], $c['toUserId'], $c['fromUserId']);
+        }
         if ($c) {
             $tmp = ReqModal::buildWhere($c);
             $where['string'] .= "AND {$tmp['string']}";

@@ -286,8 +286,7 @@ class Assets extends CI_Controller
         }
         $data = [];
         $index = 1;
-        $fields = Phone::COLUMNS;
-        $fields = array_flip($fields);
+        $fields = array_flip(Phone::COLUMNS);
         foreach ($phoneList as $phone) {
             $row = [];
             foreach ($columns as $column) {

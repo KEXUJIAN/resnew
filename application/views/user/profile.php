@@ -116,7 +116,7 @@ App::view('templates/header', ['title' => '个人页']);
                                 接收人
                             </th>
                             <th data-col-name="assetId" data-orderable="false">
-                                资源ID
+                                资产
                             </th>
                             <th data-col-name="assetType" data-orderable="false">
                                 资产种类
