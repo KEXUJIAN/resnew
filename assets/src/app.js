@@ -22,18 +22,23 @@ $(function () {
     }, 0);
 
     async function getNotification() {
-        let nr = 0;
+        let nr = notify.find('.badge.badge-jump').text() || 0;
         try {
-            let ret = await $.post(notify.data('url'), null, null, 'json');
+            // let ret = await $.post(notify.data('url'), null, null, 'json');
+            let ret = await $.ajax({
+                type: 'POST',
+                url: notify.data('url'),
+                dataType: 'json',
+                timeout: 30000,
+                data: {originCount: nr},
+            });
             nr = ret.result ? ret.message : 0;
         } catch (err) {
-            nr = 0;
+            console.error(err);
         } finally {
             notify.find('.badge.badge-jump').text(nr || null);
         }
-        setTimeout(async () => {
-            await getNotification();
-        }, 5000);
+        await getNotification();
     }
 });
 

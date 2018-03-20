@@ -12,19 +12,30 @@ class Notification extends CI_Controller
 {
     public function count()
     {
+        ini_set('max_execution_time', 31);
         $response = [
             'result' => true,
             'message' => 0,
         ];
+        $originCount = intval($_POST['originCount'] ?? 0);
         $c = [
             'userId' => App::getUser()->id(),
             'read' => NotifyModal::READ_NO,
         ];
-        try {
-            $response['message'] = NotifyModal::getCount($c);
-        } catch (Throwable $t) {
-            $response['result'] = false;
-            $response['message'] = $t->getMessage();
+        $begin = $now = microtime(true);
+        while ($now - $begin < 30) {
+            try {
+                $response['message'] = NotifyModal::getCount($c);
+            } catch (Throwable $t) {
+                $response['result'] = false;
+                $response['error'] = $t->getMessage();
+            }
+            if (!$response['message'] || $originCount === intval($response['message'])) {
+                usleep(500000);
+                $now = microtime(true);
+                continue;
+            }
+            break;
         }
         echo json_encode($response);
     }
