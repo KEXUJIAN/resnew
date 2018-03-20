@@ -167,6 +167,14 @@ App::view('templates/header', ['title' => '后台']);
         });
     resRunInit(currentPanel);
     resRunInit(null, 'ajaxModal');
+
+    $('[data-role="delete"]').each(function () {
+        $(this).data('beforeDelete', function (checkedItem, form) {
+           bootbox.alert('foo');
+           return false;
+        });
+    });
+
     function uploadStart() {
         uploadElm.prop('disabled', true);
         uploadArea.css('cursor', 'not-allowed').find('.upload-file').hide();

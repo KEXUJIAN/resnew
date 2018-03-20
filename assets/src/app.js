@@ -279,6 +279,12 @@ const initObj = {
                             return;
                         }
                         let nr = checkedElms.length;
+
+                        let bDelFn = btnDel.data('beforeDelete');
+                        if ($.isFunction(bDelFn) && false === bDelFn(checkedElms, that)) {
+                            return;
+                        }
+
                         bootbox.confirm(`确定删除 ${nr} 项吗?`, async (result) => {
                             if (!result) {
                                 return;

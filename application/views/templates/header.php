@@ -37,7 +37,7 @@ $user = APP::getUser() ?? false;
     <script src="https://cdn.bootcss.com/select2/4.0.5/js/select2.min.js"></script>
     <script src="https://cdn.bootcss.com/select2/4.0.5/js/i18n/zh-CN.js"></script>
     <?php endif;?>
-    <script src="/asset/app.6fddb8f9ffc55d6f7ec4.js"></script>
+    <script src="/asset/app.6781cbdbe6418279eace.js"></script>
     <style type="text/css">
         body {
             position: absolute;
