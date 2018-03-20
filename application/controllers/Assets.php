@@ -77,7 +77,8 @@ class Assets extends CI_Controller
         if ('' !== ($_GET['q'] ?? '')) {
             $c['label@'] = $_GET['q'];
         }
-        if (!is_numeric($assetType) || !array_key_exists(intval($assetType), Request::LABEL_ASSET_TYPE)) {
+        @$index = intval($assetType);
+        if (!is_numeric($assetType) || !array_key_exists($index, Request::LABEL_ASSET_TYPE)) {
             echo json_encode([
                 'results' => [],
             ]);
@@ -87,7 +88,14 @@ class Assets extends CI_Controller
             Request::ASSET_TYPE_PHONE => Phone::class,
             Request::ASSET_TYPE_SIM_CARD => SimCard::class,
         ];
-        $list = $factory[intval($assetType)]::getList($c);
+
+        if (defined("{$factory[$index]}::DELETED_NO")) {
+            $c += [
+                'deleted' => $factory[$index]::DELETED_NO,
+            ];
+        }
+
+        $list = $factory[$index]::getList($c);
         $response = ['results' => []];
         foreach ($list as $o) {
             $lable = $o->label() ?: $o->id();

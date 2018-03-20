@@ -34,7 +34,9 @@ class Request extends CI_Controller
         $count = 0;
         $user = App::getUser();
         $uid = $user->id();
-        $c = [];
+        $c = [
+            'deleted' => ReqModal::DELETED_NO,
+        ];
         if (!empty($_POST['specificId'])) {
             $c['id'] = $_POST['specificId'];
         }

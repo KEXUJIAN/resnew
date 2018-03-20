@@ -136,7 +136,9 @@ class User extends CI_Controller
 
     public function select2()
     {
-        $c = [];
+        $c = [
+            'deleted' => UserModel::DELETED_NO,
+        ];
         if ('' !== ($_GET['q'] ?? '')) {
             $c['name@'] = $_GET['q'];
         }
