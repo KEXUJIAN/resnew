@@ -94,51 +94,9 @@ App::view('templates/header', ['title' => '个人页']);
                     </table>
                 </div>
                 <div id="request-panel" class="tab-pane fade">
-                    <div class="data-table-action-wrapper col-md-12">
-                        <div class="pull-left" style="width: 100%;">
-                            <div class="pull-right" style="margin-bottom: 10px">
-                                <button class="btn btn-info" data-role="refresh">
-                                    <i class="fa fa-refresh"></i> 刷新
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <table class="table dataTable ajax-table table-striped table-bordered table-hover" data-url="/request/dataTable">
-                        <thead>
-                        <tr>
-                            <th data-col-name="id" data-col-width="50px" data-orderable="false">
-                                序号
-                            </th>
-                            <th data-col-name="fromUserId" data-orderable="false">
-                                发起人
-                            </th>
-                            <th data-col-name="toUserId" data-orderable="false">
-                                接收人
-                            </th>
-                            <th data-col-name="assetId" data-orderable="false">
-                                资产
-                            </th>
-                            <th data-col-name="assetType" data-orderable="false">
-                                资产种类
-                            </th>
-                            <th data-col-name="type" data-orderable="false">
-                                请求类型
-                            </th>
-                            <th data-col-name="status" data-orderable="false">
-                                状态
-                            </th>
-                            <th data-col-name="timeAdded" data-orderable="false">
-                                发起时间
-                            </th>
-                            <th data-col-name="timeModified" data-orderable="false">
-                                结束时间
-                            </th>
-                            <th data-col-name="#action" data-orderable="false" data-col-width="50px">
-                                操作
-                            </th>
-                        </tr>
-                        </thead>
-                    </table>
+                    <?=App::view('templates/datatable-request', [
+                        'url' => '/request/dataTable',
+                    ], true)?>
                 </div>
             </div>
         </div>
@@ -153,7 +111,7 @@ App::view('templates/header', ['title' => '个人页']);
 <script>
 (function () {
     var initialPanelName = '#' + '<?=$panel?>' + '-panel';
-    var currentPanel = $(initialPanelName).addClass('in');
+    var currentPanel = $(initialPanelName).addClass('in active');
 
     var initList = {};
     initList[currentPanel.attr('id')] = true;
@@ -184,7 +142,13 @@ App::view('templates/header', ['title' => '个人页']);
                 }, 1000);
             });
         });
-    $('#request-panel').find('table.ajax-table')
+    var requestPanel = $('#request-panel');
+    requestPanel
+        .on('change', '[name="assetType"]', function () {
+            var that = $(this);
+            requestPanel.find('[name="assetId"]').data('url', '/assets/select2/' + that.val());
+        })
+        .find('table.ajax-table')
         .on('click', '[data-role="action"]', function (e) {
             var table = $(e.delegateTarget);
             var that = $(this);

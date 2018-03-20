@@ -70,6 +70,35 @@ class Assets extends CI_Controller
         echo json_encode($response);
     }
 
+    public function select2($assetType = '')
+    {
+        header('content-type: application/json');
+        $c = [];
+        if ('' !== ($_GET['q'] ?? '')) {
+            $c['label@'] = $_GET['q'];
+        }
+        if (!is_numeric($assetType) || !array_key_exists(intval($assetType), Request::LABEL_ASSET_TYPE)) {
+            echo json_encode([
+                'results' => [],
+            ]);
+            return;
+        }
+        $factory = [
+            Request::ASSET_TYPE_PHONE => Phone::class,
+            Request::ASSET_TYPE_SIM_CARD => SimCard::class,
+        ];
+        $list = $factory[intval($assetType)]::getList($c);
+        $response = ['results' => []];
+        foreach ($list as $o) {
+            $lable = $o->label() ?: $o->id();
+            $response['results'][] = [
+                'id' => $o->id(),
+                'text' => $lable,
+            ];
+        }
+        echo json_encode($response);
+    }
+
     private function ownPhones() : array
     {
         $response = [

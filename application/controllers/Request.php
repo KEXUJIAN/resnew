@@ -45,6 +45,12 @@ class Request extends CI_Controller
                 'toUserId' => $uid,
             ];
         }
+        if ('' !== ($_POST['assetType'] ?? '')) {
+            $c['assetType'] = $_POST['assetType'];
+        }
+        if ('' !== ($_POST['assetId'] ?? '')) {
+            $c['assetId'] = $_POST['assetId'];
+        }
         $where = $this->buildWhere($c);
         $table = ReqModal::TABLE;
         $limit = $_POST['length'] ?? '';
@@ -194,7 +200,10 @@ class Request extends CI_Controller
         }
         if ($c) {
             $tmp = ReqModal::buildWhere($c);
-            $where['string'] .= "AND {$tmp['string']}";
+            if ($where['string']) {
+                $where['string'] .= 'AND ';
+            }
+            $where['string'] .= $tmp['string'];
             $where['array'] = array_merge($where['array'], $tmp['array']);
         }
         return $where;

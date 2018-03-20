@@ -258,6 +258,10 @@ const initObj = {
                     .on('click', '[data-role="refresh"]', function () {
                         that.DataTable().draw(false);
                     })
+                    .on('click', '[type="reset"]', function () {
+                        actionPanel.find('.select2').val(null).trigger('change');
+                        actionPanel.find('.select2[data-url]').empty();
+                    })
                     .on('click', '[data-role="delete"]', function () {
                         let btnDel = $(this);
 
@@ -464,7 +468,9 @@ const initObj = {
             let url = that.data('url');
             if (url) {
                 ajax['ajax'] = {
-                    url: url
+                    url: function () {
+                        return that.data('url');
+                    }
                 };
             }
             that.select2($.extend({}, option, ajax, that.data('option')));
