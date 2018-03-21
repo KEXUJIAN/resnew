@@ -168,10 +168,46 @@ App::view('templates/header', ['title' => '后台']);
     resRunInit(currentPanel);
     resRunInit(null, 'ajaxModal');
 
+    var forceDelete = {
+        '#phone-panel': false,
+        '#simcard-panel': false
+    };
     $('[data-role="delete"]').each(function () {
-        $(this).data('beforeDelete', function (checkedItem, form) {
-           bootbox.alert('foo');
-           return false;
+        if ($(this).closest('.tab-pane').is('#user-panel')) {
+            return;
+        }
+        $(this).data('beforeDelete', function (checkedItem, btn) {
+            var i = 0;
+            var name = '#' + btn.closest('.tab-pane').prop('id');
+            var shouldAlert = false;
+
+            if (forceDelete[name]) {
+                forceDelete[name] = false;
+                return true;
+            }
+
+            for (; i < checkedItem.length; ++i) {
+                var tmp = $(checkedItem);
+                var status = tmp.closest('tr').find('[data-role="status"]').data('value');
+                if (0 !== status) {
+                    shouldAlert = true;
+                    break;
+                }
+            }
+
+            if (!shouldAlert) {
+                return true;
+            }
+            bootbox.confirm('要删除的资产中有资产状态为外借或不确定，确认删除？', function (result) {
+                if (!result) {
+                    return;
+                }
+                forceDelete[name] = true;
+                setTimeout(function () {
+                    btn.click();
+                }, 700);
+            });
+            return false;
         });
     });
 

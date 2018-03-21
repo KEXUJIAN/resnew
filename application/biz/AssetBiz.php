@@ -18,6 +18,7 @@ class AssetBiz
     {
         $result = '';
         $status = Phone::LABEL_STATUS[$phone->status()];
+        $result .= '<span data-role="status" data-value="' . $phone->status() . '">';
         switch ($phone->status()) {
             case Phone::STATUS_IN_INVENTORY:
                 $result .= '<p class="text-success"><i class="fa fa-home"></i>' . $status . '</p>';
@@ -35,6 +36,7 @@ class AssetBiz
             default:
                 $result .= '<p class="text-info"><i class="fa fa-lock"></i>' . "{$status}, 待确认" . '</p>';
         }
+        $result .= '</span>';
         return $result;
     }
 
@@ -42,6 +44,7 @@ class AssetBiz
     {
         $result = '';
         $status = SimCard::LABEL_STATUS[$simCard->status()];
+        $result .= '<span data-role="status" data-value="' . $simCard->status() . '">';
         switch ($simCard->status()) {
             case SimCard::STATUS_IN_INVENTORY:
                 $result .= '<p class="text-success"><i class="fa fa-home"></i>' . $status . '</p>';
@@ -59,6 +62,7 @@ class AssetBiz
             default:
                 $result .= '<p class="text-info"><i class="fa fa-lock"></i>' . "{$status}, 待确认" . '</p>';
         }
+        $result .= '</span>';
         return $result;
     }
 

@@ -281,7 +281,7 @@ const initObj = {
                         let nr = checkedElms.length;
 
                         let bDelFn = btnDel.data('beforeDelete');
-                        if ($.isFunction(bDelFn) && false === bDelFn(checkedElms, that)) {
+                        if ($.isFunction(bDelFn) && false === bDelFn(checkedElms, btnDel)) {
                             return;
                         }
 
