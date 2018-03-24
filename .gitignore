@@ -6,6 +6,8 @@ application/config/App/**/*
 !application/config/App/*
 !application/config/App/**/*.php.example
 
+application/config/**/config.php
+
 
 application/cache/*
 !application/cache/index.html
