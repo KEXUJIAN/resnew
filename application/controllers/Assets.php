@@ -15,10 +15,10 @@ class Assets extends CI_Controller
 {
     public function inventory($name = 'phone', $id = null)
     {
-        $name = 'simcard' === $name ? $name : 'phone';
+        $name   = 'simcard' === $name ? $name : 'phone';
         $params = [
-            'panel' => $name,
-            'assetId' => $id,
+            'panel'         => $name,
+            'assetId'       => $id,
             'titleNavClass' => 'container-fluid',
         ];
         App::view('asset/own-assets', $params);
@@ -85,7 +85,7 @@ class Assets extends CI_Controller
             return;
         }
         $factory = [
-            Request::ASSET_TYPE_PHONE => Phone::class,
+            Request::ASSET_TYPE_PHONE    => Phone::class,
             Request::ASSET_TYPE_SIM_CARD => SimCard::class,
         ];
 
@@ -95,43 +95,43 @@ class Assets extends CI_Controller
             ];
         }
 
-        $list = $factory[$index]::getList($c);
+        $list     = $factory[$index]::getList($c);
         $response = ['results' => []];
         foreach ($list as $o) {
-            $lable = $o->label() ?: $o->id();
+            $lable                 = $o->label() ?: $o->id();
             $response['results'][] = [
-                'id' => $o->id(),
+                'id'   => $o->id(),
                 'text' => $lable,
             ];
         }
         echo json_encode($response);
     }
 
-    private function ownPhones() : array
+    private function ownPhones(): array
     {
         $response = [
-            'result' => true,
-            'recordsTotal' => 0,
+            'result'          => true,
+            'recordsTotal'    => 0,
             'recordsFiltered' => 0,
-            'data' => [],
+            'data'            => [],
         ];
         if ('' === ($_POST['draw'] ?? '')) {
-            $response['result'] = false;
+            $response['result']  = false;
             $response['message'] = '缺少参数"draw"';
             return $response;
         }
         $response['draw'] = $_POST['draw'];
-        $c = [];
+        $c                = [];
         if (!empty($_POST['specificId'])) {
             $c['id'] = $_POST['specificId'];
         }
         $c += [
-            'userId' => App::getUser()->id(),
-            'deleted' => Phone::DELETED_NO
+            'userId'  => App::getUser()->id(),
+            'deleted' => Phone::DELETED_NO,
         ];
         AssetBiz::phoneCondition($c, $_POST);
 
-        $count = Phone::getCount($c);
+        $count   = Phone::getCount($c);
         $columns = [];
         foreach ($_POST['columns'] as $columnDef) {
             $columns[] = $columnDef['data'];
@@ -139,20 +139,20 @@ class Assets extends CI_Controller
         $order = [];
         if ($_POST['order'] ?? []) {
             foreach ($_POST['order'] as $orderDef) {
-                $key = $columns[$orderDef['column']];
+                $key         = $columns[$orderDef['column']];
                 $order[$key] = 'desc' === $orderDef['dir'] ? 'desc' : 'asc';
             }
         }
-        $limit = $_POST['length'];
-        $offset = $_POST['start'];
+        $limit     = $_POST['length'];
+        $offset    = $_POST['start'];
         $phoneList = Phone::getList($c, $order, $limit, $offset);
         if (!$phoneList) {
-            $response['result'] = false;
+            $response['result']  = false;
             $response['message'] = '没有记录';
             return $response;
         }
-        $data = [];
-        $index = 1;
+        $data   = [];
+        $index  = 1;
         $fields = Phone::COLUMNS;
         $fields = array_flip($fields);
         foreach ($phoneList as $phone) {
@@ -160,14 +160,14 @@ class Assets extends CI_Controller
             foreach ($columns as $column) {
                 $value = '';
                 if ('id' === $column) {
-                    $value .= '<label class="index-label" data-id="' . $phone->$column() . '">' . ($index++ + $offset). '</label>';
+                    $value .= '<label class="index-label" data-id="' . $phone->$column() . '">' . ($index++ + $offset) . '</label>';
                 } elseif ('#action' === $column) {
                     $value .= $this->phoneAction($phone);
                 } elseif (array_key_exists($column, $fields)) {
                     switch ($column) {
                         case 'carrier':
                             $carrierList = explode(',', $phone->carrier());
-                            $labels = [];
+                            $labels      = [];
                             foreach ($carrierList as $carrierCode) {
                                 $labels[] = Phone::LABEL_CARRIER[$carrierCode];
                             }
@@ -190,36 +190,36 @@ class Assets extends CI_Controller
             }
             $data[] = $row;
         }
-        $response['data'] = $data;
+        $response['data']         = $data;
         $response['recordsTotal'] = $response['recordsFiltered'] = $count;
         return $response;
     }
 
-    private function ownSimCards() : array
+    private function ownSimCards(): array
     {
         $response = [
-            'result' => true,
-            'recordsTotal' => 0,
+            'result'          => true,
+            'recordsTotal'    => 0,
             'recordsFiltered' => 0,
-            'data' => [],
+            'data'            => [],
         ];
         if ('' === ($_POST['draw'] ?? '')) {
-            $response['result'] = false;
+            $response['result']  = false;
             $response['message'] = '缺少参数"draw"';
             return $response;
         }
         $response['draw'] = $_POST['draw'];
-        $c = [];
+        $c                = [];
         if (!empty($_POST['specificId'])) {
             $c['id'] = $_POST['specificId'];
         }
         $c += [
-            'userId' => App::getUser()->id(),
-            'deleted' => Phone::DELETED_NO
+            'userId'  => App::getUser()->id(),
+            'deleted' => Phone::DELETED_NO,
         ];
         AssetBiz::simCardCondition($c, $_POST);
 
-        $count = SimCard::getCount($c);
+        $count   = SimCard::getCount($c);
         $columns = [];
         foreach ($_POST['columns'] as $columnDef) {
             $columns[] = $columnDef['data'];
@@ -227,20 +227,20 @@ class Assets extends CI_Controller
         $order = [];
         if ($_POST['order'] ?? []) {
             foreach ($_POST['order'] as $orderDef) {
-                $key = $columns[$orderDef['column']];
+                $key         = $columns[$orderDef['column']];
                 $order[$key] = 'desc' === $orderDef['dir'] ? 'desc' : 'asc';
             }
         }
-        $limit = $_POST['length'];
-        $offset = $_POST['start'];
+        $limit       = $_POST['length'];
+        $offset      = $_POST['start'];
         $simCardList = SimCard::getList($c, $order, $limit, $offset);
         if (!$simCardList) {
-            $response['result'] = false;
+            $response['result']  = false;
             $response['message'] = '没有记录';
             return $response;
         }
-        $data = [];
-        $index = 1;
+        $data   = [];
+        $index  = 1;
         $fields = SimCard::COLUMNS;
         $fields = array_flip($fields);
         foreach ($simCardList as $simCard) {
@@ -248,7 +248,7 @@ class Assets extends CI_Controller
             foreach ($columns as $column) {
                 $value = '';
                 if ('id' === $column) {
-                    $value .= '<label class="index-label" data-id="' . $simCard->$column() . '">' . ($index++ + $offset). '</label>';
+                    $value .= '<label class="index-label" data-id="' . $simCard->$column() . '">' . ($index++ + $offset) . '</label>';
                 } elseif ('#action' === $column) {
                     $value .= $this->simCardAction($simCard);
                 } elseif (array_key_exists($column, $fields)) {
@@ -261,7 +261,7 @@ class Assets extends CI_Controller
                             break;
                         case 'carrier':
                             $carrierList = explode(',', $simCard->carrier());
-                            $labels = [];
+                            $labels      = [];
                             foreach ($carrierList as $carrierCode) {
                                 $labels[] = SimCard::LABEL_CARRIER[$carrierCode];
                             }
@@ -279,29 +279,29 @@ class Assets extends CI_Controller
             }
             $data[] = $row;
         }
-        $response['data'] = $data;
+        $response['data']         = $data;
         $response['recordsTotal'] = $response['recordsFiltered'] = $count;
         return $response;
     }
 
-    private function dataPhones() : array
+    private function dataPhones(): array
     {
         $response = [
-            'result' => true,
-            'recordsTotal' => 0,
+            'result'          => true,
+            'recordsTotal'    => 0,
             'recordsFiltered' => 0,
-            'data' => [],
+            'data'            => [],
         ];
         if ('' === ($_POST['draw'] ?? '')) {
-            $response['result'] = false;
+            $response['result']  = false;
             $response['message'] = '缺少参数"draw"';
             return $response;
         }
         $response['draw'] = $_POST['draw'];
-        $c = ['deleted' => Phone::DELETED_NO];
+        $c                = ['deleted' => Phone::DELETED_NO];
         AssetBiz::phoneCondition($c, $_POST);
 
-        $count = Phone::getCount($c);
+        $count   = Phone::getCount($c);
         $columns = [];
         foreach ($_POST['columns'] as $columnDef) {
             $columns[] = $columnDef['data'];
@@ -309,27 +309,27 @@ class Assets extends CI_Controller
         $order = [];
         if ($_POST['order'] ?? []) {
             foreach ($_POST['order'] as $orderDef) {
-                $key = $columns[$orderDef['column']];
+                $key         = $columns[$orderDef['column']];
                 $order[$key] = 'desc' === $orderDef['dir'] ? 'desc' : 'asc';
             }
         }
-        $limit = $_POST['length'];
-        $offset = $_POST['start'];
+        $limit     = $_POST['length'];
+        $offset    = $_POST['start'];
         $phoneList = Phone::getList($c, $order, $limit, $offset);
         if (!$phoneList) {
-            $response['result'] = false;
+            $response['result']  = false;
             $response['message'] = '没有记录';
             return $response;
         }
-        $data = [];
-        $index = 1;
+        $data   = [];
+        $index  = 1;
         $fields = array_flip(Phone::COLUMNS);
         foreach ($phoneList as $phone) {
             $row = [];
             foreach ($columns as $column) {
                 $value = '';
                 if ('id' === $column) {
-                    $value .= '<label class="index-label" data-id="' . $phone->$column() . '">' . ($index++ + $offset). '</label>';
+                    $value .= '<label class="index-label" data-id="' . $phone->$column() . '">' . ($index++ + $offset) . '</label>';
                 } elseif ('#action' === $column) {
                     $value .= $this->phoneAction($phone);
                 } elseif (array_key_exists($column, $fields)) {
@@ -339,7 +339,7 @@ class Assets extends CI_Controller
                                 break;
                             }
                             $carrierList = explode(',', $phone->$column());
-                            $labels = [];
+                            $labels      = [];
                             foreach ($carrierList as $carrierCode) {
                                 $labels[] = Phone::LABEL_CARRIER[$carrierCode];
                             }
@@ -363,29 +363,29 @@ class Assets extends CI_Controller
             }
             $data[] = $row;
         }
-        $response['data'] = $data;
+        $response['data']         = $data;
         $response['recordsTotal'] = $response['recordsFiltered'] = $count;
         return $response;
     }
 
-    private function dataSimCards() : array
+    private function dataSimCards(): array
     {
         $response = [
-            'result' => true,
-            'recordsTotal' => 0,
+            'result'          => true,
+            'recordsTotal'    => 0,
             'recordsFiltered' => 0,
-            'data' => [],
+            'data'            => [],
         ];
         if ('' === ($_POST['draw'] ?? '')) {
-            $response['result'] = false;
+            $response['result']  = false;
             $response['message'] = '缺少参数"draw"';
             return $response;
         }
         $response['draw'] = $_POST['draw'];
-        $c = ['deleted' => SimCard::DELETED_NO];
+        $c                = ['deleted' => SimCard::DELETED_NO];
         AssetBiz::simCardCondition($c, $_POST);
 
-        $count = SimCard::getCount($c);
+        $count   = SimCard::getCount($c);
         $columns = [];
         foreach ($_POST['columns'] as $columnDef) {
             $columns[] = $columnDef['data'];
@@ -393,20 +393,20 @@ class Assets extends CI_Controller
         $order = [];
         if ($_POST['order'] ?? []) {
             foreach ($_POST['order'] as $orderDef) {
-                $key = $columns[$orderDef['column']];
+                $key         = $columns[$orderDef['column']];
                 $order[$key] = 'desc' === $orderDef['dir'] ? 'desc' : 'asc';
             }
         }
-        $limit = $_POST['length'];
-        $offset = $_POST['start'];
+        $limit       = $_POST['length'];
+        $offset      = $_POST['start'];
         $simCardList = SimCard::getList($c, $order, $limit, $offset);
         if (!$simCardList) {
-            $response['result'] = false;
+            $response['result']  = false;
             $response['message'] = '没有记录';
             return $response;
         }
-        $data = [];
-        $index = 1;
+        $data   = [];
+        $index  = 1;
         $fields = SimCard::COLUMNS;
         $fields = array_flip($fields);
         foreach ($simCardList as $simCard) {
@@ -414,7 +414,7 @@ class Assets extends CI_Controller
             foreach ($columns as $column) {
                 $value = '';
                 if ('id' === $column) {
-                    $value .= '<label class="index-label" data-id="' . $simCard->$column() . '">' . ($index++ + $offset). '</label>';
+                    $value .= '<label class="index-label" data-id="' . $simCard->$column() . '">' . ($index++ + $offset) . '</label>';
                 } elseif ('#action' === $column) {
                     $value .= $this->simCardAction($simCard);
                 } elseif (array_key_exists($column, $fields)) {
@@ -430,7 +430,7 @@ class Assets extends CI_Controller
                                 break;
                             }
                             $carrierList = explode(',', $simCard->carrier());
-                            $labels = [];
+                            $labels      = [];
                             foreach ($carrierList as $carrierCode) {
                                 $labels[] = SimCard::LABEL_CARRIER[$carrierCode];
                             }
@@ -448,31 +448,31 @@ class Assets extends CI_Controller
             }
             $data[] = $row;
         }
-        $response['data'] = $data;
+        $response['data']         = $data;
         $response['recordsTotal'] = $response['recordsFiltered'] = $count;
         return $response;
     }
 
-    private function phoneAction(Phone $phone) : string
+    private function phoneAction(Phone $phone): string
     {
         $phoneId = $phone->id();
-        $result = '<button data-toggle="modal" data-target="#ajax-modal" data-url="/phone/info/' . $phoneId . '" class="btn btn-info btn-xs action-button">查看</button>';
+        $result  = '<button data-toggle="modal" data-target="#ajax-modal" data-url="/phone/info/' . $phoneId . '" class="btn btn-info btn-xs action-button">查看</button>';
         switch ($phone->status()) {
             case Phone::STATUS_IN_INVENTORY:
                 $result .= '<button data-role="rent-out" data-url="/phone/rent/' . $phoneId . '" class="btn btn-success btn-xs action-button">借用</button>';
                 break;
             case Phone::STATUS_RENT_OUT:
                 $request = Request::getOne([
-                    'assetId' => $phoneId,
-                    'deleted' => Request::DELETED_NO,
+                    'assetId'   => $phoneId,
+                    'deleted'   => Request::DELETED_NO,
                     'assetType' => Request::ASSET_TYPE_PHONE,
-                    'type' => Request::TYPE_TRANSFER,
-                    'status' => Request::STATUS_NEW,
+                    'type'      => Request::TYPE_TRANSFER,
+                    'status'    => Request::STATUS_NEW,
                 ]);
-                $myId = App::getUser()->id();
+                $myId    = App::getUser()->id();
                 if ($myId === $phone->userId()) {
                     if ($request) {
-                        $result .= '<button data-toggle="modal" data-target="#ajax-modal" data-url="/phone/transferConfirmView/'. $request->id() . '" class="btn btn-warning btn-xs action-button">转借</button>';
+                        $result .= '<button data-toggle="modal" data-target="#ajax-modal" data-url="/phone/transferConfirmView/' . $request->id() . '" class="btn btn-warning btn-xs action-button">转借</button>';
                     }
                     $result .= '<button data-role="return" data-url="/phone/restore/' . $phoneId . '" class="btn btn-primary btn-xs action-button">归还</button>';
                     break;
@@ -490,23 +490,23 @@ class Assets extends CI_Controller
         return $result;
     }
 
-    private function simCardAction(SimCard $simCard) : string
+    private function simCardAction(SimCard $simCard): string
     {
         $simCardId = $simCard->id();
-        $result = '<button data-toggle="modal" data-target="#ajax-modal" data-url="/simCard/info/' . $simCardId . '" class="btn btn-info btn-xs action-button">查看</button>';
+        $result    = '<button data-toggle="modal" data-target="#ajax-modal" data-url="/simCard/info/' . $simCardId . '" class="btn btn-info btn-xs action-button">查看</button>';
         switch ($simCard->status()) {
             case SimCard::STATUS_IN_INVENTORY:
                 $result .= '<button data-role="rent-out" data-url="/simCard/rent/' . $simCardId . '" class="btn btn-success btn-xs action-button">借用</button>';
                 break;
             case SimCard::STATUS_RENT_OUT:
                 $request = Request::getOne([
-                    'assetId' => $simCardId,
-                    'deleted' => Request::DELETED_NO,
+                    'assetId'   => $simCardId,
+                    'deleted'   => Request::DELETED_NO,
                     'assetType' => Request::ASSET_TYPE_SIM_CARD,
-                    'type' => Request::TYPE_TRANSFER,
-                    'status' => Request::STATUS_NEW,
+                    'type'      => Request::TYPE_TRANSFER,
+                    'status'    => Request::STATUS_NEW,
                 ]);
-                $myId = App::getUser()->id();
+                $myId    = App::getUser()->id();
                 if ($myId === $simCard->userId()) {
                     if ($request) {
                         $result .= '<button data-toggle="modal" data-target="#ajax-modal" data-url="/simCard/transferConfirmView/' . $request->id() . '" class="btn btn-warning btn-xs action-button">转借</button>';

@@ -1,15 +1,16 @@
 <?php
+
 namespace Res\Util;
 
 /**
-* Excel handler
-*/
+ * Excel handler
+ */
 class MyExcel
 {
-    const ERROR_CODE_SUCCESS = 0;
-    const ERROR_CODE_NO_HEAD = 1;
+    const ERROR_CODE_SUCCESS    = 0;
+    const ERROR_CODE_NO_HEAD    = 1;
     const ERROR_CODE_BAD_FORMAT = 2;
-    const ERROR = [
+    const ERROR                 = [
         0 => 'Success',
         1 => '无法定位到表头',
         2 => '不支持的表格格式',
@@ -21,24 +22,24 @@ class MyExcel
         if (!is_dir($tmp)) {
             mkdir($tmp, 0777);
         }
-        $cacheMethod = \PHPExcel_CachedObjectStorageFactory::cache_to_discISAM;
+        $cacheMethod   = \PHPExcel_CachedObjectStorageFactory::cache_to_discISAM;
         $cacheSettings = ['dir' => $tmp];
         \PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
     }
 
     public function load(string $path, array &$headPatterns)
     {
-        $type = \PHPExcel_IOFactory::identify($path);
+        $type   = \PHPExcel_IOFactory::identify($path);
         $reader = \PHPExcel_IOFactory::createReader($type);
         $reader->setReadDataOnly(true);
         $excel = $reader->load($path);
 
-        $sheet = $excel->getSheet(0);
+        $sheet  = $excel->getSheet(0);
         $maxRow = $sheet->getHighestRow();
         $result = [
-            'result' => true,
+            'result'  => true,
             'message' => self::ERROR[self::ERROR_CODE_SUCCESS],
-            'code' => self::ERROR_CODE_SUCCESS,
+            'code'    => self::ERROR_CODE_SUCCESS,
         ];
 
         $allHeads = [];
@@ -56,7 +57,7 @@ class MyExcel
                 }
                 foreach ($allHeads as $headPattern) {
                     if (preg_match($headPattern, $val)) {
-                        $isHead = true;
+                        $isHead  = true;
                         $headRow = $i;
                         break;
                     }
@@ -72,16 +73,16 @@ class MyExcel
         unset($allHeads);
 
         if (!$headRow) {
-            $result['result'] = false;
+            $result['result']  = false;
             $result['message'] = self::ERROR[self::ERROR_CODE_NO_HEAD];
-            $result['code'] = self::ERROR_CODE_NO_HEAD;
+            $result['code']    = self::ERROR_CODE_NO_HEAD;
             $sheet->disconnectCells();
             $excel->disconnectWorksheets();
             unset($heet, $excel);
             return $result;
         }
 
-        $head = [];
+        $head   = [];
         $maxCol = \PHPExcel_Cell::columnIndexFromString($sheet->getHighestColumn($headRow));
         for ($col = 0; $col < $maxCol; ++$col) {
             $val = (string) $sheet->getCellByColumnAndRow($col, $headRow)->getValue();
@@ -95,7 +96,7 @@ class MyExcel
                         continue;
                     }
                     $head[$name] = $col;
-                    $find = true;
+                    $find        = true;
                     break;
                 }
                 if ($find) {
@@ -107,9 +108,9 @@ class MyExcel
             }
         }
         if (count($head) !== count($headPatterns)) {
-            $result['result'] = false;
+            $result['result']  = false;
             $result['message'] = self::ERROR[self::ERROR_CODE_BAD_FORMAT];
-            $result['code'] = self::ERROR_CODE_BAD_FORMAT;
+            $result['code']    = self::ERROR_CODE_BAD_FORMAT;
             $sheet->disconnectCells();
             $excel->disconnectWorksheets();
             unset($sheet, $excel);
@@ -134,11 +135,11 @@ class MyExcel
                     ];
                     continue;
                 }
-                $colValue = trim((string) $sheet->getCellByColumnAndRow($col, $i)->getValue());
+                $colValue   = trim((string) $sheet->getCellByColumnAndRow($col, $i)->getValue());
                 $row[$name] = [
                     'value' => $colValue,
-                    'col' => $col,
-                    'row' => $i,
+                    'col'   => $col,
+                    'row'   => $i,
                 ];
             }
             $allEmpty = true;

@@ -13,14 +13,14 @@ use Res\Model\UploadFile;
 
 class Upload
 {
-    const ERR_CODE_UPLOAD_FAIL = 1;
+    const ERR_CODE_UPLOAD_FAIL          = 1;
     const ERR_CODE_UNEXPECTED_EXTENSION = 2;
-    const ERR_MESSAGE = [
+    const ERR_MESSAGE                   = [
         1 => '文件上传失败',
         2 => '不支持的文件后缀',
     ];
     private $uploadPath = ROOT_PATH . 'Upload';
-    private $acceptExt = ['xls', 'xlsx'];
+    private $acceptExt  = ['xls', 'xlsx'];
 
     public function __construct()
     {
@@ -29,18 +29,18 @@ class Upload
         }
     }
 
-    public function check(array &$file) : array
+    public function check(array &$file): array
     {
         $error = [];
         if ($file['error']) {
             $error['message'] = self::ERR_MESSAGE[self::ERR_CODE_UPLOAD_FAIL];
-            $error['code'] = self::ERR_CODE_UPLOAD_FAIL;
+            $error['code']    = self::ERR_CODE_UPLOAD_FAIL;
             return $error;
         }
         $ext = pathinfo($file['name'])['extension'];
         if (!in_array($ext, $this->acceptExt)) {
             $error['message'] = self::ERR_MESSAGE[self::ERR_CODE_UNEXPECTED_EXTENSION];
-            $error['code'] = self::ERR_CODE_UNEXPECTED_EXTENSION;
+            $error['code']    = self::ERR_CODE_UNEXPECTED_EXTENSION;
             return $error;
         }
         return $error;
@@ -48,10 +48,10 @@ class Upload
 
     public function saveFile(array &$file, int $type)
     {
-        $now = date('YmdHis');
-        $ext = pathinfo($file['name'])['extension'];
+        $now     = date('YmdHis');
+        $ext     = pathinfo($file['name'])['extension'];
         $oriName = substr($file['name'], 0, strrpos($file['name'], '.'));
-        $prefix = UploadFile::LABEL_TYPE[$type];
+        $prefix  = UploadFile::LABEL_TYPE[$type];
         $fileDir = $this->uploadPath . DIRECTORY_SEPARATOR . $prefix . DIRECTORY_SEPARATOR;
         if (!is_dir($fileDir)) {
             mkdir($fileDir, 0777, true);
@@ -63,7 +63,7 @@ class Upload
 
     public static function resolve(array &$files)
     {
-        $fileLen = count($files['name']);
+        $fileLen  = count($files['name']);
         $resolved = [];
         for ($i = 0; $i < $fileLen; ++$i) {
             foreach ($files as $key => $arr) {

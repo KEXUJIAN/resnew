@@ -58,11 +58,6 @@ App::view('templates/header', ['title' => 'Login']);
             return false;
         }
     })
-    .data('formData', function (data) {
-        var username = data.username;
-        var password = data.password;
-        data.password = sha1(username + password);
-    })
     .data('submitDoneSucc', function (ret) {
         window.location.href = ret.message;
     })

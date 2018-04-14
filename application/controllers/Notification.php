@@ -13,22 +13,22 @@ class Notification extends CI_Controller
     public function count()
     {
         ini_set('max_execution_time', 31);
-        $response = [
-            'result' => true,
+        $response    = [
+            'result'  => true,
             'message' => 0,
         ];
         $originCount = intval($_POST['originCount'] ?? 0);
-        $c = [
+        $c           = [
             'userId' => App::getUser()->id(),
-            'read' => NotifyModal::READ_NO,
+            'read'   => NotifyModal::READ_NO,
         ];
-        $begin = $now = microtime(true);
+        $begin       = $now = microtime(true);
         while ($now - $begin < 30) {
             try {
                 $response['message'] = NotifyModal::getCount($c);
             } catch (Throwable $t) {
                 $response['result'] = false;
-                $response['error'] = $t->getMessage();
+                $response['error']  = $t->getMessage();
             }
             if (!$response['message'] || $originCount === intval($response['message'])) {
                 usleep(500000);
@@ -43,42 +43,42 @@ class Notification extends CI_Controller
     public function dataTable()
     {
         $response = [
-            'result' => true,
-            'recordsTotal' => 0,
+            'result'          => true,
+            'recordsTotal'    => 0,
             'recordsFiltered' => 0,
-            'data' => [],
+            'data'            => [],
         ];
         if ('' === ($_POST['draw'] ?? '')) {
-            $response['result'] = false;
+            $response['result']  = false;
             $response['message'] = '缺少参数"draw"';
             echo json_encode($response);
             return;
         }
         $response['draw'] = $_POST['draw'];
-        $c = [
-            'userId' => App::getUser()->id(),
-            'deleted' => NotifyModal::DELETED_NO
+        $c                = [
+            'userId'  => App::getUser()->id(),
+            'deleted' => NotifyModal::DELETED_NO,
         ];
         if ('' !== ($_POST['type'] ?? '')) {
             $c['type@'] = $_POST['type'];
         }
-        $count = NotifyModal::getCount($c);
+        $count   = NotifyModal::getCount($c);
         $columns = [];
         foreach ($_POST['columns'] as $columnDef) {
             $columns[] = $columnDef['data'];
         }
-        $order = ['id' => 'desc'];
-        $limit = $_POST['length'];
-        $offset = $_POST['start'];
+        $order            = ['id' => 'desc'];
+        $limit            = $_POST['length'];
+        $offset           = $_POST['start'];
         $notificationList = NotifyModal::getList($c, $order, $limit, $offset);
         if (!$notificationList) {
-            $response['result'] = false;
+            $response['result']  = false;
             $response['message'] = '没有记录';
             echo json_encode($response);
             return;
         }
-        $data = [];
-        $index = 1;
+        $data   = [];
+        $index  = 1;
         $fields = NotifyModal::COLUMNS;
         $fields = array_flip($fields);
         foreach ($notificationList as $notification) {
@@ -86,7 +86,7 @@ class Notification extends CI_Controller
             foreach ($columns as $column) {
                 $value = '';
                 if ('id' === $column) {
-                    $value .= '<label class="index-label" data-id="' . $notification->$column() . '">' . ($index++ + $offset). '</label>';
+                    $value .= '<label class="index-label" data-id="' . $notification->$column() . '">' . ($index++ + $offset) . '</label>';
                 } elseif ('#action' === $column) {
                     $value .= '';
                 } elseif (array_key_exists($column, $fields)) {
@@ -106,7 +106,7 @@ class Notification extends CI_Controller
             }
             $data[] = $row;
         }
-        $response['data'] = $data;
+        $response['data']         = $data;
         $response['recordsTotal'] = $response['recordsFiltered'] = $count;
         echo json_encode($response);
     }

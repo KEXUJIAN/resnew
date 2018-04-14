@@ -105,17 +105,17 @@ class Admin extends CI_Controller
     public function upload($name)
     {
         $response = [];
-        $files = $_FILES['files'] ?? [];
+        $files    = $_FILES['files'] ?? [];
         if (!$files) {
             $response['result'] = 'false';
             echo json_encode($response);
             return;
         }
         $uploader = AppService::getUploader();
-        $error = $uploader->check($files);
+        $error    = $uploader->check($files);
         if ($error) {
             $response['result'] = false;
-            $response += $error;
+            $response           += $error;
             echo json_encode($response);
             return;
         }
@@ -171,13 +171,13 @@ class Admin extends CI_Controller
         $required = [
             'postIds' => ['type' => 'array', 'name' => '要删除的项'],
         ];
-        $error = App::checkRequired($required, $_POST);
+        $error    = App::checkRequired($required, $_POST);
         if ($error) {
             echo json_encode($error);
             return;
         }
         $ids = $_POST['postIds'];
-        $nr = 0;
+        $nr  = 0;
         switch ($name) {
             case 'user':
                 $nr += User::hidden($ids);
@@ -191,7 +191,7 @@ class Admin extends CI_Controller
         }
 
         echo json_encode([
-            'result' => true,
+            'result'  => true,
             'message' => "成功删除 {$nr} 项",
         ]);
     }
@@ -202,14 +202,14 @@ class Admin extends CI_Controller
 
         if (!$request || Request::DELETED_YES === $request->deleted()) {
             echo json_encode([
-                'result' => false,
+                'result'  => false,
                 'message' => '请求不存在',
             ]);
         }
         $o = RequestBiz::assetFactory($request->assetType(), $request->assetId());
         if (!$o) {
             echo json_encode([
-                'result' => false,
+                'result'  => false,
                 'message' => '此资产不存在',
             ]);
         }
@@ -236,9 +236,9 @@ class Admin extends CI_Controller
         $request->save();
 
         $placeholder = '[:rUrl]';
-        $rUrl = implode('/', ['user', 'profile', 'request', $request->id()]);
-        $content = "管理员通过了你的申请\r\n";
-        $content .= "请求细节查看链接: <a href=\"{$placeholder}\">{$placeholder}</a>";
+        $rUrl        = implode('/', ['user', 'profile', 'request', $request->id()]);
+        $content     = "管理员通过了你的申请\r\n";
+        $content     .= "请求细节查看链接: <a href=\"{$placeholder}\">{$placeholder}</a>";
 
         $notification = new Notification();
         $notification->userId($user->id());
@@ -250,7 +250,7 @@ class Admin extends CI_Controller
         }
 
         echo json_encode([
-            'result' => true,
+            'result'  => true,
             'message' => '操作成功',
         ]);
     }
@@ -261,14 +261,14 @@ class Admin extends CI_Controller
 
         if (!$request || Request::DELETED_YES === $request->deleted()) {
             echo json_encode([
-                'result' => false,
+                'result'  => false,
                 'message' => '请求不存在',
             ]);
         }
         $o = RequestBiz::assetFactory($request->assetType(), $request->assetId());
         if (!$o) {
             echo json_encode([
-                'result' => false,
+                'result'  => false,
                 'message' => '此资产不存在',
             ]);
         }
@@ -293,9 +293,9 @@ class Admin extends CI_Controller
         $request->save();
 
         $placeholder = '[:rUrl]';
-        $rUrl = implode('/', ['user', 'profile', 'request', $request->id()]);
-        $content = "管理员驳回了你的申请\r\n";
-        $content .= "请求细节查看链接: <a href=\"{$placeholder}\">{$placeholder}</a>";
+        $rUrl        = implode('/', ['user', 'profile', 'request', $request->id()]);
+        $content     = "管理员驳回了你的申请\r\n";
+        $content     .= "请求细节查看链接: <a href=\"{$placeholder}\">{$placeholder}</a>";
 
         $notification = new Notification();
         $notification->userId($user->id());
@@ -307,26 +307,26 @@ class Admin extends CI_Controller
         }
 
         echo json_encode([
-            'result' => true,
+            'result'  => true,
             'message' => '操作成功',
         ]);
     }
 
-    private function dataUsers() : array
+    private function dataUsers(): array
     {
         $response = [
-            'result' => true,
-            'recordsTotal' => 0,
+            'result'          => true,
+            'recordsTotal'    => 0,
             'recordsFiltered' => 0,
-            'data' => [],
+            'data'            => [],
         ];
         if ('' === ($_POST['draw'] ?? '')) {
-            $response['result'] = false;
+            $response['result']  = false;
             $response['message'] = '缺少参数"draw"';
             return $response;
         }
         $response['draw'] = $_POST['draw'];
-        $c = ['deleted' => User::DELETED_NO];
+        $c                = ['deleted' => User::DELETED_NO];
         if ('' !== ($_POST['name'] ?? '')) {
             $c['name@'] = $_POST['name'];
         }
@@ -342,7 +342,7 @@ class Admin extends CI_Controller
         if ('' !== ($_POST['timeAddedMax'] ?? '')) {
             $c['timeAdded<='] = date('Y-m-d 23:59:59', strtotime($_POST['timeAddedMax']));
         }
-        $count = User::getCount($c);
+        $count   = User::getCount($c);
         $columns = [];
         foreach ($_POST['columns'] as $columnDef) {
             $columns[] = $columnDef['data'];
@@ -350,20 +350,20 @@ class Admin extends CI_Controller
         $order = [];
         if ($_POST['order'] ?? []) {
             foreach ($_POST['order'] as $orderDef) {
-                $key = $columns[$orderDef['column']];
+                $key         = $columns[$orderDef['column']];
                 $order[$key] = 'desc' === $orderDef['dir'] ? 'desc' : 'asc';
             }
         }
-        $limit = $_POST['length'];
-        $offset = $_POST['start'];
+        $limit    = $_POST['length'];
+        $offset   = $_POST['start'];
         $userList = User::getList($c, $order, $limit, $offset);
         if (!$userList) {
-            $response['result'] = false;
+            $response['result']  = false;
             $response['message'] = '没有记录';
             return $response;
         }
-        $data = [];
-        $index = 1;
+        $data   = [];
+        $index  = 1;
         $fields = User::COLUMNS;
         $fields = array_flip($fields);
         foreach ($userList as $user) {
@@ -371,9 +371,9 @@ class Admin extends CI_Controller
             foreach ($columns as $column) {
                 $value = '';
                 if ('id' === $column) {
-                    $value .= '<span class="checkbox"><label><input value="' . $user->$column() . '" type="checkbox"> ' . ($index++ + $offset). '</label></span>';
+                    $value .= '<span class="checkbox"><label><input value="' . $user->$column() . '" type="checkbox"> ' . ($index++ + $offset) . '</label></span>';
                 } elseif ('#action' === $column) {
-                    $value .= '<button data-toggle="modal" data-target="#ajax-modal" data-url="/admin/edit/user/'. $user->id() .'" class="btn btn-info" style="padding-bottom: 0;padding-top: 0;"><i class="fa fa-edit"></i> 编辑</button>';
+                    $value .= '<button data-toggle="modal" data-target="#ajax-modal" data-url="/admin/edit/user/' . $user->id() . '" class="btn btn-info" style="padding-bottom: 0;padding-top: 0;"><i class="fa fa-edit"></i> 编辑</button>';
                 } elseif (array_key_exists($column, $fields)) {
                     switch ($column) {
                         case 'role':
@@ -388,29 +388,29 @@ class Admin extends CI_Controller
             }
             $data[] = $row;
         }
-        $response['data'] = $data;
+        $response['data']         = $data;
         $response['recordsTotal'] = $response['recordsFiltered'] = $count;
         return $response;
     }
 
-    private function dataPhones() : array
+    private function dataPhones(): array
     {
         $response = [
-            'result' => true,
-            'recordsTotal' => 0,
+            'result'          => true,
+            'recordsTotal'    => 0,
             'recordsFiltered' => 0,
-            'data' => [],
+            'data'            => [],
         ];
         if ('' === ($_POST['draw'] ?? '')) {
-            $response['result'] = false;
+            $response['result']  = false;
             $response['message'] = '缺少参数"draw"';
             return $response;
         }
         $response['draw'] = $_POST['draw'];
-        $c = ['deleted' => Phone::DELETED_NO];
+        $c                = ['deleted' => Phone::DELETED_NO];
         AssetBiz::phoneCondition($c, $_POST);
 
-        $count = Phone::getCount($c);
+        $count   = Phone::getCount($c);
         $columns = [];
         foreach ($_POST['columns'] as $columnDef) {
             $columns[] = $columnDef['data'];
@@ -418,20 +418,20 @@ class Admin extends CI_Controller
         $order = [];
         if ($_POST['order'] ?? []) {
             foreach ($_POST['order'] as $orderDef) {
-                $key = $columns[$orderDef['column']];
+                $key         = $columns[$orderDef['column']];
                 $order[$key] = 'desc' === $orderDef['dir'] ? 'desc' : 'asc';
             }
         }
-        $limit = $_POST['length'];
-        $offset = $_POST['start'];
+        $limit     = $_POST['length'];
+        $offset    = $_POST['start'];
         $phoneList = Phone::getList($c, $order, $limit, $offset);
         if (!$phoneList) {
-            $response['result'] = false;
+            $response['result']  = false;
             $response['message'] = '没有记录';
             return $response;
         }
-        $data = [];
-        $index = 1;
+        $data   = [];
+        $index  = 1;
         $fields = Phone::COLUMNS;
         $fields = array_flip($fields);
         foreach ($phoneList as $phone) {
@@ -439,9 +439,9 @@ class Admin extends CI_Controller
             foreach ($columns as $column) {
                 $value = '';
                 if ('id' === $column) {
-                    $value .= '<span class="checkbox"><label><input value="' . $phone->$column() . '" type="checkbox"> ' . ($index++ + $offset). '</label></span>';
+                    $value .= '<span class="checkbox"><label><input value="' . $phone->$column() . '" type="checkbox"> ' . ($index++ + $offset) . '</label></span>';
                 } elseif ('#action' === $column) {
-                    $value .= '<button data-toggle="modal" data-target="#ajax-modal" data-url="/admin/edit/phone/'. $phone->id() .'" class="btn btn-info" style="padding-bottom: 0;padding-top: 0;"><i class="fa fa-edit"></i> 编辑</button>';
+                    $value .= '<button data-toggle="modal" data-target="#ajax-modal" data-url="/admin/edit/phone/' . $phone->id() . '" class="btn btn-info" style="padding-bottom: 0;padding-top: 0;"><i class="fa fa-edit"></i> 编辑</button>';
                 } elseif (array_key_exists($column, $fields)) {
                     switch ($column) {
                         case 'status':
@@ -452,7 +452,7 @@ class Admin extends CI_Controller
                                 break;
                             }
                             $carrierList = explode(',', $phone->$column());
-                            $labels = [];
+                            $labels      = [];
                             foreach ($carrierList as $carrierCode) {
                                 $labels[] = Phone::LABEL_CARRIER[$carrierCode];
                             }
@@ -473,29 +473,29 @@ class Admin extends CI_Controller
             }
             $data[] = $row;
         }
-        $response['data'] = $data;
+        $response['data']         = $data;
         $response['recordsTotal'] = $response['recordsFiltered'] = $count;
         return $response;
     }
 
-    private function dataSimCards() : array
+    private function dataSimCards(): array
     {
         $response = [
-            'result' => true,
-            'recordsTotal' => 0,
+            'result'          => true,
+            'recordsTotal'    => 0,
             'recordsFiltered' => 0,
-            'data' => [],
+            'data'            => [],
         ];
         if ('' === ($_POST['draw'] ?? '')) {
-            $response['result'] = false;
+            $response['result']  = false;
             $response['message'] = '缺少参数"draw"';
             return $response;
         }
         $response['draw'] = $_POST['draw'];
-        $c = ['deleted' => SimCard::DELETED_NO];
+        $c                = ['deleted' => SimCard::DELETED_NO];
         AssetBiz::simCardCondition($c, $_POST);
 
-        $count = SimCard::getCount($c);
+        $count   = SimCard::getCount($c);
         $columns = [];
         foreach ($_POST['columns'] as $columnDef) {
             $columns[] = $columnDef['data'];
@@ -503,20 +503,20 @@ class Admin extends CI_Controller
         $order = [];
         if ($_POST['order'] ?? []) {
             foreach ($_POST['order'] as $orderDef) {
-                $key = $columns[$orderDef['column']];
+                $key         = $columns[$orderDef['column']];
                 $order[$key] = 'desc' === $orderDef['dir'] ? 'desc' : 'asc';
             }
         }
-        $limit = $_POST['length'];
-        $offset = $_POST['start'];
+        $limit       = $_POST['length'];
+        $offset      = $_POST['start'];
         $simCardList = SimCard::getList($c, $order, $limit, $offset);
         if (!$simCardList) {
-            $response['result'] = false;
+            $response['result']  = false;
             $response['message'] = '没有记录';
             return $response;
         }
-        $data = [];
-        $index = 1;
+        $data   = [];
+        $index  = 1;
         $fields = SimCard::COLUMNS;
         $fields = array_flip($fields);
         foreach ($simCardList as $simCard) {
@@ -524,9 +524,9 @@ class Admin extends CI_Controller
             foreach ($columns as $column) {
                 $value = '';
                 if ('id' === $column) {
-                    $value .= '<span class="checkbox"><label><input value="' . $simCard->$column() . '" type="checkbox"> ' . ($index++ + $offset). '</label></span>';
+                    $value .= '<span class="checkbox"><label><input value="' . $simCard->$column() . '" type="checkbox"> ' . ($index++ + $offset) . '</label></span>';
                 } elseif ('#action' === $column) {
-                    $value .= '<button data-toggle="modal" data-target="#ajax-modal" data-url="/admin/edit/simcard/'. $simCard->id() .'" class="btn btn-info" style="padding-bottom: 0;padding-top: 0;"><i class="fa fa-edit"></i> 编辑</button>';
+                    $value .= '<button data-toggle="modal" data-target="#ajax-modal" data-url="/admin/edit/simcard/' . $simCard->id() . '" class="btn btn-info" style="padding-bottom: 0;padding-top: 0;"><i class="fa fa-edit"></i> 编辑</button>';
                 } elseif (array_key_exists($column, $fields)) {
                     switch ($column) {
                         case 'status':
@@ -537,7 +537,7 @@ class Admin extends CI_Controller
                                 break;
                             }
                             $carrierList = explode(',', $simCard->carrier());
-                            $labels = [];
+                            $labels      = [];
                             foreach ($carrierList as $carrierCode) {
                                 $labels[] = SimCard::LABEL_CARRIER[$carrierCode];
                             }
@@ -558,7 +558,7 @@ class Admin extends CI_Controller
             }
             $data[] = $row;
         }
-        $response['data'] = $data;
+        $response['data']         = $data;
         $response['recordsTotal'] = $response['recordsFiltered'] = $count;
         return $response;
     }
@@ -566,38 +566,36 @@ class Admin extends CI_Controller
     private function saveUser()
     {
         $response = [
-            'result' => true,
+            'result'  => true,
             'message' => '',
         ];
         $required = [
-            'name' => ['type' => 'str', 'name' => '姓名'],
+            'name'     => ['type' => 'str', 'name' => '姓名'],
             'username' => ['type' => 'str', 'name' => '用户名'],
             'password' => ['type' => 'str', 'name' => '密码'],
-            'email' => ['type' => 'str', 'name' => '邮箱'],
+            'email'    => ['type' => 'str', 'name' => '邮箱'],
         ];
-        $error = App::checkRequired($required, $_POST);
+        $error    = App::checkRequired($required, $_POST);
         if ($error) {
             return array_merge($response, $error);
         }
 
         $username = $_POST['username'];
-        $o = User::getOne([
-            'deleted' => User::DELETED_NO,
+        $o        = User::getOne([
+            'deleted'  => User::DELETED_NO,
             'username' => $username,
         ]);
         if ($o) {
-            $response['result'] = false;
+            $response['result']  = false;
             $response['message'] = '用户名已存在';
             return $response;
         }
         $o = new User();
         $o->username($username);
         $o->name($_POST['name']);
-        $salt = md5($o->role() . $o->timeAdded());
-        $o->passwordSalt($salt);
-        $o->password(sha1($_POST['password'] . $salt));
+        $o->password(self::encryptPassword($_POST['password']));
         $o->email($_POST['email']);
-        $saved = $o->save();
+        $saved               = $o->save();
         $response['message'] = $saved ? '保存成功' : '未保存';
 
         $this->opLog('新建用户', $o->obj2Array(), $response['message']);
@@ -607,63 +605,63 @@ class Admin extends CI_Controller
     private function savePhone()
     {
         $response = [
-            'result' => true,
+            'result'  => true,
             'message' => '',
         ];
         $required = [
-            'type' => ['type' => 'str', 'name' => '机型'],
-            'os' => ['type' => 'str', 'name' => '系统'],
+            'type'    => ['type' => 'str', 'name' => '机型'],
+            'os'      => ['type' => 'str', 'name' => '系统'],
             'carrier' => ['type' => 'array', 'name' => '运营商'],
-            'status' => ['type' => 'str', 'name' => '状态'],
-            'label' => ['type' => 'str', 'name' => '标签'],
+            'status'  => ['type' => 'str', 'name' => '状态'],
+            'label'   => ['type' => 'str', 'name' => '标签'],
         ];
-        $error = App::checkRequired($required, $_POST);
+        $error    = App::checkRequired($required, $_POST);
         if ($error) {
             return array_merge($response, $error);
         }
 
         $label = $_POST['label'];
-        $o = Phone::getOne([
+        $o     = Phone::getOne([
             'deleted' => User::DELETED_NO,
-            'label' => $label,
+            'label'   => $label,
         ]);
         if ($o) {
-            $response['result'] = false;
+            $response['result']  = false;
             $response['message'] = '同标识的测试机已经存在';
             return $response;
         }
         $status = $_POST['status'];
         if (!array_key_exists($status, Phone::LABEL_STATUS)) {
-            $response['result'] = false;
+            $response['result']  = false;
             $response['message'] = '非法的状态值';
             return $response;
         }
         $userId = $_POST['userId'] ?? null;
         if ($status === Phone::STATUS_RENT_OUT && !$userId) {
-            $response['result'] = false;
+            $response['result']  = false;
             $response['message'] = '已借出的测试机需要选择借出人';
             return $response;
         }
         if ($status !== Phone::STATUS_RENT_OUT && $userId) {
-            $response['result'] = false;
+            $response['result']  = false;
             $response['message'] = '未借出的测试机不需要选择借出人';
             return $response;
         }
-        $carrier = $_POST['carrier'];
-        $carrier = implode(',', $carrier);
-        $ram = is_numeric($_POST['ram'] ?? null) ? $_POST['ram'] : null;
-        $screenSize = $_POST['screenSize'] ?? null;
+        $carrier     = $_POST['carrier'];
+        $carrier     = implode(',', $carrier);
+        $ram         = is_numeric($_POST['ram'] ?? null) ? $_POST['ram'] : null;
+        $screenSize  = $_POST['screenSize'] ?? null;
         $resolutionW = $_POST['resolutionW'] ?? '';
         $resolutionH = $_POST['resolutionH'] ?? '';
-        $imei = $_POST['imei'] ?? '';
+        $imei        = $_POST['imei'] ?? '';
         if (preg_match_all('#\d{15}#', $imei, $match)) {
             $imei = implode(',', $match[0]);
         }
-        $imei = $imei ?: null;
-        $type = $_POST['type'] ?? null;
-        $os = $_POST['os'];
+        $imei              = $imei ?: null;
+        $type              = $_POST['type'] ?? null;
+        $os                = $_POST['os'];
         $statusDescription = trim($_POST['statusDescription'] ?? '') ?: null;
-        $remark = trim($_POST['remark'] ?? '') ?: null;
+        $remark            = trim($_POST['remark'] ?? '') ?: null;
 
         $o = new Phone();
         if ($resolutionH && $resolutionW) {
@@ -681,7 +679,7 @@ class Admin extends CI_Controller
         $o->statusDescription($statusDescription);
         $o->remark($remark);
 
-        $saved = $o->save();
+        $saved               = $o->save();
         $response['message'] = $saved ? '保存成功' : '未保存';
 
         $this->opLog('新建测试机', $o->obj2Array(), $response['message']);
@@ -691,56 +689,56 @@ class Admin extends CI_Controller
     private function saveSimCard()
     {
         $response = [
-            'result' => true,
+            'result'  => true,
             'message' => '',
         ];
         $required = [
             'phoneNumber' => ['type' => 'str', 'name' => '手机号'],
-            'label' => ['type' => 'str', 'name' => '标识'],
-            'carrier' => ['type' => 'array', 'name' => '运营商'],
-            'status' => ['type' => 'str', 'name' => '状态'],
+            'label'       => ['type' => 'str', 'name' => '标识'],
+            'carrier'     => ['type' => 'array', 'name' => '运营商'],
+            'status'      => ['type' => 'str', 'name' => '状态'],
         ];
-        $error = App::checkRequired($required, $_POST);
+        $error    = App::checkRequired($required, $_POST);
         if ($error) {
             return array_merge($response, $error);
         }
 
         $phoneNumber = $_POST['phoneNumber'];
-        $o = SimCard::getOne([
-            'deleted' => User::DELETED_NO,
+        $o           = SimCard::getOne([
+            'deleted'     => User::DELETED_NO,
             'phoneNumber' => $phoneNumber,
         ]);
         if ($o) {
-            $response['result'] = false;
+            $response['result']  = false;
             $response['message'] = '同号码的测试卡已经存在';
             return $response;
         }
         $status = $_POST['status'];
         if (!array_key_exists($status, SimCard::LABEL_STATUS)) {
-            $response['result'] = false;
+            $response['result']  = false;
             $response['message'] = '非法的状态值';
             return $response;
         }
         $userId = $_POST['userId'] ?? null;
         if ($status === SimCard::STATUS_RENT_OUT && !$userId) {
-            $response['result'] = false;
+            $response['result']  = false;
             $response['message'] = '已借出的测试卡需要选择借出人';
             return $response;
         }
         if ($status !== SimCard::STATUS_RENT_OUT && $userId) {
-            $response['result'] = false;
+            $response['result']  = false;
             $response['message'] = '未借出的测试卡不需要选择借出人';
             return $response;
         }
-        $carrier = $_POST['carrier'];
-        $carrier = implode(',', $carrier);
-        $label = $_POST['label'];
-        $place = $_POST['place'] ?? null;
-        $imsi = $_POST['imsi'] ?? null;
+        $carrier           = $_POST['carrier'];
+        $carrier           = implode(',', $carrier);
+        $label             = $_POST['label'];
+        $place             = $_POST['place'] ?? null;
+        $imsi              = $_POST['imsi'] ?? null;
         $statusDescription = trim($_POST['statusDescription'] ?? '') ?: null;
-        $idCard = trim($_POST['idCard'] ?? '') ?: null;
-        $servicePassword = trim($_POST['servicePassword'] ?? '') ?: null;
-        $remark = trim($_POST['remark'] ?? '') ?: null;
+        $idCard            = trim($_POST['idCard'] ?? '') ?: null;
+        $servicePassword   = trim($_POST['servicePassword'] ?? '') ?: null;
+        $remark            = trim($_POST['remark'] ?? '') ?: null;
 
         $o = new SimCard();
         $o->phoneNumber($phoneNumber);
@@ -755,26 +753,26 @@ class Admin extends CI_Controller
         $o->servicePassword($servicePassword);
         $o->remark($remark);
 
-        $saved = $o->save();
+        $saved               = $o->save();
         $response['message'] = $saved ? '保存成功' : '未保存';
 
         $this->opLog('新建测试卡', $o->obj2Array(), $response['message']);
         return $response;
     }
 
-    private function uploadUsers(array &$files) : array
+    private function uploadUsers(array &$files): array
     {
-        $response = [
+        $response    = [
             'result' => true,
         ];
-        $excel = new MyExcel();
-        $head = [
-            'name' => ['#姓名#u'],
+        $excel       = new MyExcel();
+        $head        = [
+            'name'     => ['#姓名#u'],
             'username' => ['#用户名#u'],
-            'email' => ['#邮箱#u'],
+            'email'    => ['#邮箱#u'],
         ];
         $excelResult = $excel->load($files['tmp_name'], $head);
-        $response = array_merge($response, $excelResult);
+        $response    = array_merge($response, $excelResult);
         if (!$excelResult['result']) {
             return $response;
         }
@@ -783,7 +781,7 @@ class Admin extends CI_Controller
             if ($row['username']['value']) {
                 $user = User::getOne([
                     'username' => $row['username']['value'],
-                    'deleted' => User::DELETED_NO,
+                    'deleted'  => User::DELETED_NO,
                 ]);
                 if ($user) {
                     unset($user);
@@ -801,15 +799,13 @@ class Admin extends CI_Controller
                 $o->$name($value);
             }
             unset($def);
-            $salt = md5($o->role() . $o->timeAdded());
-            $o->passwordSalt($salt);
-            $o->password(sha1(sha1($o->username() . '123456') . $salt));
+            $o->password(self::encryptPassword('123456'));
             $o->save();
         }
         unset($row);
         $uploader = AppService::getUploader();
         $fileName = $uploader->saveFile($files, UploadFile::TYPE_USER_EXCEL);
-        $o = new UploadFile();
+        $o        = new UploadFile();
         $o->type(UploadFile::TYPE_USER_EXCEL);
         $o->originName($files['name']);
         $o->fileName($fileName);
@@ -818,26 +814,26 @@ class Admin extends CI_Controller
         return $response;
     }
 
-    private function uploadPhones(array &$files) : array
+    private function uploadPhones(array &$files): array
     {
-        $response = [
+        $response    = [
             'result' => true,
         ];
-        $excel = new MyExcel();
-        $head = [
-            'type' => ['#机型#u'],
-            'os' => ['#系统#u'],
+        $excel       = new MyExcel();
+        $head        = [
+            'type'       => ['#机型#u'],
+            'os'         => ['#系统#u'],
             'resolution' => ['#分辨率#u'],
-            'ram' => ['#ram#i'],
-            'carrier' => ['#运营商#u'],
+            'ram'        => ['#ram#i'],
+            'carrier'    => ['#运营商#u'],
             'screenSize' => ['#屏幕尺寸#u'],
-            'label' => ['#编号#u'],
-            'imei' => ['#imei#i'],
-            'status' => ['#状态#u'],
-            'remark' => ['#备注#u'],
+            'label'      => ['#编号#u'],
+            'imei'       => ['#imei#i'],
+            'status'     => ['#状态#u'],
+            'remark'     => ['#备注#u'],
         ];
         $excelResult = $excel->load($files['tmp_name'], $head);
-        $response = array_merge($response, $excelResult);
+        $response    = array_merge($response, $excelResult);
         if (!$excelResult['result']) {
             return $response;
         }
@@ -845,7 +841,7 @@ class Admin extends CI_Controller
         foreach ($excelResult['content'] as &$row) {
             if ($row['label']['value']) {
                 $phone = Phone::getOne([
-                    'label' => $row['label']['value'],
+                    'label'   => $row['label']['value'],
                     'deleted' => Phone::DELETED_NO,
                 ]);
                 if ($phone) {
@@ -875,7 +871,7 @@ class Admin extends CI_Controller
                         if (!preg_match_all("#电信|移动|联通#u", $value, $match)) {
                             break;
                         }
-                        $match = array_flip($match[0]);
+                        $match        = array_flip($match[0]);
                         $carrierCodes = [];
                         foreach ($carrierList as $label => $code) {
                             if (!array_key_exists($label, $match)) {
@@ -904,7 +900,7 @@ class Admin extends CI_Controller
                         }
                         $user = User::getOne([
                             'deleted' => User::DELETED_NO,
-                            'name' => $value,
+                            'name'    => $value,
                         ]);
                         if ($user) {
                             $o->$name(Phone::STATUS_RENT_OUT);
@@ -939,7 +935,7 @@ class Admin extends CI_Controller
         unset($row);
         $uploader = AppService::getUploader();
         $fileName = $uploader->saveFile($files, UploadFile::TYPE_PHONE_EXCEL);
-        $o = new UploadFile();
+        $o        = new UploadFile();
         $o->type(UploadFile::TYPE_PHONE_EXCEL);
         $o->originName($files['name']);
         $o->fileName($fileName);
@@ -948,25 +944,25 @@ class Admin extends CI_Controller
         return $response;
     }
 
-    private function uploadSimCards(array &$files) : array
+    private function uploadSimCards(array &$files): array
     {
-        $response = [
+        $response    = [
             'result' => true,
         ];
-        $excel = new MyExcel();
-        $head = [
-            'phoneNumber' => ['#手机号#u'],
-            'label' => ['#标识#u'],
-            'carrier' => ['#运营商#u'],
-            'place' => ['#归属地#u'],
-            'imsi' => ['#imsi#i'],
-            'status' => ['#状态#u'],
-            'idCard' => ['#身份证#u'],
+        $excel       = new MyExcel();
+        $head        = [
+            'phoneNumber'     => ['#手机号#u'],
+            'label'           => ['#标识#u'],
+            'carrier'         => ['#运营商#u'],
+            'place'           => ['#归属地#u'],
+            'imsi'            => ['#imsi#i'],
+            'status'          => ['#状态#u'],
+            'idCard'          => ['#身份证#u'],
             'servicePassword' => ['#服务密码#u'],
-            'remark' => ['#备注#u'],
+            'remark'          => ['#备注#u'],
         ];
         $excelResult = $excel->load($files['tmp_name'], $head);
-        $response = array_merge($response, $excelResult);
+        $response    = array_merge($response, $excelResult);
         if (!$excelResult['result']) {
             return $response;
         }
@@ -975,7 +971,7 @@ class Admin extends CI_Controller
             if ($row['phoneNumber']['value']) {
                 $simCard = SimCard::getOne([
                     'phoneNumber' => $row['phoneNumber']['value'],
-                    'deleted' => SimCard::DELETED_NO,
+                    'deleted'     => SimCard::DELETED_NO,
                 ]);
                 if ($simCard) {
                     unset($simCard);
@@ -999,7 +995,7 @@ class Admin extends CI_Controller
                         if (!preg_match_all("#电信|移动|联通|虚拟运营商#u", $value, $match)) {
                             break;
                         }
-                        $match = array_flip($match[0]);
+                        $match        = array_flip($match[0]);
                         $carrierCodes = [];
                         foreach ($carrierList as $label => $code) {
                             if (!array_key_exists($label, $match)) {
@@ -1021,7 +1017,7 @@ class Admin extends CI_Controller
                         }
                         $user = User::getOne([
                             'deleted' => User::DELETED_NO,
-                            'name' => $value,
+                            'name'    => $value,
                         ]);
                         if ($user) {
                             $o->$name(SimCard::STATUS_RENT_OUT);
@@ -1046,7 +1042,7 @@ class Admin extends CI_Controller
         unset($row);
         $uploader = AppService::getUploader();
         $fileName = $uploader->saveFile($files, UploadFile::TYPE_SIMCARD_EXCEL);
-        $o = new UploadFile();
+        $o        = new UploadFile();
         $o->type(UploadFile::TYPE_SIMCARD_EXCEL);
         $o->originName($files['name']);
         $o->fileName($fileName);
@@ -1058,13 +1054,13 @@ class Admin extends CI_Controller
     private function updateUser($id)
     {
         $response = [
-            'result' => true,
+            'result'  => true,
             'message' => '',
         ];
-        $o = User::get($id);
+        $o        = User::get($id);
         if (!$o || User::DELETED_YES === $o->deleted()) {
             return array_merge($response, [
-                'result' => false,
+                'result'  => false,
                 'message' => '用户不存在',
             ]);
         }
@@ -1073,8 +1069,7 @@ class Admin extends CI_Controller
             $o->name($_POST['name']);
         }
         if ('' !== trim($_POST['password'] ?? '')) {
-            $password = sha1("{$_POST['password']}{$o->passwordSalt()}");
-            $o->password($password);
+            $o->password(self::encryptPassword($_POST['password']));
         }
         if ('' !== trim($_POST['email'] ?? '')) {
             $o->email($_POST['email']);
@@ -1084,7 +1079,7 @@ class Admin extends CI_Controller
             $o->timeModified(date('Y-m-d H:i:s'));
         }
 
-        $changed = $o->save();
+        $changed             = $o->save();
         $response['message'] = $changed ? '成功保存' : '没有更改';
 
         $this->opLog('修改用户', $o->obj2Array(), $response['message']);
@@ -1094,13 +1089,13 @@ class Admin extends CI_Controller
     private function updatePhone($id)
     {
         $response = [
-            'result' => true,
+            'result'  => true,
             'message' => '',
         ];
-        $o = Phone::get($id);
+        $o        = Phone::get($id);
         if (!$o || Phone::DELETED_YES === $o->deleted()) {
             return array_merge($response, [
-                'result' => false,
+                'result'  => false,
                 'message' => '测试机不存在',
             ]);
         }
@@ -1123,12 +1118,12 @@ class Admin extends CI_Controller
         $label = trim($_POST['label'] ?? '');
         if ($o->label() !== $label && '' !== $label) {
             $old = Phone::getOne([
-                'label' => $_POST['label'],
+                'label'   => $_POST['label'],
                 'deleted' => Phone::DELETED_NO,
             ]);
             if ($old) {
                 return array_merge($response, [
-                    'result' => false,
+                    'result'  => false,
                     'message' => '同标识的测试机已存在',
                 ]);
             }
@@ -1155,7 +1150,7 @@ class Admin extends CI_Controller
             $o->timeModified(date('Y-m-d H:i:s'));
         }
 
-        $changed = $o->save();
+        $changed             = $o->save();
         $response['message'] = $changed ? '成功保存' : '没有更改';
 
         $this->opLog('修改测试机', $o->obj2Array(), $response['message']);
@@ -1165,13 +1160,13 @@ class Admin extends CI_Controller
     private function updateSimCard($id)
     {
         $response = [
-            'result' => true,
+            'result'  => true,
             'message' => '',
         ];
-        $o = SimCard::get($id);
+        $o        = SimCard::get($id);
         if (!$o || SimCard::DELETED_YES === $o->deleted()) {
             return array_merge($response, [
-                'result' => false,
+                'result'  => false,
                 'message' => '测试卡不存在',
             ]);
         }
@@ -1211,19 +1206,24 @@ class Admin extends CI_Controller
             $o->timeModified(date('Y-m-d H:i:s'));
         }
 
-        $changed = $o->save();
+        $changed             = $o->save();
         $response['message'] = $changed ? '成功保存' : '没有更改';
 
         $this->opLog('修改测试卡', $o->obj2Array(), $response['message']);
         return $response;
     }
 
+    public static function encryptPassword(string $password): string
+    {
+        return password_hash($password, PASSWORD_BCRYPT, ['cost' => 9]);
+    }
+
     private function opLog(string $operate, array $data, string $result)
     {
-        $admin = App::getUser();
+        $admin   = App::getUser();
         $message = "用户: {$admin->id()} => [{$admin->name()}, {$admin->username()}]\n";
         $message .= "操作: {$operate}\n";
-        $message .= "数据: " . json_encode($data, JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT) . "\n";
+        $message .= "数据: " . json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . "\n";
         $message .= "结果: {$result}\n";
         log_message('error', $message);
     }

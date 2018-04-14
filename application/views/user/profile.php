@@ -124,13 +124,6 @@ App::view('templates/header', ['title' => '个人页']);
             resRunInit(currentPanel);
         });
     $('#user-panel').find('form.ajax-form')
-        .data('formData', function (data) {
-            var username = data.username;
-            var password = data.password;
-            var passwordCfm = data.passwordCfm;
-            data.password = sha1(username + password);
-            data.passwordCfm = sha1(username + passwordCfm);
-        })
         .data('submitDone', function (ret) {
             if (!ret.result) {
                 bootbox.alert(ret.message);

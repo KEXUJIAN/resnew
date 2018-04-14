@@ -13,17 +13,17 @@ use App;
 
 class Permission
 {
-    public $origin = '';
-    public $mapped = '';
+    public $origin     = '';
+    public $mapped     = '';
     public $permission = [];
     const NO_AUTH = 'NO_AUTH';
-    const AUTH = 'AUTH';
+    const AUTH    = 'AUTH';
 
     public function __construct($originUri, $mappedUri)
     {
         $this->permission = AppService::getResCfg()->getItem('permission');
-        $this->origin = $originUri;
-        $this->mapped = $mappedUri;
+        $this->origin     = $originUri;
+        $this->mapped     = $mappedUri;
     }
 
     public function check()
@@ -44,7 +44,7 @@ class Permission
             }
             $this->show_403($this->origin);
         }
-        $accept = false;
+        $accept  = false;
         $matched = false;
         foreach ($this->permission as $rule => $roles) {
             if (!preg_match("#^{$rule}#", $this->mapped)) {
@@ -77,10 +77,10 @@ class Permission
     public function show_403(string $uri = '')
     {
         $message = "请求页面或 API \"{$uri}\" 失败, 原因: 没有相应权限。";
-        $accept = $_SERVER['HTTP_ACCEPT'] ?? '';
+        $accept  = $_SERVER['HTTP_ACCEPT'] ?? '';
         if (false !== strpos($accept, 'application/json')) {
             echo json_encode([
-                'result' => false,
+                'result'  => false,
                 'message' => $message,
             ]);
             exit(403);

@@ -50,13 +50,10 @@
 (function () {
     $('#edit-user-form')
         .data('formData', function (data) {
-            var username = data.username;
             var password = data.password;
             if (!$.trim(password)) {
                 data.password = '';
-                return;
             }
-            data.password = sha1(username + password);
         })
         .data('submitDoneSucc', function (ret, form) {
             var _modal = form.closest('.ajax-modal');

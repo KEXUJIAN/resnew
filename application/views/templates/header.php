@@ -27,7 +27,6 @@ $user = APP::getUser() ?? false;
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://cdn.bootcss.com/jquery-toast-plugin/1.3.2/jquery.toast.min.js"></script>
     <script src="https://cdn.bootcss.com/bootbox.js/4.4.0/bootbox.min.js"></script>
-    <script src="https://cdn.bootcss.com/js-sha1/0.6.0/sha1.min.js"></script>
     <?php if ($user): ?>
     <script src="https://cdn.bootcss.com/datatables/1.10.16/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.bootcss.com/datatables/1.10.16/js/dataTables.bootstrap.min.js"></script>

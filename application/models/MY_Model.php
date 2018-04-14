@@ -1,4 +1,5 @@
 <?php
+
 namespace Res\Model;
 
 use \Exception;
@@ -12,8 +13,8 @@ class MY_Model
 {
     const COLUMNS = [];
     // @ 用于表示 like, () 用于表示 in
-    const OPERATOR = ['=', '>', '<', '<>', '!=', '>=', '<=', '@', '()'];
-    const TABLE = '';
+    const OPERATOR    = ['=', '>', '<', '<>', '!=', '>=', '<=', '@', '()'];
+    const TABLE       = '';
     const VAL_NOT_SET = 'value_not_set';
     protected static $cache = [];
 
@@ -23,15 +24,15 @@ class MY_Model
             if (!isset($parms[$field])) {
                 continue;
             }
-            $this->$field = $parms[$field];
-            $fieldChangeed = "{$field}IsChanged";
+            $this->$field         = $parms[$field];
+            $fieldChangeed        = "{$field}IsChanged";
             $this->$fieldChangeed = false;
         }
     }
 
     public function obj2Array(array $exclude = [])
     {
-        $arr = [];
+        $arr     = [];
         $exclude = array_flip($exclude);
         foreach (static::COLUMNS as $column) {
             if ($exclude && array_key_exists($column, $exclude)) {
@@ -44,8 +45,8 @@ class MY_Model
 
     public function save()
     {
-        $table = static::TABLE;
-        $fields = static::COLUMNS;
+        $table   = static::TABLE;
+        $fields  = static::COLUMNS;
         $columns = [];
         foreach ($fields as $index => $column) {
             $isChanged = "{$column}IsChanged";
@@ -69,15 +70,15 @@ class MY_Model
             }
             $insertFields = implode(',', $insertFields);
             $insertValues = implode(',', $insertValues);
-            $sql = "INSERT INTO {$table}({$insertFields}) VALUES({$insertValues})";
-            $sth = $pdo->prepare($sql);
+            $sql          = "INSERT INTO {$table}({$insertFields}) VALUES({$insertValues})";
+            $sth          = $pdo->prepare($sql);
             foreach ($columns as $column) {
                 $sth->bindValue(":{$column}", $this->$column);
             }
             $sth->execute();
             $this->id = $pdo->lastInsertId();
             foreach ($columns as $column) {
-                $isChanged = "{$column}IsChanged";
+                $isChanged        = "{$column}IsChanged";
                 $this->$isChanged = false;
             }
             return true;
@@ -90,11 +91,11 @@ class MY_Model
             return false;
         }
         $updateFields = implode(',', $updateFields);
-        $sql = "UPDATE {$table} SET {$updateFields} WHERE id = :id";
-        $sth = $pdo->prepare($sql);
+        $sql          = "UPDATE {$table} SET {$updateFields} WHERE id = :id";
+        $sth          = $pdo->prepare($sql);
         foreach ($columns as $column) {
             $sth->bindValue(":{$column}", $this->$column);
-            $isChanged = "{$column}IsChanged";
+            $isChanged        = "{$column}IsChanged";
             $this->$isChanged = false;
         }
         $sth->bindValue(':id', $this->id);
@@ -103,7 +104,7 @@ class MY_Model
         return $influence ? true : false;
     }
 
-    public static function clearCache(string $table = '', $id = '') : bool
+    public static function clearCache(string $table = '', $id = ''): bool
     {
         if (!self::$cache) {
             return false;
@@ -130,13 +131,13 @@ class MY_Model
         if ($id === null) {
             return null;
         }
-        $table = static::TABLE;
+        $table  = static::TABLE;
         $fields = static::COLUMNS;
         foreach ($fields as $index => $column) {
             $fields[$index] = '`' . strtolower($column) . "` AS `{$column}`";
         }
         $fields = implode(',', $fields);
-        $sql = "SELECT {$fields} FROM {$table} WHERE id = :id ";
+        $sql    = "SELECT {$fields} FROM {$table} WHERE id = :id ";
         if ($for_update) {
             $sql .= 'FOR UPDATE';
         }
@@ -174,21 +175,21 @@ class MY_Model
      * @param string $offset
      * @return static[]
      */
-    public static function getList(array $conf = [], array $orderBy = [], $limit = '', $offset = '') : array
+    public static function getList(array $conf = [], array $orderBy = [], $limit = '', $offset = ''): array
     {
         $result = [];
-        $table = static::TABLE;
+        $table  = static::TABLE;
         $fields = static::COLUMNS;
         foreach ($fields as $index => $column) {
             $fields[$index] = '`' . strtolower($column) . "` AS `{$column}`";
         }
         $fields = implode(',', $fields);
 
-        $whereStr = '';
+        $whereStr    = '';
         $whereValues = [];
         if ($conf) {
-            $where = self::buildWhere($conf);
-            $whereStr = 'WHERE ' . $where['string'];
+            $where       = self::buildWhere($conf);
+            $whereStr    = 'WHERE ' . $where['string'];
             $whereValues = $where['array'];
         }
 //         var_dump($where);
@@ -198,7 +199,7 @@ class MY_Model
             foreach ($orderBy as $key => $value) {
                 $tmp[] = '`' . strtolower($key) . '` ' . strtoupper($value);
             }
-            $tmp = implode(',', $tmp);
+            $tmp        = implode(',', $tmp);
             $orderByStr = "ORDER BY {$tmp}";
         }
 
@@ -223,15 +224,15 @@ class MY_Model
         return $result;
     }
 
-    public static function getCount(array $conf = []) : int
+    public static function getCount(array $conf = []): int
     {
-        $result = 0;
-        $table = static::TABLE;
-        $whereStr = '';
+        $result      = 0;
+        $table       = static::TABLE;
+        $whereStr    = '';
         $whereValues = [];
         if ($conf) {
-            $where = self::buildWhere($conf);
-            $whereStr = 'WHERE ' . $where['string'];
+            $where       = self::buildWhere($conf);
+            $whereStr    = 'WHERE ' . $where['string'];
             $whereValues = $where['array'];
         }
 
@@ -248,18 +249,18 @@ class MY_Model
         return $result;
     }
 
-    public static function hidden(array $ids) : int
+    public static function hidden(array $ids): int
     {
         if (!in_array('deleted', static::COLUMNS)) {
             return 0;
         }
-        $pdo = AppService::getPDO();
-        $table = static::TABLE;
+        $pdo         = AppService::getPDO();
+        $table       = static::TABLE;
         $deleted_yes = static::DELETED_YES;
         $deleted_no  = static::DELETED_NO;
-        $now = date('Y-m-d H:i:s');
-        $sth = $pdo->prepare("UPDATE {$table} SET deleted = {$deleted_yes}, timemodified = '{$now}' WHERE id = :id AND deleted = {$deleted_no}");
-        $row_count = 0;
+        $now         = date('Y-m-d H:i:s');
+        $sth         = $pdo->prepare("UPDATE {$table} SET deleted = {$deleted_yes}, timemodified = '{$now}' WHERE id = :id AND deleted = {$deleted_no}");
+        $row_count   = 0;
         foreach ($ids as $id) {
             $sth->execute([':id' => $id]);
             $row_count += $sth->rowCount();
@@ -267,7 +268,12 @@ class MY_Model
         return $row_count;
     }
 
-    public static function buildWhere(array &$conf) : array
+    /**
+     * @param array $conf
+     * @return array
+     * @throws Exception
+     */
+    public static function buildWhere(array &$conf): array
     {
         $validOperator = self::OPERATOR;
         $validOperator = array_flip($validOperator);
@@ -278,7 +284,7 @@ class MY_Model
             if (!preg_match('#(\w+)(\W+)?#', $key, $match)) {
                 throw new Exception("Invalid where statement key format. should be {colName[operator]}");
             }
-            $column = $match[1];
+            $column   = $match[1];
             $operator = $match[2] ?? '=';
             if (!array_key_exists($operator, $validOperator)) {
                 throw new Exception("Invalid where statement operator: {$operator}");
@@ -296,15 +302,15 @@ class MY_Model
             }
             $whereVal[$key] = $value;
             if ('@' === $operator) {
-                $operator = 'LIKE';
+                $operator       = 'LIKE';
                 $whereVal[$key] = "%{$value}%";
             }
             $whereStr[] = '`' . strtolower($column) . "` {$operator} {$key}";
         }
         $whereStr = implode(' AND ', $whereStr);
-        $where = [
+        $where    = [
             'string' => $whereStr,
-            'array' => $whereVal,
+            'array'  => $whereVal,
         ];
         return $where;
     }

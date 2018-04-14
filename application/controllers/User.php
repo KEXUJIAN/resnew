@@ -4,20 +4,20 @@ use \Res\Model\User as UserModel;
 use Res\Model\Notification;
 
 /**
-* User controller
-*/
+ * User controller
+ */
 class User extends CI_Controller
 {
     public function profile(string $name = 'user', $id = null)
     {
-        $pdo = AppService::getPDO();
+        $pdo   = AppService::getPDO();
         $table = Notification::TABLE;
-        $sql = "UPDATE {$table} SET `read` = :readYes WHERE userid = :userId AND status = :readNo";
-        $sth = $pdo->prepare($sql);
+        $sql   = "UPDATE {$table} SET `read` = :readYes WHERE userid = :userId AND status = :readNo";
+        $sth   = $pdo->prepare($sql);
         $sth->execute([
             ':readYes' => Notification::READ_YES,
-            ':userId' => App::getUser()->id(),
-            ':readNo' => Notification::READ_NO,
+            ':userId'  => App::getUser()->id(),
+            ':readNo'  => Notification::READ_NO,
         ]);
         $valid = [
             'user',
@@ -29,9 +29,9 @@ class User extends CI_Controller
             $panel = $name;
         }
         App::view('user/profile', [
-            'user' => App::getUser(),
-            'panel' => $panel,
-            'id' => $id,
+            'user'          => App::getUser(),
+            'panel'         => $panel,
+            'id'            => $id,
             'titleNavClass' => 'container-fluid',
         ]);
     }
@@ -47,27 +47,26 @@ class User extends CI_Controller
 
     public function reset()
     {
-        $password = $_POST['password'] ?? '';
+        $password    = $_POST['password'] ?? '';
         $passwordCfm = $_POST['passwordCfm'] ?? '';
-        $response = [
-            'result' => true,
+        $response    = [
+            'result'  => true,
             'message' => '密码修改成功',
         ];
         if (!$password || !$passwordCfm) {
-            $response['result'] = false;
+            $response['result']  = false;
             $response['message'] = '新密码 / 确认密码不能为空';
             echo json_encode($response);
             return;
         }
         if ($password !== $passwordCfm) {
-            $response['result'] = false;
+            $response['result']  = false;
             $response['message'] = '两次密码不符';
             echo json_encode($response);
             return;
         }
         $user = App::getUser();
-        $password = sha1($password . $user->passwordSalt());
-        $user->password($password);
+        $user->password(Admin::encryptPassword($password));
         $user->save();
         $_SESSION['USER'] = $user->obj2Array();
         echo json_encode($response);
@@ -83,12 +82,12 @@ class User extends CI_Controller
         $username = $_POST['username'] ?? '';
         $password = $_POST['password'] ?? '';
         $response = [
-            'result' => true,
+            'result'  => true,
             'message' => '/assets/phone',
         ];
 
         if (!$username || !$password) {
-            $response['result'] = false;
+            $response['result']  = false;
             $response['message'] = '用户名 / 密码不能为空';
             echo json_encode($response);
             return;
@@ -96,18 +95,17 @@ class User extends CI_Controller
 
         $user = UserModel::getOne([
             'username' => $username,
-            'deleted' => UserModel::DELETED_NO
+            'deleted'  => UserModel::DELETED_NO,
         ]);
         if (!$user) {
-            $response['result'] = false;
+            $response['result']  = false;
             $response['message'] = '用户不存在';
             echo json_encode($response);
             return;
         }
 
-        $passwordHash = sha1($password . $user->passwordSalt());
-        if ($passwordHash !== $user->password()) {
-            $response['result'] = false;
+        if (!password_verify($password, $user->password())) {
+            $response['result']  = false;
             $response['message'] = '用户名 / 密码错误';
             echo json_encode($response);
             return;
@@ -142,11 +140,11 @@ class User extends CI_Controller
         if ('' !== ($_GET['q'] ?? '')) {
             $c['name@'] = $_GET['q'];
         }
-        $list = UserModel::getList($c);
+        $list     = UserModel::getList($c);
         $response = ['results' => []];
         foreach ($list as $user) {
             $response['results'][] = [
-                'id' => $user->id(),
+                'id'   => $user->id(),
                 'text' => $user->name(),
             ];
         }

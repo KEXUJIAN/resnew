@@ -14,7 +14,7 @@ use Res\Model\User;
 
 class AssetBiz
 {
-    public static function phoneStatus(Phone $phone) : string
+    public static function phoneStatus(Phone $phone): string
     {
         $result = '';
         $status = Phone::LABEL_STATUS[$phone->status()];
@@ -24,7 +24,7 @@ class AssetBiz
                 $result .= '<p class="text-success"><i class="fa fa-home"></i>' . $status . '</p>';
                 break;
             case Phone::STATUS_RENT_OUT:
-                $user = User::getOne(['id' => $phone->userId()]);
+                $user   = User::getOne(['id' => $phone->userId()]);
                 $result .= '<p class="text-warning"><i class="fa fa-user"></i>' . $user->name() . '</p>';
                 break;
             case Phone::STATUS_BROKEN:
@@ -40,7 +40,7 @@ class AssetBiz
         return $result;
     }
 
-    public static function simCardStatus(SimCard $simCard) : string
+    public static function simCardStatus(SimCard $simCard): string
     {
         $result = '';
         $status = SimCard::LABEL_STATUS[$simCard->status()];
@@ -50,7 +50,7 @@ class AssetBiz
                 $result .= '<p class="text-success"><i class="fa fa-home"></i>' . $status . '</p>';
                 break;
             case SimCard::STATUS_RENT_OUT:
-                $user = User::getOne(['id' => $simCard->userId()]);
+                $user   = User::getOne(['id' => $simCard->userId()]);
                 $result .= '<p class="text-warning"><i class="fa fa-user"></i>' . $user->name() . '</p>';
                 break;
             case SimCard::STATUS_BROKEN:

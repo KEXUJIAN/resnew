@@ -11,41 +11,41 @@ namespace Res\Model;
 
 class UploadFile extends MY_Model
 {
-    const TABLE = 'uploadfiles';
+    const TABLE   = 'uploadfiles';
     const COLUMNS = ['id', 'uploadByUser', 'type', 'originName', 'fileName', 'data', 'status', 'timeAdded', 'timeModified', 'deleted',];
 
-    protected $id = null;
-    protected $idIsChanged = false;
-    protected $uploadByUser = null;
+    protected $id                    = null;
+    protected $idIsChanged           = false;
+    protected $uploadByUser          = null;
     protected $uploadByUserIsChanged = false;
-    protected $type = null;
-    protected $typeIsChanged = false;
-    protected $originName = null;
-    protected $originNameIsChanged = false;
-    protected $fileName = null;
-    protected $fileNameIsChanged = false;
-    protected $data = null;
-    protected $dataIsChanged = false;
-    protected $status = null;
-    protected $statusIsChanged = false;
-    protected $timeAdded = null;
-    protected $timeAddedIsChanged = false;
-    protected $timeModified = null;
+    protected $type                  = null;
+    protected $typeIsChanged         = false;
+    protected $originName            = null;
+    protected $originNameIsChanged   = false;
+    protected $fileName              = null;
+    protected $fileNameIsChanged     = false;
+    protected $data                  = null;
+    protected $dataIsChanged         = false;
+    protected $status                = null;
+    protected $statusIsChanged       = false;
+    protected $timeAdded             = null;
+    protected $timeAddedIsChanged    = false;
+    protected $timeModified          = null;
     protected $timeModifiedIsChanged = false;
-    protected $deleted = null;
-    protected $deletedIsChanged = false;
+    protected $deleted               = null;
+    protected $deletedIsChanged      = false;
 
-    const TYPE_USER_EXCEL = 0;
-    const TYPE_PHONE_EXCEL = 1;
+    const TYPE_USER_EXCEL    = 0;
+    const TYPE_PHONE_EXCEL   = 1;
     const TYPE_SIMCARD_EXCEL = 2;
-    const LABEL_TYPE = [
+    const LABEL_TYPE         = [
         0 => 'user',
         1 => 'phone',
         2 => 'simcard',
     ];
 
-    const DELETED_YES = 1;
-    const DELETED_NO = 0;
+    const DELETED_YES   = 1;
+    const DELETED_NO    = 0;
     const LABEL_DELETED = [
         0 => 'Not Deleted',
         1 => 'Deleted',
@@ -53,13 +53,13 @@ class UploadFile extends MY_Model
 
     public function __construct()
     {
-        $now = date('Y-m-d H:i:s');
-        $this->timeAdded = $now;
-        $this->timeAddedIsChanged = true;
-        $this->timeModified = $now;
+        $now                         = date('Y-m-d H:i:s');
+        $this->timeAdded             = $now;
+        $this->timeAddedIsChanged    = true;
+        $this->timeModified          = $now;
         $this->timeModifiedIsChanged = true;
-        $this->deleted = self::DELETED_NO;
-        $this->deletedIsChanged = true;
+        $this->deleted               = self::DELETED_NO;
+        $this->deletedIsChanged      = true;
     }
 
     public function id($value = MY_Model::VAL_NOT_SET)
@@ -69,7 +69,7 @@ class UploadFile extends MY_Model
         }
         $ret = $this->id;
         if ($ret !== $value) {
-            $this->id = $value;
+            $this->id          = $value;
             $this->idIsChanged = true;
         }
         return $this->id;
@@ -82,7 +82,7 @@ class UploadFile extends MY_Model
         }
         $ret = $this->uploadByUser;
         if ($ret !== $value) {
-            $this->uploadByUser = $value;
+            $this->uploadByUser          = $value;
             $this->uploadByUserIsChanged = true;
         }
         return $this->uploadByUser;
@@ -95,7 +95,7 @@ class UploadFile extends MY_Model
         }
         $ret = $this->type;
         if ($ret !== $value) {
-            $this->type = $value;
+            $this->type          = $value;
             $this->typeIsChanged = true;
         }
         return $this->type;
@@ -108,7 +108,7 @@ class UploadFile extends MY_Model
         }
         $ret = $this->originName;
         if ($ret !== $value) {
-            $this->originName = $value;
+            $this->originName          = $value;
             $this->originNameIsChanged = true;
         }
         return $this->originName;
@@ -121,7 +121,7 @@ class UploadFile extends MY_Model
         }
         $ret = $this->fileName;
         if ($ret !== $value) {
-            $this->fileName = $value;
+            $this->fileName          = $value;
             $this->fileNameIsChanged = true;
         }
         return $this->fileName;
@@ -134,7 +134,7 @@ class UploadFile extends MY_Model
         }
         $ret = $this->data;
         if ($ret !== $value) {
-            $this->data = $value;
+            $this->data          = $value;
             $this->dataIsChanged = true;
         }
         return $this->data;
@@ -147,7 +147,7 @@ class UploadFile extends MY_Model
         }
         $ret = $this->status;
         if ($ret !== $value) {
-            $this->status = $value;
+            $this->status          = $value;
             $this->statusIsChanged = true;
         }
         return $this->status;
@@ -160,7 +160,7 @@ class UploadFile extends MY_Model
         }
         $ret = $this->timeAdded;
         if ($ret !== $value) {
-            $this->timeAdded = $value;
+            $this->timeAdded          = $value;
             $this->timeAddedIsChanged = true;
         }
         return $this->timeAdded;
@@ -173,7 +173,7 @@ class UploadFile extends MY_Model
         }
         $ret = $this->timeModified;
         if ($ret !== $value) {
-            $this->timeModified = $value;
+            $this->timeModified          = $value;
             $this->timeModifiedIsChanged = true;
         }
         return $this->timeModified;
@@ -186,7 +186,7 @@ class UploadFile extends MY_Model
         }
         $ret = $this->deleted;
         if ($ret !== $value) {
-            $this->deleted = $value;
+            $this->deleted          = $value;
             $this->deletedIsChanged = true;
         }
         return $this->deleted;

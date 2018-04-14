@@ -10,47 +10,47 @@ namespace Res\Model;
 
 class SimCard extends MY_Model
 {
-    const TABLE = 'simcards';
+    const TABLE   = 'simcards';
     const COLUMNS = ['id', 'userId', 'phoneNumber', 'label', 'carrier', 'place', 'imsi', 'status', 'statusDescription', 'idCard', 'servicePassword', 'remark', 'timeAdded', 'timeModified', 'deleted',];
 
-    protected $id = null;
-    protected $idIsChanged = false;
-    protected $userId = null;
-    protected $userIdIsChanged = false;
-    protected $phoneNumber = null;
-    protected $phoneNumberIsChanged = false;
-    protected $label = null;
-    protected $labelIsChanged = false;
-    protected $carrier = null;
-    protected $carrierIsChanged = false;
-    protected $place = null;
-    protected $placeIsChanged = false;
-    protected $imsi = null;
-    protected $imsiIsChanged = false;
-    protected $status = null;
-    protected $statusIsChanged = false;
-    protected $statusDescription = null;
+    protected $id                         = null;
+    protected $idIsChanged                = false;
+    protected $userId                     = null;
+    protected $userIdIsChanged            = false;
+    protected $phoneNumber                = null;
+    protected $phoneNumberIsChanged       = false;
+    protected $label                      = null;
+    protected $labelIsChanged             = false;
+    protected $carrier                    = null;
+    protected $carrierIsChanged           = false;
+    protected $place                      = null;
+    protected $placeIsChanged             = false;
+    protected $imsi                       = null;
+    protected $imsiIsChanged              = false;
+    protected $status                     = null;
+    protected $statusIsChanged            = false;
+    protected $statusDescription          = null;
     protected $statusDescriptionIsChanged = false;
-    protected $idCard = null;
-    protected $idCardIsChanged = false;
-    protected $servicePassword = null;
-    protected $servicePasswordIsChanged = false;
-    protected $remark = null;
-    protected $remarkIsChanged = false;
-    protected $timeAdded = null;
-    protected $timeAddedIsChanged = false;
-    protected $timeModified = null;
-    protected $timeModifiedIsChanged = false;
-    protected $deleted = null;
-    protected $deletedIsChanged = false;
+    protected $idCard                     = null;
+    protected $idCardIsChanged            = false;
+    protected $servicePassword            = null;
+    protected $servicePasswordIsChanged   = false;
+    protected $remark                     = null;
+    protected $remarkIsChanged            = false;
+    protected $timeAdded                  = null;
+    protected $timeAddedIsChanged         = false;
+    protected $timeModified               = null;
+    protected $timeModifiedIsChanged      = false;
+    protected $deleted                    = null;
+    protected $deletedIsChanged           = false;
 
     const STATUS_IN_INVENTORY = 0;
-    const STATUS_RENT_OUT = 1;
-    const STATUS_BROKEN = 2;
-    const STATUS_OTHER = 3;
-    const STATUS_RENTING = 4;
-    const STATUS_RETURNING = 5;
-    const LABEL_STATUS = [
+    const STATUS_RENT_OUT     = 1;
+    const STATUS_BROKEN       = 2;
+    const STATUS_OTHER        = 3;
+    const STATUS_RENTING      = 4;
+    const STATUS_RETURNING    = 5;
+    const LABEL_STATUS        = [
         0 => '可借出',
         1 => '已借出',
         2 => '不可用',
@@ -60,9 +60,9 @@ class SimCard extends MY_Model
     ];
 
     const CARRIER_CHINA_TELECOM = 0;
-    const CARRIER_CHINA_MOBILE = 1;
-    const CARRIER_CHINA_UNICOM = 2;
-    const CARRIER_THIRD_PARTY = 3;
+    const CARRIER_CHINA_MOBILE  = 1;
+    const CARRIER_CHINA_UNICOM  = 2;
+    const CARRIER_THIRD_PARTY   = 3;
 
     const LABEL_CARRIER = [
         0 => '电信',
@@ -71,8 +71,8 @@ class SimCard extends MY_Model
         3 => '虚拟运营商',
     ];
 
-    const DELETED_YES = 1;
-    const DELETED_NO = 0;
+    const DELETED_YES   = 1;
+    const DELETED_NO    = 0;
     const LABEL_DELETED = [
         0 => 'Not Deleted',
         1 => 'Deleted',
@@ -80,13 +80,13 @@ class SimCard extends MY_Model
 
     public function __construct()
     {
-        $now = date('Y-m-d H:i:s');
-        $this->timeAdded = $now;
-        $this->timeAddedIsChanged = true;
-        $this->timeModified = $now;
+        $now                         = date('Y-m-d H:i:s');
+        $this->timeAdded             = $now;
+        $this->timeAddedIsChanged    = true;
+        $this->timeModified          = $now;
         $this->timeModifiedIsChanged = true;
-        $this->deleted = self::DELETED_NO;
-        $this->deletedIsChanged = true;
+        $this->deleted               = self::DELETED_NO;
+        $this->deletedIsChanged      = true;
     }
 
     public function id($value = MY_Model::VAL_NOT_SET)
@@ -96,7 +96,7 @@ class SimCard extends MY_Model
         }
         $ret = $this->id;
         if ($ret !== $value) {
-            $this->id = $value;
+            $this->id          = $value;
             $this->idIsChanged = true;
         }
         return $this->id;
@@ -109,7 +109,7 @@ class SimCard extends MY_Model
         }
         $ret = $this->userId;
         if ($ret !== $value) {
-            $this->userId = $value;
+            $this->userId          = $value;
             $this->userIdIsChanged = true;
         }
         return $this->userId;
@@ -122,7 +122,7 @@ class SimCard extends MY_Model
         }
         $ret = $this->phoneNumber;
         if ($ret !== $value) {
-            $this->phoneNumber = $value;
+            $this->phoneNumber          = $value;
             $this->phoneNumberIsChanged = true;
         }
         return $this->phoneNumber;
@@ -135,7 +135,7 @@ class SimCard extends MY_Model
         }
         $ret = $this->label;
         if ($ret !== $value) {
-            $this->label = $value;
+            $this->label          = $value;
             $this->labelIsChanged = true;
         }
         return $this->label;
@@ -148,7 +148,7 @@ class SimCard extends MY_Model
         }
         $ret = $this->carrier;
         if ($ret !== $value) {
-            $this->carrier = $value;
+            $this->carrier          = $value;
             $this->carrierIsChanged = true;
         }
         return $this->carrier;
@@ -161,7 +161,7 @@ class SimCard extends MY_Model
         }
         $ret = $this->place;
         if ($ret !== $value) {
-            $this->place = $value;
+            $this->place          = $value;
             $this->placeIsChanged = true;
         }
         return $this->place;
@@ -174,7 +174,7 @@ class SimCard extends MY_Model
         }
         $ret = $this->imsi;
         if ($ret !== $value) {
-            $this->imsi = $value;
+            $this->imsi          = $value;
             $this->imsiIsChanged = true;
         }
         return $this->imsi;
@@ -187,7 +187,7 @@ class SimCard extends MY_Model
         }
         $ret = $this->status;
         if ($ret !== $value) {
-            $this->status = $value;
+            $this->status          = $value;
             $this->statusIsChanged = true;
         }
         return $this->status;
@@ -200,7 +200,7 @@ class SimCard extends MY_Model
         }
         $ret = $this->statusDescription;
         if ($ret !== $value) {
-            $this->statusDescription = $value;
+            $this->statusDescription          = $value;
             $this->statusDescriptionIsChanged = true;
         }
         return $this->statusDescription;
@@ -213,7 +213,7 @@ class SimCard extends MY_Model
         }
         $ret = $this->idCard;
         if ($ret !== $value) {
-            $this->idCard = $value;
+            $this->idCard          = $value;
             $this->idCardIsChanged = true;
         }
         return $this->idCard;
@@ -226,7 +226,7 @@ class SimCard extends MY_Model
         }
         $ret = $this->servicePassword;
         if ($ret !== $value) {
-            $this->servicePassword = $value;
+            $this->servicePassword          = $value;
             $this->servicePasswordIsChanged = true;
         }
         return $this->servicePassword;
@@ -239,7 +239,7 @@ class SimCard extends MY_Model
         }
         $ret = $this->remark;
         if ($ret !== $value) {
-            $this->remark = $value;
+            $this->remark          = $value;
             $this->remarkIsChanged = true;
         }
         return $this->remark;
@@ -252,7 +252,7 @@ class SimCard extends MY_Model
         }
         $ret = $this->timeAdded;
         if ($ret !== $value) {
-            $this->timeAdded = $value;
+            $this->timeAdded          = $value;
             $this->timeAddedIsChanged = true;
         }
         return $this->timeAdded;
@@ -265,7 +265,7 @@ class SimCard extends MY_Model
         }
         $ret = $this->timeModified;
         if ($ret !== $value) {
-            $this->timeModified = $value;
+            $this->timeModified          = $value;
             $this->timeModifiedIsChanged = true;
         }
         return $this->timeModified;
@@ -278,7 +278,7 @@ class SimCard extends MY_Model
         }
         $ret = $this->deleted;
         if ($ret !== $value) {
-            $this->deleted = $value;
+            $this->deleted          = $value;
             $this->deletedIsChanged = true;
         }
         return $this->deleted;
